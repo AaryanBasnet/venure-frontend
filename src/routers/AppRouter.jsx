@@ -7,10 +7,12 @@ export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/state" element={<StateManage />}></Route>
+        {/* <Route path="/state" element={<StateManage />}></Route> */}
+                  <Route path="/" element={<LoginPage />}></Route>
+                            <Route path="/login" element={<LoginPage />}></Route>
+
+
         <Route element={<MainLayout />}>
-          <Route path="/" element={<LoginPage />}></Route>
-          <Route path="/login" element={<LoginPage />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
