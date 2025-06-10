@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="flex max-w-4xl w-full bg-white rounded-lg shadow-lg overflow-hidden">
@@ -76,18 +78,18 @@ export default function LoginPage() {
             </button>
             <button className="flex-1 flex items-center justify-center border border-gray-300 rounded-md py-2 hover:bg-gray-50">
               <img
-                src="https://www.svgrepo.com/show/349375/github.svg"
-                alt="GitHub"
+                src="https://www.svgrepo.com/show/475647/facebook-color.svg"
+                alt="Facebook"
                 className="w-5 h-5 mr-2"
               />
-              GitHub
+              Facebook
             </button>
           </div>
           <div className="my-10 text-sm text-center text-gray-600">
             Don’t have an account?{" "}
             <button
               className="text-blue-600 hover:underline"
-              //   onClick={() => navigate("/register")}
+              onClick={() => navigate("/register")}
             >
               Sign up
             </button>
