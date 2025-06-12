@@ -19,10 +19,7 @@ export default function LoginPage() {
             <span className="text-3xl font-bold text-indigo-600">Venure</span>
           </div>
 
-          {/* Heading */}
-         
-
-          {/* Use LoginForm here */}
+        
           <LoginForm />
 
           <div className="my-10 text-sm text-center text-gray-600">
