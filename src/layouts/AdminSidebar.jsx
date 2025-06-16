@@ -1,12 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import SidebarOption from "../components/SidebarOption";
 import SidebarToggle from "../components/SidebarToggle";
-import {
-  FiUser,
-  FiHome,
-  
-  FiLogOut,
-} from "react-icons/fi";
+import { FiUser, FiHome, FiLogOut } from "react-icons/fi";
 import { FaBuildingColumns } from "react-icons/fa6";
 import { GrUserAdmin } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
@@ -42,7 +37,9 @@ const AdminSidebar = () => {
           <img src={logo} alt="logo" className="h-10 w-10 object-contain" />
           {open && (
             <div>
-              <h1 className="text-sm font-semibold text-gray-800">Aaryan Basnet</h1>
+              <h1 className="text-sm font-semibold text-gray-800">
+                Aaryan Basnet
+              </h1>
               <p className="text-xs text-gray-500">Admin</p>
             </div>
           )}
@@ -50,10 +47,30 @@ const AdminSidebar = () => {
 
         {/* Menu */}
         <div className="mt-6 flex flex-col gap-1">
-          <SidebarOption Icon={FiHome} title="Dashboard" path="/admin/dashboard" open={open} />
-          <SidebarOption Icon={FiUser} title="Users" path="/admin/user" open={open} />
-          <SidebarOption Icon={FaBuildingColumns} title="Venue" path="/admin/adminVenuePage" open={open} />
-          <SidebarOption Icon={GrUserAdmin} title="Venue Owner" path="/admin/adminVenueOwner" open={open} />
+          <SidebarOption
+            Icon={FiHome}
+            title="Dashboard"
+            path="/admin/dashboard"
+            open={open}
+          />
+          <SidebarOption
+            Icon={FiUser}
+            title="Users"
+            path="/admin/user"
+            open={open}
+          />
+          <SidebarOption
+            Icon={FaBuildingColumns}
+            title="Venue"
+            path="/admin/adminVenuePage"
+            open={open}
+          />
+          <SidebarOption
+            Icon={GrUserAdmin}
+            title="Venue Owner"
+            path="/admin/adminVenueOwner"
+            open={open}
+          />
         </div>
       </div>
 
