@@ -352,7 +352,7 @@ const UnAuthorized = () => {
             <h2 className='text-[100px]'>Page not found</h2>
         </div>
         <div className="absolute top-4 left-4">
-        <Link to="/home">
+        <Link to="/admin/dashboard">
           <button
             type="button"
             className="bg-gray-100 text-center w-48 rounded-2xl h-14 relative font-sans text-black text-xl font-semibold group"
