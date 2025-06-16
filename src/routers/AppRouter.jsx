@@ -8,6 +8,9 @@ import AdminUserRoute from "./AdminUserRoute";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import AdminLayout from "../layouts/AdminLayout";
 import UnAuthorized from "../pages/UnAuthorized";
+import AdminUsersPage from "../pages/admin/AdminUsersPage";
+import AdminVenuePage from "../pages/admin/AdminVenuePage";
+import AdminVenueOwnerPage from "../pages/admin/AddVenueOwnerPage";
 // import AdminSidebar from "../layouts/AdminSidebar";
 
 export default function AppRouter() {
@@ -27,9 +30,9 @@ export default function AppRouter() {
         <Route element={<AdminUserRoute />}>
           <Route element={<AdminLayout />}>
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            {/* <Route path="/admin/user" element={<AdminUserPage />} />
+            <Route path="/admin/user" element={<AdminUsersPage />} />
             <Route path="/admin/venue" element={<AdminVenuePage />} />
-            <Route path="/admin/owner" element={<AdminOwnerPage />} /> */}
+            <Route path="/admin/owner" element={<AdminVenueOwnerPage />} />
             <Route path="*" element={<UnAuthorized />} />
           </Route>
         </Route>

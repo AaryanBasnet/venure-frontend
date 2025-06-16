@@ -1,94 +1,111 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { AuthContext } from "../auth/AuthProvider";
+
+// Import your components and icons
 import SidebarOption from "../components/SidebarOption";
 import SidebarToggle from "../components/SidebarToggle";
-import { FiUser, FiHome, FiLogOut } from "react-icons/fi";
+import { FiHome, FiUser, FiLogOut } from "react-icons/fi";
 import { FaBuildingColumns } from "react-icons/fa6";
 import { GrUserAdmin } from "react-icons/gr";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../auth/AuthProvider";
-import logo from "../assets/logo.png"; // 🔄 Add your logo here
+import logo from "../assets/logo.png";
 
-const AdminSidebar = () => {
-  const [open, setOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
+// The component now accepts props from AdminLayout
+const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
-  const { logout } = useContext(AuthContext);
+  const location = useLocation();
+  const { user, logout } = useContext(AuthContext);
 
+  // This effect now runs only ONCE on component mount to set a sensible default.
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    const handleResize = () => {
-      setIsMobile(mediaQuery.matches);
-      if (mediaQuery.matches) setOpen(false);
-    };
-    handleResize();
-    mediaQuery.addEventListener("change", handleResize);
-    return () => mediaQuery.removeEventListener("change", handleResize);
-  }, []);
+    if (window.innerWidth < 1024) {
+      setSidebarOpen(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array ensures this runs only once.
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
-    <nav
-      className={`fixed md:relative z-50 top-0 left-0 h-screen flex flex-col justify-between bg-white border-r-0 transition-all duration-300 shadow-sm ${
-        open ? "w-[240px]" : "w-[72px]"
-      }`}
-    >
-      {/* Top: Logo + Admin Info */}
-      <div className="px-4 pt-4">
-        <div className="flex items-center gap-3">
-          <img src={logo} alt="logo" className="h-10 w-10 object-contain" />
-          {open && (
-            <div>
-              <h1 className="text-sm font-semibold text-gray-800">
-                Aaryan Basnet
-              </h1>
-              <p className="text-xs text-gray-500">Admin</p>
-            </div>
-          )}
+    <>
+      {/* Main Sidebar Navigation */}
+      {/* The 'fixed' and 'md:relative' classes have been removed. 
+          The sidebar is now always part of the flex layout. 
+          'flex-shrink-0' is added to prevent it from shrinking.
+      */}
+      <nav
+        className={`
+          h-screen flex flex-col justify-between flex-shrink-0
+          bg-white border-r-0 transition-all duration-300 shadow-lg
+          ${sidebarOpen ? "w-64" : "w-20"}
+        `}
+      >
+        {/* Top Section: Logo, User Info, and Navigation */}
+        <div className="px-4 pt-4">
+          <div className="flex items-center gap-3 mb-6">
+            <img
+              src={logo}
+              alt="logo"
+              className="h-10 w-10 object-contain flex-shrink-0"
+            />
+            {sidebarOpen && (
+              <div className="overflow-hidden">
+                <h1 className="text-sm font-semibold text-gray-800 whitespace-nowrap">
+                  {user?.name || "Aaryan Basnet"}
+                </h1>
+                <p className="text-xs text-gray-500 whitespace-nowrap">Admin</p>
+              </div>
+            )}
+          </div>
+
+          {/* Menu Options */}
+          <div className="flex flex-col gap-1">
+            <SidebarOption
+              Icon={FiHome}
+              title="Dashboard"
+              path="/admin/dashboard"
+              open={sidebarOpen}
+              active={location.pathname === "/admin/dashboard"}
+            />
+            <SidebarOption
+              Icon={FiUser}
+              title="Users"
+              path="/admin/user"
+              open={sidebarOpen}
+              active={location.pathname === "/admin/user"}
+            />
+            <SidebarOption
+              Icon={FaBuildingColumns}
+              title="Venue"
+              path="/admin/venue"
+              open={sidebarOpen}
+              active={location.pathname === "/admin/venue"}
+            />
+            <SidebarOption
+              Icon={GrUserAdmin}
+              title="Venue Owner"
+              path="/admin/owner"
+              open={sidebarOpen}
+              active={location.pathname === "/admin/owner"}
+            />
+          </div>
         </div>
 
-        {/* Menu */}
-        <div className="mt-6 flex flex-col gap-1">
+        {/* Bottom Section: Logout and Toggle Button */}
+        <div className="px-4 pb-4 border-t-0 pt-3 flex items-center justify-between">
           <SidebarOption
-            Icon={FiHome}
-            title="Dashboard"
-            path="/admin/dashboard"
-            open={open}
+            Icon={FiLogOut}
+            title="Logout"
+            open={sidebarOpen}
+            onClick={handleLogout}
           />
-          <SidebarOption
-            Icon={FiUser}
-            title="Users"
-            path="/admin/user"
-            open={open}
-          />
-          <SidebarOption
-            Icon={FaBuildingColumns}
-            title="Venue"
-            path="/admin/adminVenuePage"
-            open={open}
-          />
-          <SidebarOption
-            Icon={GrUserAdmin}
-            title="Venue Owner"
-            path="/admin/adminVenueOwner"
-            open={open}
-          />
+          <SidebarToggle open={sidebarOpen} setOpen={setSidebarOpen} />
         </div>
-      </div>
-
-      {/* Bottom: Logout + Toggle */}
-      <div className="px-4 pb-4 b- border-t-0 pt-3 flex items-center justify-between">
-        <SidebarOption
-          Icon={FiLogOut}
-          title="Logout"
-          path="#"
-          open={open}
-          onClick={() => {
-            logout();
-            navigate("/login");
-          }}
-        />
-        <SidebarToggle open={open} setOpen={setOpen} isMobile={isMobile} />
-      </div>
-    </nav>
+      </nav>
+    </>
   );
 };
 
