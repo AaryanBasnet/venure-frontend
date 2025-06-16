@@ -4,6 +4,8 @@ import MainLayout from "../layouts/MainLayout";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import GuestRoutes from "./GuestRoutes";
+import AdminUserRoute from "./AdminUserRoute";
+import AdminDashboard from "../pages/admin/AdminDashboard";
 
 export default function AppRouter() {
   return (
@@ -16,6 +18,13 @@ export default function AppRouter() {
         <Route element={<GuestRoutes />}>
           <Route path="/login" element={<LoginPage />}></Route>
           <Route path="/register" element={<RegisterPage />}></Route>
+        </Route>
+
+        {/* Admin Route */}
+        <Route path="/admin/*" element={<AdminUserRoute />}>
+        
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="*" element={<>Not found</>} />
         </Route>
       </Routes>
     </BrowserRouter>
