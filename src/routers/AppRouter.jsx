@@ -6,6 +6,7 @@ import RegisterPage from "../pages/RegisterPage";
 import GuestRoutes from "./GuestRoutes";
 import AdminUserRoute from "./AdminUserRoute";
 import AdminDashboard from "../pages/admin/AdminDashboard";
+import AdminSidebar from "../layouts/AdminSidebar";
 
 export default function AppRouter() {
   return (
@@ -21,10 +22,11 @@ export default function AppRouter() {
         </Route>
 
         {/* Admin Route */}
-        <Route path="/admin/*" element={<AdminUserRoute />}>
-        
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="*" element={<>Not found</>} />
+        <Route element={<AdminSidebar />}>
+          <Route path="/admin/*" element={<AdminUserRoute />}>
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="*" element={<>Not found</>} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
