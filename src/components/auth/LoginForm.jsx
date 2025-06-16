@@ -31,7 +31,7 @@ export default function LoginForm() {
       </h2>
       <form className="space-y-4" onSubmit={formik.handleSubmit}>
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-poppins  font-medium text-gray-700">
             Email address
           </label>
           <input
@@ -48,7 +48,7 @@ export default function LoginForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-poppins  font-medium text-gray-700">
             Password
           </label>
           <input
@@ -66,15 +66,20 @@ export default function LoginForm() {
           )}
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center font-poppins  justify-between">
           <label className="flex items-center text-sm">
             <input
               type="checkbox"
               className="form-checkbox h-4 w-4 text-indigo-600"
             />
-            <span className="ml-2 text-gray-700">Remember me</span>
+            <span className="ml-2 font-poppins  text-gray-700">
+              Remember me
+            </span>
           </label>
-          <a href="#" className="text-sm text-indigo-600 hover:underline">
+          <a
+            href="#"
+            className="text-sm font-poppins  text-indigo-600 hover:underline"
+          >
             Forgot password?
           </a>
         </div>
@@ -82,7 +87,7 @@ export default function LoginForm() {
         <button
           type="submit"
           disabled={isPending}
-          className={`w-full text-white py-2 rounded-md transition ${
+          className={`w-full text-white font-poppins  py-2 rounded-md transition ${
             isPending
               ? "bg-indigo-300 cursor-not-allowed"
               : "bg-indigo-600 hover:bg-indigo-700"

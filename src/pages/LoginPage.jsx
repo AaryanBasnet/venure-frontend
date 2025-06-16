@@ -6,7 +6,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   const eventChangePage = (event) => {
-    event.preventDefault(); 
+    event.preventDefault();
     navigate("/register");
   };
 
@@ -16,16 +16,17 @@ export default function LoginPage() {
         <div className="w-full md:w-1/2 p-8">
           {/* Logo */}
           <div className="mb-6">
-            <span className="text-3xl font-bold text-indigo-600">Venure</span>
+            <span className="text-3xl font-playfair font-bold text-indigo-600">
+              Venure
+            </span>
           </div>
 
-        
           <LoginForm />
 
-          <div className="my-10 text-sm text-center text-gray-600">
+          <div className="my-10 text-sm font-poppins  text-center text-gray-600">
             Don’t have an account?{" "}
             <button
-              className="text-blue-600 hover:underline"
+              className="text-blue-600 font-poppins  hover:underline"
               onClick={eventChangePage}
             >
               Sign up

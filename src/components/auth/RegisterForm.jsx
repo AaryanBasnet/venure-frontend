@@ -31,28 +31,28 @@ export default function RegisterForm() {
   });
 
   return (
-    <form onSubmit={formik.handleSubmit} className="space-y-4">
+    <form onSubmit={formik.handleSubmit} className="space-y-2">
       <div>
-        <label className="block font-medium">Name</label>
+        <label className="block font-poppins  font-medium">Name</label>
         <input
           type="text"
           name="name"
-          className="w-full border px-3 py-2 rounded"
+          className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
           value={formik.values.name}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />
         {formik.touched.name && formik.errors.name && (
-          <p className="text-red-600 text-sm">{formik.errors.name}</p>
+          <p className="text-red-600  text-sm">{formik.errors.name}</p>
         )}
       </div>
 
       <div>
-        <label className="block font-medium">Email</label>
+        <label className="block font-poppins  font-medium">Email</label>
         <input
           type="email"
           name="email"
-          className="w-full border px-3 py-2 rounded"
+          className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
           value={formik.values.email}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -63,11 +63,11 @@ export default function RegisterForm() {
       </div>
 
       <div>
-        <label className="block font-medium">Phone</label>
+        <label className="block font-poppins  font-medium">Phone</label>
         <input
           type="text"
           name="phone"
-          className="w-full border px-3 py-2 rounded"
+          className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
           value={formik.values.phone}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -78,11 +78,11 @@ export default function RegisterForm() {
       </div>
 
       <div>
-        <label className="block font-medium">Password</label>
+        <label className="block font-poppins  font-medium">Password</label>
         <input
           type="password"
           name="password"
-          className="w-full border px-3 py-2 rounded"
+          className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
           value={formik.values.password}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -95,7 +95,7 @@ export default function RegisterForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
+        className="w-full font-poppins  bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
       >
         {isPending ? "Registering..." : "Register"}
       </button>
