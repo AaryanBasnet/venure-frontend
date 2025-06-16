@@ -8,7 +8,7 @@ import {
   FiX,
 } from "react-icons/fi";
 import { MdBlock } from "react-icons/md";
-import SearchInput from "../../components/SearchInput"; // Import the new component
+import SearchInput from "../../components/common/SearchInput"; // Import the new component
 
 // --- MOCK VENUE OWNER DATA ---
 const initialOwners = [
