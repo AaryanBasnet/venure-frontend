@@ -11,6 +11,10 @@ import UnAuthorized from "../pages/UnAuthorized";
 import AdminUsersPage from "../pages/admin/AdminUsersPage";
 import AdminVenuePage from "../pages/admin/AdminVenuePage";
 import AdminVenueOwnerPage from "../pages/admin/AddVenueOwnerPage";
+import OwnerUserRoute from "./OwnerUserRoute";
+import OwnerLayout from "../layouts/OwnerLayout";
+import OwnerDashbaord from "../pages/venueOwner/OwnerDashbaord";
+import OwnerVenuePage from "../pages/venueOwner/OwnerVenuePage";
 // import AdminSidebar from "../layouts/AdminSidebar";
 
 export default function AppRouter() {
@@ -33,6 +37,17 @@ export default function AppRouter() {
             <Route path="/admin/user" element={<AdminUsersPage />} />
             <Route path="/admin/venue" element={<AdminVenuePage />} />
             <Route path="/admin/owner" element={<AdminVenueOwnerPage />} />
+            <Route path="*" element={<UnAuthorized />} />
+          </Route>
+        </Route>
+
+        {/* Owner Route */}
+        <Route element={<OwnerUserRoute />}>
+          <Route element={<OwnerLayout />}>
+            <Route path="/owner/dashboard" element={<OwnerDashbaord />} />
+            {/* <Route path="/admin/user" element={<AdminUsersPage />} /> */}
+            <Route path="/owner/venue" element={<OwnerVenuePage />} />
+            {/* <Route path="/admin/owner" element={<AdminVenueOwnerPage />} /> */}
             <Route path="*" element={<UnAuthorized />} />
           </Route>
         </Route>

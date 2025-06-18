@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import AdminSidebar from "./AdminSidebar";
+import OwnnerSidebar from "./OwnerSidebar";
+import OwnerSidebar from "./OwnerSidebar";
 
 const OwnerLayout = () => {
   // We still manage the state here, which is good practice.
@@ -18,7 +19,7 @@ const OwnerLayout = () => {
     <div className="flex h-screen bg-gray-50">
       {/* The sidebar's width will be controlled by its own state,
           and it will always be part of the flex layout. */}
-      <AdminSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <OwnerSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       {/* The main content area simply takes up the remaining space and handles its own scrolling. */}
       <main className="flex-1 overflow-y-auto">

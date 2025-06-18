@@ -10,7 +10,7 @@ import { FaBuildingColumns } from "react-icons/fa6";
 import { GrUserAdmin } from "react-icons/gr";
 import logo from "../assets/logo.png";
 
-// The component now accepts props from AdminLayout
+// The component now accepts props from ownerLayout
 const OwnerSidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -56,7 +56,7 @@ const OwnerSidebar = ({ sidebarOpen, setSidebarOpen }) => {
                 <h1 className="text-sm font-semibold text-gray-800 whitespace-nowrap">
                   {user?.name || "Aaryan Basnet"}
                 </h1>
-                <p className="text-xs text-gray-500 whitespace-nowrap">Admin</p>
+                <p className="text-xs text-gray-500 whitespace-nowrap">{user.role}</p>
               </div>
             )}
           </div>
@@ -66,30 +66,30 @@ const OwnerSidebar = ({ sidebarOpen, setSidebarOpen }) => {
             <SidebarOption
               Icon={FiHome}
               title="Dashboard"
-              path="/admin/dashboard"
+              path="/owner/dashboard"
               open={sidebarOpen}
-              active={location.pathname === "/admin/dashboard"}
+              active={location.pathname === "/owner/dashboard"}
             />
             <SidebarOption
               Icon={FiUser}
               title="Users"
-              path="/admin/user"
+              path="/owner/user"
               open={sidebarOpen}
-              active={location.pathname === "/admin/user"}
+              active={location.pathname === "/owner/user"}
             />
             <SidebarOption
               Icon={FaBuildingColumns}
               title="Venue"
-              path="/admin/venue"
+              path="/owner/venue"
               open={sidebarOpen}
-              active={location.pathname === "/admin/venue"}
+              active={location.pathname === "/owner/venue"}
             />
             <SidebarOption
               Icon={GrUserAdmin}
               title="Venue Owner"
-              path="/admin/owner"
+              path="/owner/owner"
               open={sidebarOpen}
-              active={location.pathname === "/admin/owner"}
+              active={location.pathname === "/owner/owner"}
             />
           </div>
         </div>
