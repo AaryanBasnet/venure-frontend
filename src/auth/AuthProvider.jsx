@@ -1,4 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
+
 export const AuthContext = createContext();
 
 const AuthContextProvider = ({ children }) => {
@@ -6,13 +7,19 @@ const AuthContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const login = (userData, token) => {
-    console.log(userData)
     setLoading(true);
-    localStorage.setItem("user", JSON.stringify(userData));
+
+    const normalizedUser = {
+      ...userData,
+      _id: userData._id || userData.id,
+    };
+
+    localStorage.setItem("user", JSON.stringify(normalizedUser));
     localStorage.setItem("token", token);
-    setUser(userData);
+    setUser(normalizedUser);
     setLoading(false);
   };
+
   const logout = () => {
     setLoading(true);
     localStorage.removeItem("user");
@@ -20,26 +27,31 @@ const AuthContextProvider = ({ children }) => {
     setUser(null);
     setLoading(false);
   };
+
   useEffect(() => {
     setLoading(true);
     const token = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
-    console.log(token, storedUser);
 
     if (token && storedUser) {
       try {
-        setUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        const normalizedUser = {
+          ...parsedUser,
+          _id: parsedUser._id || parsedUser.id,
+        };
+        setUser(normalizedUser);
       } catch (error) {
         console.error("Failed to parse user from localStorage", error);
-        // If parsing fails, the stored data is corrupt. It's best to log out.
         logout();
       }
     } else {
-      // If there's no token or user, ensure they are logged out.
       logout();
     }
+
     setLoading(false);
   }, []);
+
   return (
     <AuthContext.Provider
       value={{ user, loading, login, logout, isAuthenticated: user !== null }}
