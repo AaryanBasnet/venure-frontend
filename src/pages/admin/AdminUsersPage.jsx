@@ -3,11 +3,13 @@ import { FiPlus, FiAlertTriangle } from "react-icons/fi";
 import SearchInput from "../../components/common/SearchInput";
 import { useAdminUser } from "../../hooks/admin/useAdminUser";
 import UserTable from "../../components/admin/UserTable";
+import { useDeleteUser } from "../../hooks/admin/useDeleteUser";
 
 const AdminUsersPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [openActionMenu, setOpenActionMenu] = useState(null);
   const [userToDelete, setUserToDelete] = useState(null);
+  const { mutate: deleteUser } = useDeleteUser();
 
   const [page, setPage] = useState(1);
   const limit = 5;
@@ -38,8 +40,10 @@ const AdminUsersPage = () => {
   };
 
   const confirmDeleteUser = () => {
-    console.log("Deleting user:", userToDelete.name);
-    setUserToDelete(null);
+    if (userToDelete?._id) {
+      deleteUser(userToDelete._id);
+      setUserToDelete(null);
+    }
   };
 
   const handlePrev = () => {
@@ -87,7 +91,9 @@ const AdminUsersPage = () => {
   return (
     <div className="p-4 sm:p-6 bg-gray-50 min-h-screen font-poppins">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h1 className="text-3xl font-extrabold text-gray-900">User Management</h1>
+        <h1 className="text-3xl font-extrabold text-gray-900">
+          User Management
+        </h1>
         <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3">
           <SearchInput
             value={searchQuery}
@@ -113,9 +119,12 @@ const AdminUsersPage = () => {
       {/* Pagination Controls */}
       <div className="mt-8 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
         <span className="text-gray-700 text-sm sm:text-base">
-          Showing <span className="font-semibold">{(page - 1) * limit + 1}</span> to{" "}
-          <span className="font-semibold">{Math.min(page * limit, totalUsers)}</span> of{" "}
-          <span className="font-semibold">{totalUsers}</span> users
+          Showing{" "}
+          <span className="font-semibold">{(page - 1) * limit + 1}</span> to{" "}
+          <span className="font-semibold">
+            {Math.min(page * limit, totalUsers)}
+          </span>{" "}
+          of <span className="font-semibold">{totalUsers}</span> users
         </span>
         <div className="flex items-center space-x-2">
           <button
@@ -145,11 +154,13 @@ const AdminUsersPage = () => {
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-5">
               <FiAlertTriangle className="h-8 w-8 text-red-600" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">Confirm Deletion</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-3">
+              Confirm Deletion
+            </h3>
             <p className="mt-2 text-md text-gray-600 leading-relaxed">
               Are you sure you want to delete{" "}
-              <strong className="text-red-700">{userToDelete.name}</strong>? This action
-              is permanent and cannot be undone.
+              <strong className="text-red-700">{userToDelete.name}</strong>?
+              This action is permanent and cannot be undone.
             </p>
             <div className="mt-8 flex justify-center space-x-4">
               <button

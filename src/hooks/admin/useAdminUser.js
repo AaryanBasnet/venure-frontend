@@ -7,4 +7,6 @@ export const useAdminUser = (page, limit = 5) => {
     queryFn: () => getAllUserService({ page, limit }),
     keepPreviousData: true,
   });
+
+  
 };
