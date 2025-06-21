@@ -1,61 +1,71 @@
-import { createVenue, uploadVenueImages, getVenuesByOwner, updateVenue } from "../../api/owner/venueApi";
+// services/venueService.js
 
+import {
+  createVenue,
+  uploadVenueImages,
+  getVenuesByOwner,
+  updateVenue,
+} from "../../api/owner/venueApi";
+
+// CREATE Venue
 export const addVenueService = async ({ form, amenities, images, ownerId }) => {
-  // Step 1: Prepare venue data without images
-  const venueData = {
-    ...form,
-    ownerId,
-    amenities,
-  };
+  const venueData = {
+    ...form,
+    ownerId,
+    amenities,
+    location: {
+      address: form.address,
+      city: form.city,
+      state: form.state,
+      country: form.country,
+    },
+  };
 
-  // Create venue (without images)
-  const createResponse = await createVenue(venueData);
-  const newVenue = createResponse.data.data;
+  const createResponse = await createVenue(venueData);
+  const newVenue = createResponse.data.data;
 
-  if (!newVenue._id) {
-    throw new Error("Venue creation failed, no venue ID returned");
-  }
+  if (!newVenue._id) {
+    throw new Error("Venue creation failed, no venue ID returned");
+  }
 
-  // Step 2: If images are provided, upload them
-  if (images && images.length > 0) {
-    const formData = new FormData();
-    images.forEach((file) => formData.append("venueImages", file));
+  if (images?.length > 0) {
+    const formData = new FormData();
+    images.forEach((file) => formData.append("venueImages", file));
+    await uploadVenueImages(newVenue._id, formData);
+  }
 
-    // Upload images with venue ID
-    await uploadVenueImages(newVenue._id, formData);
-
-    // Optionally, you might want to fetch updated venue data here
-  }
-
-  return createResponse.data;
+  return createResponse.data;
 };
 
+// GET Venues by Owner
 export const fetchVenuesByOwnerService = async (ownerId) => {
-  if (!ownerId) throw new Error("Owner ID is required");
-
-  const response = await getVenuesByOwner(ownerId);
-  // Backend returns { success, data: venuesArray }
-  return response.data.data;
+  if (!ownerId) throw new Error("Owner ID is required");
+  const response = await getVenuesByOwner(ownerId);
+  return response.data.data;
 };
 
-
+// UPDATE Venue
 export const updateVenueService = async ({ venueId, updatedData, newImages }) => {
-  const formData = new FormData();
+  const formData = new FormData();
 
-  // Append updated fields (like name, price, location, etc.)
-  Object.entries(updatedData).forEach(([key, value]) => {
-    if (typeof value === "object" && value !== null) {
-      formData.append(key, JSON.stringify(value));
-    } else {
-      formData.append(key, value);
-    }
-  });
+  // Convert location to JSON string
+  formData.append("location", JSON.stringify({
+    address: updatedData.address || "",
+    city: updatedData.city || "",
+    state: updatedData.state || "",
+    country: updatedData.country || "",
+  }));
 
-  // Append new images if any
-  if (newImages && newImages.length > 0) {
-    newImages.forEach((file) => formData.append("venueImages", file));
-  }
+  Object.entries(updatedData).forEach(([key, value]) => {
+    if (!["address", "city", "state", "country", "location"].includes(key)) {
+      formData.append(key, typeof value === "object" ? JSON.stringify(value) : value);
+    }
+  });
 
-  const response = await updateVenue(venueId, formData);
-  return response.data;
+  if (newImages?.length > 0) {
+    newImages.forEach((file) => formData.append("venueImages", file));
+  }
+
+  const response = await updateVenue(venueId, formData);
+  return response.data;
 };

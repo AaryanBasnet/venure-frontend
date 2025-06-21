@@ -4,7 +4,7 @@ import AddVenueModal from "../../components/modal/AddVenueModal";
 import VenueCard from "../../components/common/VenueCard";
 import VenueRegisterForm from "../../components/owner/venueRegistrationForm";
 import { useVenuesByOwner } from "../../hooks/owner/useVenuesByOwner";
-
+import { deleteVenue } from "../../api/owner/venueApi";
 import { sanitizeVenue } from "../../utils/sanitizeVenue";
 
 const SearchAndFilter = ({ onSearchChange, onStatusChange, onCityChange }) => {
@@ -14,7 +14,6 @@ const SearchAndFilter = ({ onSearchChange, onStatusChange, onCityChange }) => {
 const OwnerVenuePage = () => {
   const { user } = useContext(AuthContext); // get user from context
 
-  console.log("User from AuthContext:", user);
 
   const {
     data: venues = [],
@@ -28,6 +27,7 @@ const OwnerVenuePage = () => {
   const [filterCity, setFilterCity] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editVenue, setEditVenue] = useState(null); // New
+  const [deletingVenueId, setDeletingVenueId] = useState(null); // to track deleting state
 
   const handleAddVenueSuccess = (newVenue) => {
     setIsModalOpen(false);
@@ -37,6 +37,24 @@ const OwnerVenuePage = () => {
   const openEditModal = (venue) => {
     setEditVenue(venue);
     setIsModalOpen(true);
+  };
+
+  const handleDeleteVenue = async (venueId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this venue?"
+    );
+    if (!confirmed) return;
+
+    setDeletingVenueId(venueId);
+    try {
+      await deleteVenue(venueId);
+      refetch(); // Refresh list after deletion
+    } catch (error) {
+      console.error("Failed to delete venue:", error);
+      alert("Failed to delete venue. Please try again.");
+    } finally {
+      setDeletingVenueId(null);
+    }
   };
 
   // For now, skip filtering logic and just show venues
@@ -80,6 +98,8 @@ const OwnerVenuePage = () => {
                 key={venue._id}
                 venue={venue}
                 onEdit={openEditModal}
+                onDelete={() => handleDeleteVenue(venue._id)}
+                isDeleting={deletingVenueId === venue._id}
               />
             );
           })}

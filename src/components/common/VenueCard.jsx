@@ -21,15 +21,15 @@ const Button = ({ children, onClick, className = "", ...props }) => {
   );
 };
 
-const VenueCard = ({ venue, onEdit }) => {
+const VenueCard = ({ venue, onEdit, onDelete, isDeleting }) => {
   const {
     venueName,
     rating,
     status,
     description,
     location,
-    guests,
-    price,
+    capacity,
+    pricePerHour,
     amenities,
     bookings,
     venueImages,
@@ -87,10 +87,10 @@ const VenueCard = ({ venue, onEdit }) => {
               .join(", ")}
           </div>
           <div className="flex items-center text-gray-500 text-sm mb-3">
-            <FaUserFriends className="mr-1" /> {guests} guests
+            <FaUserFriends className="mr-1" /> {capacity} capacity
           </div>
           <div className="text-purple-600 font-semibold text-lg mb-4">
-            ₹{price}
+            Nrs.{pricePerHour}/hour
           </div>
           <div className="flex flex-wrap gap-2 mb-4">
             {amenities.slice(0, 3).map((amenity, index) => (
@@ -120,9 +120,17 @@ const VenueCard = ({ venue, onEdit }) => {
             >
               <FaEdit />
             </Button>
-            <Button className="text-red-500 hover:text-red-700 p-1">
+            <Button
+            className="text-red-500 hover:text-red-700 p-1 flex items-center"
+            onClick={onDelete}
+            disabled={isDeleting}
+          >
+            {isDeleting ? (
+              <span className="animate-spin loader-border loader-border-white w-4 h-4 rounded-full mr-1" />
+            ) : (
               <FaTrash />
-            </Button>
+            )}
+          </Button>
           </div>
         </div>
       </div>
