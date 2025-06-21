@@ -11,92 +11,13 @@ import {
 } from "react-icons/fi";
 import { FaWifi, FaParking, FaSwimmingPool } from "react-icons/fa";
 import { MdOutlineLocalBar } from "react-icons/md";
-import SearchInput from "../../components/common/SearchInput"; // Import the new component
+import SearchInput from "../../components/common/SearchInput";
+import { useGetVenues } from "../../hooks/admin/useGetVenues";
 
-// --- MOCK DATA ---
-const initialVenues = [
-  {
-    _id: "64a5f4f8e6b3c2a4a8d4b8b1",
-    owner: { name: "Alice Johnson" },
-    venueName: "The Grand Hall",
-    location: {
-      address: "123 Main St",
-      city: "Metropolis",
-      state: "NY",
-      country: "USA",
-    },
-    capacity: 250,
-    venueImages: [
-      { url: "https://placehold.co/600x400/a3e635/ffffff?text=Venue+1" },
-      { url: "https://placehold.co/600x400/6ee7b7/ffffff?text=View+2" },
-    ],
-    description: "A luxurious hall perfect for weddings and corporate events.",
-    amenities: ["WiFi", "Parking", "AC", "Bar"],
-    pricePerHour: 200,
-    status: "pending",
-    createdAt: new Date("2023-09-15T10:00:00Z"),
-  },
-  {
-    _id: "64a5f4f8e6b3c2a4a8d4b8b2",
-    owner: { name: "Bob Williams" },
-    venueName: "Sunset Terrace",
-    location: {
-      address: "456 Ocean Dr",
-      city: "Vice City",
-      state: "FL",
-      country: "USA",
-    },
-    capacity: 100,
-    venueImages: [
-      { url: "https://placehold.co/600x400/fb923c/ffffff?text=Venue+2" },
-    ],
-    description: "A beautiful outdoor terrace with stunning ocean views.",
-    amenities: ["WiFi", "Pool", "Bar"],
-    pricePerHour: 150,
-    status: "approved",
-    createdAt: new Date("2023-09-14T14:30:00Z"),
-  },
-  {
-    _id: "64a5f4f8e6b3c2a4a8d4b8b3",
-    owner: { name: "Charlie Brown" },
-    venueName: "The Warehouse Loft",
-    location: {
-      address: "789 Industrial Way",
-      city: "Liberty City",
-      state: "CA",
-      country: "USA",
-    },
-    capacity: 300,
-    venueImages: [
-      { url: "https://placehold.co/600x400/f87171/ffffff?text=Venue+3" },
-    ],
-    description: "A rustic, industrial-style loft for unique events.",
-    amenities: ["Parking", "AC"],
-    pricePerHour: 180,
-    status: "rejected",
-    createdAt: new Date("2023-09-12T09:00:00Z"),
-  },
-  {
-    _id: "64a5f4f8e6b3c2a4a8d4b8b4",
-    owner: { name: "Diana Prince" },
-    venueName: "Lakeside Retreat",
-    location: {
-      address: "101 Lakeview Rd",
-      city: "Smallville",
-      state: "KS",
-      country: "USA",
-    },
-    capacity: 50,
-    venueImages: [
-      { url: "https://placehold.co/600x400/60a5fa/ffffff?text=Venue+4" },
-    ],
-    description: "A quiet and serene retreat by the lake.",
-    amenities: ["WiFi", "Parking"],
-    pricePerHour: 80,
-    status: "pending",
-    createdAt: new Date("2023-09-16T11:00:00Z"),
-  },
-];
+const backendBaseUrl = "http://localhost:5050/";
+
+const getImageUrl = (path) =>
+  path ? backendBaseUrl + path.replace(/^\/+/, "") : "";
 
 const amenityIcons = {
   WiFi: <FaWifi />,
@@ -107,16 +28,22 @@ const amenityIcons = {
 };
 
 const AdminVenuePage = () => {
-  const [venues, setVenues] = useState(initialVenues);
   const [activeTab, setActiveTab] = useState("pending");
-  const [searchQuery, setSearchQuery] = useState(""); // State for search
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  const { data: venues = [], isLoading, isError, error } = useGetVenues();
+
+  // Filter out venues missing essential data like location or venueName
   const filteredVenues = useMemo(() => {
-    let venuesByTab = venues;
+    const validVenues = (venues || []).filter(
+      (v) => v.venueName && v.location
+    );
+
+    let venuesByTab = validVenues;
     if (activeTab !== "all") {
-      venuesByTab = venues.filter((venue) => venue.status === activeTab);
+      venuesByTab = validVenues.filter((venue) => venue.status === activeTab);
     }
 
     if (!searchQuery) return venuesByTab;
@@ -124,14 +51,14 @@ const AdminVenuePage = () => {
     return venuesByTab.filter(
       (venue) =>
         venue.venueName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        venue.location.city.toLowerCase().includes(searchQuery.toLowerCase())
+        venue.location?.city?.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [activeTab, venues, searchQuery]);
 
   const handleStatusChange = (venueId, newStatus) => {
-    setVenues(
-      venues.map((v) => (v._id === venueId ? { ...v, status: newStatus } : v))
-    );
+    // Update locally for now; integrate mutation later
+    // If you want to update the API, add mutation logic here
+    // For demo, just closing modal
     setSelectedVenue(null);
   };
 
@@ -190,6 +117,24 @@ const AdminVenuePage = () => {
         ))}
       </div>
 
+      {isLoading && (
+        <div className="text-center py-12 text-blue-600 font-semibold">
+          Loading venues...
+        </div>
+      )}
+
+      {isError && (
+        <div className="text-center py-12 text-red-600 font-semibold">
+          Error loading venues: {error?.message}
+        </div>
+      )}
+
+      {!isLoading && filteredVenues.length === 0 && (
+        <div className="text-center py-12 text-gray-500">
+          No venues found matching your criteria.
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredVenues.map((venue) => (
           <div
@@ -197,7 +142,11 @@ const AdminVenuePage = () => {
             className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
           >
             <img
-              src={venue.venueImages[0].url}
+              src={
+                venue.venueImages && venue.venueImages.length > 0
+                  ? getImageUrl(venue.venueImages[0].url)
+                  : "https://via.placeholder.com/600x400?text=Venue+Image"
+              }
               alt={venue.venueName}
               className="w-full h-48 object-cover"
             />
@@ -207,7 +156,9 @@ const AdminVenuePage = () => {
                   <h2 className="text-xl font-bold text-gray-800">
                     {venue.venueName}
                   </h2>
-                  <p className="text-sm text-gray-500">by {venue.owner.name}</p>
+                  <p className="text-sm text-gray-500">
+                    by {venue.owner?.name || "Unknown Owner"}
+                  </p>
                 </div>
                 <div
                   className={`flex items-center gap-2 text-xs font-semibold px-2 py-1 rounded-full bg-${statusConfig[
@@ -221,10 +172,14 @@ const AdminVenuePage = () => {
                 </div>
               </div>
               <p className="text-sm text-gray-600 mt-2 flex items-center gap-2">
-                <FiMapPin /> {venue.location.city}, {venue.location.state}
+                <FiMapPin /> {venue.location?.city || "Unknown City"},{" "}
+                {venue.location?.state || "Unknown State"}
               </p>
               <p className="text-xs text-gray-400 mt-2">
-                Submitted: {new Date(venue.createdAt).toLocaleDateString()}
+                Submitted:{" "}
+                {venue.createdAt
+                  ? new Date(venue.createdAt).toLocaleDateString()
+                  : "N/A"}
               </p>
               <button
                 onClick={() => openModal(venue)}
@@ -235,13 +190,6 @@ const AdminVenuePage = () => {
             </div>
           </div>
         ))}
-        {filteredVenues.length === 0 && (
-          <div className="col-span-full text-center py-12">
-            <p className="text-gray-500">
-              No venues found matching your criteria.
-            </p>
-          </div>
-        )}
       </div>
 
       {selectedVenue && (
@@ -255,7 +203,14 @@ const AdminVenuePage = () => {
           >
             <div className="w-full md:w-1/2 relative bg-gray-100">
               <img
-                src={selectedVenue.venueImages[currentImageIndex].url}
+                src={
+                  selectedVenue.venueImages &&
+                  selectedVenue.venueImages.length > 0
+                    ? getImageUrl(
+                        selectedVenue.venueImages[currentImageIndex].url
+                      )
+                    : "https://via.placeholder.com/600x400?text=Venue+Image"
+                }
                 alt="Venue"
                 className="w-full h-64 md:h-full object-cover"
               />
@@ -297,10 +252,10 @@ const AdminVenuePage = () => {
                   {selectedVenue.venueName}
                 </h2>
                 <p className="text-sm text-gray-500 mb-4">
-                  by {selectedVenue.owner.name}
+                  by {selectedVenue.owner?.name || "Unknown Owner"}
                 </p>
                 <p className="text-gray-700 mb-6">
-                  {selectedVenue.description}
+                  {selectedVenue.description || "No description"}
                 </p>
                 <div className="grid grid-cols-2 gap-4 text-sm mb-6">
                   <div className="flex items-center gap-2 text-gray-600">
@@ -308,8 +263,8 @@ const AdminVenuePage = () => {
                     <div>
                       <strong>Location</strong>
                       <p>
-                        {selectedVenue.location.address},{" "}
-                        {selectedVenue.location.city}
+                        {selectedVenue.location?.address || "Unknown Address"},{" "}
+                        {selectedVenue.location?.city || "Unknown City"}
                       </p>
                     </div>
                   </div>
@@ -317,28 +272,38 @@ const AdminVenuePage = () => {
                     <FiUsers size={20} className="text-blue-500" />{" "}
                     <div>
                       <strong>Capacity</strong>
-                      <p>{selectedVenue.capacity} people</p>
+                      <p>{selectedVenue.capacity || "N/A"} people</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 text-gray-600">
                     <FiDollarSign size={20} className="text-blue-500" />{" "}
                     <div>
                       <strong>Price</strong>
-                      <p>${selectedVenue.pricePerHour}/hour</p>
+                      <p>
+                        $
+                        {selectedVenue.pricePerHour !== undefined
+                          ? selectedVenue.pricePerHour
+                          : "N/A"}
+                        /hour
+                      </p>
                     </div>
                   </div>
                 </div>
                 <h3 className="font-semibold text-gray-800 mb-2">Amenities</h3>
                 <div className="flex flex-wrap gap-4 mb-6">
-                  {selectedVenue.amenities.map((amenity) => (
-                    <div
-                      key={amenity}
-                      className="flex items-center gap-2 text-gray-700 bg-gray-100 px-3 py-1 rounded-full text-sm"
-                    >
-                      {amenityIcons[amenity] || amenity}
-                      <span className="ml-1">{amenity}</span>
-                    </div>
-                  ))}
+                  {selectedVenue.amenities && selectedVenue.amenities.length > 0 ? (
+                    selectedVenue.amenities.map((amenity) => (
+                      <div
+                        key={amenity}
+                        className="flex items-center gap-2 text-gray-700 bg-gray-100 px-3 py-1 rounded-full text-sm"
+                      >
+                        {amenityIcons[amenity] || amenity}
+                        <span className="ml-1">{amenity}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-500">No amenities listed</p>
+                  )}
                 </div>
               </div>
               {selectedVenue.status === "pending" && (
