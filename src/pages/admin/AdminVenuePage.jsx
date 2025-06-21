@@ -13,6 +13,8 @@ import { FaWifi, FaParking, FaSwimmingPool } from "react-icons/fa";
 import { MdOutlineLocalBar } from "react-icons/md";
 import SearchInput from "../../components/common/SearchInput";
 import { useGetVenues } from "../../hooks/admin/useGetVenues";
+import { useChangeVenueStatus } from "../../hooks/admin/useChangeVenueStatus";
+import { toast } from "react-toastify";
 
 const backendBaseUrl = "http://localhost:5050/";
 
@@ -27,6 +29,19 @@ const amenityIcons = {
   AC: <span className="font-bold text-xs">AC</span>,
 };
 
+// Fixed status background and text colors for Tailwind (no dynamic classes)
+const statusColors = {
+  pending: "bg-yellow-100 text-yellow-500",
+  approved: "bg-green-100 text-green-500",
+  rejected: "bg-red-100 text-red-500",
+};
+
+const statusConfig = {
+  pending: { text: "Pending", Icon: FiClock },
+  approved: { text: "Approved", Icon: FiCheck },
+  rejected: { text: "Rejected", Icon: FiX },
+};
+
 const AdminVenuePage = () => {
   const [activeTab, setActiveTab] = useState("pending");
   const [searchQuery, setSearchQuery] = useState("");
@@ -34,12 +49,11 @@ const AdminVenuePage = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const { data: venues = [], isLoading, isError, error } = useGetVenues();
+  const changeStatusMutation = useChangeVenueStatus();
 
   // Filter out venues missing essential data like location or venueName
   const filteredVenues = useMemo(() => {
-    const validVenues = (venues || []).filter(
-      (v) => v.venueName && v.location
-    );
+    const validVenues = (venues || []).filter((v) => v.venueName && v.location);
 
     let venuesByTab = validVenues;
     if (activeTab !== "all") {
@@ -54,12 +68,19 @@ const AdminVenuePage = () => {
         venue.location?.city?.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [activeTab, venues, searchQuery]);
-
-  const handleStatusChange = (venueId, newStatus) => {
-    // Update locally for now; integrate mutation later
-    // If you want to update the API, add mutation logic here
-    // For demo, just closing modal
-    setSelectedVenue(null);
+  const handleStatusChange = (venueId, status) => {
+    changeStatusMutation.mutate(
+      { venueId, status },
+      {
+        onSuccess: () => {
+          toast.success(`Venue ${status} successfully.`);
+          setSelectedVenue(null);
+        },
+        onError: (error) => {
+          toast.error("Update failed: " + error.message);
+        },
+      }
+    );
   };
 
   const openModal = (venue) => {
@@ -84,11 +105,6 @@ const AdminVenuePage = () => {
   };
 
   const tabs = ["pending", "approved", "rejected", "all"];
-  const statusConfig = {
-    pending: { color: "yellow-500", text: "Pending", Icon: FiClock },
-    approved: { color: "green-500", text: "Approved", Icon: FiCheck },
-    rejected: { color: "red-500", text: "Rejected", Icon: FiX },
-  };
 
   return (
     <div className="p-4 sm:p-6 bg-gray-50 min-h-screen font-poppins">
@@ -161,10 +177,8 @@ const AdminVenuePage = () => {
                   </p>
                 </div>
                 <div
-                  className={`flex items-center gap-2 text-xs font-semibold px-2 py-1 rounded-full bg-${statusConfig[
-                    venue.status
-                  ].color.replace("-500", "-100")} text-${
-                    statusConfig[venue.status].color
+                  className={`flex items-center gap-2 text-xs font-semibold px-2 py-1 rounded-full ${
+                    statusColors[venue.status]
                   }`}
                 >
                   {React.createElement(statusConfig[venue.status].Icon)}
@@ -240,11 +254,9 @@ const AdminVenuePage = () => {
             <div className="w-full md:w-1/2 p-6 flex flex-col overflow-y-auto">
               <div className="flex-grow">
                 <span
-                  className={`text-xs font-semibold px-2 py-1 rounded-full bg-${statusConfig[
-                    selectedVenue.status
-                  ].color.replace("-500", "-100")} text-${
-                    statusConfig[selectedVenue.status].color
-                  } inline-block`}
+                  className={`text-xs font-semibold px-2 py-1 rounded-full inline-block ${
+                    statusColors[selectedVenue.status]
+                  }`}
                 >
                   {statusConfig[selectedVenue.status].text}
                 </span>
@@ -291,7 +303,8 @@ const AdminVenuePage = () => {
                 </div>
                 <h3 className="font-semibold text-gray-800 mb-2">Amenities</h3>
                 <div className="flex flex-wrap gap-4 mb-6">
-                  {selectedVenue.amenities && selectedVenue.amenities.length > 0 ? (
+                  {selectedVenue.amenities &&
+                  selectedVenue.amenities.length > 0 ? (
                     selectedVenue.amenities.map((amenity) => (
                       <div
                         key={amenity}
@@ -309,18 +322,28 @@ const AdminVenuePage = () => {
               {selectedVenue.status === "pending" && (
                 <div className="mt-auto pt-6 border-t flex gap-4">
                   <button
+                    disabled={changeStatusMutation.isLoading}
                     onClick={() =>
                       handleStatusChange(selectedVenue._id, "approved")
                     }
-                    className="flex-1 flex items-center justify-center gap-2 bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition-colors"
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-semibold transition-colors ${
+                      changeStatusMutation.isLoading
+                        ? "bg-green-300 cursor-not-allowed"
+                        : "bg-green-500 text-white hover:bg-green-600"
+                    }`}
                   >
                     <FiCheck /> Approve
                   </button>
                   <button
+                    disabled={changeStatusMutation.isLoading}
                     onClick={() =>
                       handleStatusChange(selectedVenue._id, "rejected")
                     }
-                    className="flex-1 flex items-center justify-center gap-2 bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition-colors"
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-semibold transition-colors ${
+                      changeStatusMutation.isLoading
+                        ? "bg-red-300 cursor-not-allowed"
+                        : "bg-red-500 text-white hover:bg-red-600"
+                    }`}
                   >
                     <FiX /> Reject
                   </button>
