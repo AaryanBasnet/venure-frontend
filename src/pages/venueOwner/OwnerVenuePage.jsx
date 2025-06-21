@@ -1,16 +1,18 @@
 import React, { useState, useContext } from "react";
-import { AuthContext } from "../../auth/AuthProvider";  // import AuthContext
+import { AuthContext } from "../../auth/AuthProvider"; // import AuthContext
 import AddVenueModal from "../../components/modal/AddVenueModal";
 import VenueCard from "../../components/common/VenueCard";
 import VenueRegisterForm from "../../components/owner/venueRegistrationForm";
 import { useVenuesByOwner } from "../../hooks/owner/useVenuesByOwner";
+
+import { sanitizeVenue } from "../../utils/sanitizeVenue";
 
 const SearchAndFilter = ({ onSearchChange, onStatusChange, onCityChange }) => {
   // ... your SearchAndFilter code here
 };
 
 const OwnerVenuePage = () => {
-  const { user } = useContext(AuthContext);  // get user from context
+  const { user } = useContext(AuthContext); // get user from context
 
   console.log("User from AuthContext:", user);
 
@@ -25,10 +27,16 @@ const OwnerVenuePage = () => {
   const [filterStatus, setFilterStatus] = useState("");
   const [filterCity, setFilterCity] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editVenue, setEditVenue] = useState(null); // New
 
   const handleAddVenueSuccess = (newVenue) => {
     setIsModalOpen(false);
     refetch();
+  };
+
+  const openEditModal = (venue) => {
+    setEditVenue(venue);
+    setIsModalOpen(true);
   };
 
   // For now, skip filtering logic and just show venues
@@ -65,14 +73,30 @@ const OwnerVenuePage = () => {
         </p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {venues.map((venue) => (
-            <VenueCard key={venue._id} venue={venue} />
-          ))}
+          {venues.map((rawVenue) => {
+            const venue = sanitizeVenue(rawVenue);
+            return (
+              <VenueCard
+                key={venue._id}
+                venue={venue}
+                onEdit={openEditModal}
+              />
+            );
+          })}
         </div>
       )}
-
-      <AddVenueModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <VenueRegisterForm onSuccess={handleAddVenueSuccess} />
+      <AddVenueModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditVenue(null);
+        }}
+      >
+        <VenueRegisterForm
+          onSuccess={handleAddVenueSuccess}
+          mode={editVenue ? "edit" : "create"} // <-- THIS MUST BE CORRECT
+          initialData={editVenue}
+        />
       </AddVenueModal>
     </div>
   );

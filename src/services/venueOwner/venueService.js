@@ -1,4 +1,4 @@
-import { createVenue, uploadVenueImages, getVenuesByOwner } from "../../api/owner/venueApi";
+import { createVenue, uploadVenueImages, getVenuesByOwner, updateVenue } from "../../api/owner/venueApi";
 
 export const addVenueService = async ({ form, amenities, images, ownerId }) => {
   // Step 1: Prepare venue data without images
@@ -36,4 +36,26 @@ export const fetchVenuesByOwnerService = async (ownerId) => {
   const response = await getVenuesByOwner(ownerId);
   // Backend returns { success, data: venuesArray }
   return response.data.data;
+};
+
+
+export const updateVenueService = async ({ venueId, updatedData, newImages }) => {
+  const formData = new FormData();
+
+  // Append updated fields (like name, price, location, etc.)
+  Object.entries(updatedData).forEach(([key, value]) => {
+    if (typeof value === "object" && value !== null) {
+      formData.append(key, JSON.stringify(value));
+    } else {
+      formData.append(key, value);
+    }
+  });
+
+  // Append new images if any
+  if (newImages && newImages.length > 0) {
+    newImages.forEach((file) => formData.append("venueImages", file));
+  }
+
+  const response = await updateVenue(venueId, formData);
+  return response.data;
 };

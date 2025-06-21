@@ -1,31 +1,60 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import useAddVenue from "../../hooks/owner/useAddVenue";
+import { createVenue, updateVenue } from "../../api/owner/venueApi";
 import { AuthContext } from "../../auth/AuthProvider";
 
-const amenitiesOptions = ["WiFi", "Parking", "AC", "Music", "Catering", "Stage"];
+const amenitiesOptions = [
+  "WiFi",
+  "Parking",
+  "AC",
+  "Music",
+  "Catering",
+  "Stage",
+];
 
-export default function VenueRegisterForm({ onSuccess }) {
+export default function VenueRegisterForm({
+  onSuccess,
+  mode = "create",
+  initialData = null,
+}) {
   const { user } = useContext(AuthContext);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [venueImages, setVenueImages] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
-
-  const createVenue = useAddVenue();
+  const [existingVenueImages, setExistingVenueImages] = useState([]); // from backend URLs
+  // On edit mode, prefill amenities and preview images from initialData
+  useEffect(() => {
+    if (mode === "edit" && initialData) {
+      setSelectedAmenities(initialData.amenities || []);
+      if (initialData.venueImages && initialData.venueImages.length > 0) {
+        setExistingVenueImages(
+          initialData.venueImages.map((img) =>
+            img.url.startsWith("http")
+              ? img.url
+              : `http://localhost:5050${img.url}`
+          )
+        );
+      } else {
+        setExistingVenueImages([]);
+      }
+    } else {
+      setSelectedAmenities([]);
+      setExistingVenueImages([]);
+    }
+  }, [mode, initialData]);
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      venueName: "",
-      capacity: "",
-      pricePerHour: "",
-      description: "",
-      address: "",
-      city: "",
-      state: "",
-      country: "",
-    //   lat: "",
-    //   lng: "",
+      venueName: initialData?.venueName || "",
+      capacity: initialData?.capacity || "",
+      pricePerHour: initialData?.pricePerHour || "",
+      description: initialData?.description || "",
+      address: initialData?.location?.address || "",
+      city: initialData?.location?.city || "",
+      state: initialData?.location?.state || "",
+      country: initialData?.location?.country || "",
     },
     validationSchema: Yup.object({
       venueName: Yup.string().required("Required"),
@@ -36,32 +65,70 @@ export default function VenueRegisterForm({ onSuccess }) {
       city: Yup.string().required("Required"),
       state: Yup.string().required("Required"),
       country: Yup.string().required("Required"),
-    //   lat: Yup.string().required("Required"),
-    //   lng: Yup.string().required("Required"),
     }),
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: async (values, { resetForm }) => {
       if (!user || !user._id) {
         console.error("User is not available");
         return;
       }
 
-      createVenue.mutate(
-        {
-          form: values,
-          amenities: selectedAmenities,
-          images: venueImages,
-          ownerId: user._id || user.id,
-        },
-        {
-          onSuccess: (res) => {
-            resetForm();
-            setVenueImages([]);
-            setSelectedAmenities([]);
-            setPreviewImages([]);
-            onSuccess?.(res.data);
-          },
+      try {
+        if (mode === "edit" && initialData?._id) {
+          const formData = new FormData();
+
+          // Append form fields
+          formData.append("venueName", values.venueName);
+          formData.append("capacity", values.capacity);
+          formData.append("pricePerHour", values.pricePerHour);
+          formData.append("description", values.description);
+          formData.append("address", values.address);
+          formData.append("city", values.city);
+          formData.append("state", values.state);
+          formData.append("country", values.country);
+
+          formData.append("amenities", JSON.stringify(selectedAmenities));
+
+          // Append new images only (if any)
+          venueImages.forEach((file) => {
+            formData.append("venueImages", file);
+          });
+
+          // Call update API
+          await updateVenue(initialData._id, formData);
+          onSuccess?.(values);
+          resetForm();
+          setVenueImages([]);
+          setSelectedAmenities([]);
+          setPreviewImages([]);
+        } else {
+          // CREATE mode
+          const venueData = {
+            ...values,
+            ownerId: user._id,
+            amenities: selectedAmenities,
+          };
+
+          const createRes = await createVenue(venueData);
+          const newVenue = createRes.data.data;
+
+          // Upload images if any
+          if (venueImages.length > 0 && newVenue._id) {
+            const imageForm = new FormData();
+            venueImages.forEach((file) =>
+              imageForm.append("venueImages", file)
+            );
+            await updateVenue(newVenue._id, imageForm); // or uploadVenueImages API if you want separate
+          }
+
+          onSuccess?.(newVenue);
+          resetForm();
+          setVenueImages([]);
+          setSelectedAmenities([]);
+          setPreviewImages([]);
         }
-      );
+      } catch (error) {
+        console.error("Error submitting venue:", error);
+      }
     },
   });
 
@@ -81,8 +148,10 @@ export default function VenueRegisterForm({ onSuccess }) {
   };
 
   return (
-    <form onSubmit={formik.handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
-      {/* Text Inputs */}
+    <form
+      onSubmit={formik.handleSubmit}
+      className="space-y-4 max-h-[70vh] overflow-y-auto pr-2"
+    >
       {[
         { label: "Venue Name", name: "venueName" },
         { label: "Capacity", name: "capacity", type: "number" },
@@ -92,11 +161,11 @@ export default function VenueRegisterForm({ onSuccess }) {
         { label: "City", name: "city" },
         { label: "State", name: "state" },
         { label: "Country", name: "country" },
-        // { label: "Latitude", name: "lat" },
-        // { label: "Longitude", name: "lng" },
       ].map(({ label, name, type = "text", isTextarea }) => (
         <div key={name}>
-          <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            {label}
+          </label>
           {isTextarea ? (
             <textarea
               name={name}
@@ -113,7 +182,9 @@ export default function VenueRegisterForm({ onSuccess }) {
             />
           )}
           {formik.touched[name] && formik.errors[name] && (
-            <div className="text-red-500 text-sm mt-1">{formik.errors[name]}</div>
+            <div className="text-red-500 text-sm mt-1">
+              {formik.errors[name]}
+            </div>
           )}
         </div>
       ))}
@@ -123,7 +194,10 @@ export default function VenueRegisterForm({ onSuccess }) {
         <p className="text-sm font-medium text-gray-700 mb-1">Amenities</p>
         <div className="flex flex-wrap gap-3">
           {amenitiesOptions.map((item) => (
-            <label key={item} className="inline-flex items-center gap-1 text-sm">
+            <label
+              key={item}
+              className="inline-flex items-center gap-1 text-sm"
+            >
               <input
                 type="checkbox"
                 value={item}
@@ -163,13 +237,11 @@ export default function VenueRegisterForm({ onSuccess }) {
         )}
       </div>
 
-      {/* Submit Button */}
       <button
         type="submit"
-        disabled={createVenue.isLoading}
         className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded-md transition"
       >
-        {createVenue.isLoading ? "Creating Venue..." : "Create Venue"}
+        {mode === "edit" ? "Update Venue" : "Create Venue"}
       </button>
     </form>
   );

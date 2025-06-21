@@ -21,7 +21,7 @@ const Button = ({ children, onClick, className = "", ...props }) => {
   );
 };
 
-const VenueCard = ({ venue }) => {
+const VenueCard = ({ venue, onEdit }) => {
   const {
     venueName,
     rating,
@@ -35,14 +35,13 @@ const VenueCard = ({ venue }) => {
     venueImages,
   } = venue;
 
-const backendBaseUrl = "http://localhost:5050/";
+  const backendBaseUrl = "http://localhost:5050/";
 
-const imageUrl =
-  venueImages && venueImages.length > 0
-    ? backendBaseUrl + venueImages[0].url.replace(/^\/+/, "")  // remove leading slash if any
-    : "https://via.placeholder.com/400x200?text=Venue+Image";
+  const imageUrl =
+    venueImages && venueImages.length > 0
+      ? backendBaseUrl + venueImages[0].url.replace(/^\/+/, "") // remove leading slash if any
+      : "https://via.placeholder.com/400x200?text=Venue+Image";
 
-    
   const statusColors = {
     Approved: "bg-green-100 text-green-700",
     Pending: "bg-yellow-100 text-yellow-700",
@@ -115,7 +114,10 @@ const imageUrl =
             <Button className="text-gray-500 hover:text-gray-700 p-1">
               <FaEye />
             </Button>
-            <Button className="text-gray-500 hover:text-gray-700 p-1">
+            <Button
+              className="text-gray-500 hover:text-gray-700 p-1"
+              onClick={() => onEdit(venue)}
+            >
               <FaEdit />
             </Button>
             <Button className="text-red-500 hover:text-red-700 p-1">
