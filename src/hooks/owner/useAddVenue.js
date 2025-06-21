@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { addVenueService } from "../../services/venueOwner/addVenueService";
+import { addVenueService } from "../../services/venueOwner/venueService";
 
 export default function useAddVenue() {
   return useMutation({

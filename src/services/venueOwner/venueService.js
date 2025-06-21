@@ -1,4 +1,4 @@
-import { createVenue, uploadVenueImages } from "../../api/owner/venueApi";
+import { createVenue, uploadVenueImages, getVenuesByOwner } from "../../api/owner/venueApi";
 
 export const addVenueService = async ({ form, amenities, images, ownerId }) => {
   // Step 1: Prepare venue data without images
@@ -10,7 +10,7 @@ export const addVenueService = async ({ form, amenities, images, ownerId }) => {
 
   // Create venue (without images)
   const createResponse = await createVenue(venueData);
-  const newVenue = createResponse.data;
+  const newVenue = createResponse.data.data;
 
   if (!newVenue._id) {
     throw new Error("Venue creation failed, no venue ID returned");
@@ -28,4 +28,12 @@ export const addVenueService = async ({ form, amenities, images, ownerId }) => {
   }
 
   return createResponse.data;
+};
+
+export const fetchVenuesByOwnerService = async (ownerId) => {
+  if (!ownerId) throw new Error("Owner ID is required");
+
+  const response = await getVenuesByOwner(ownerId);
+  // Backend returns { success, data: venuesArray }
+  return response.data.data;
 };
