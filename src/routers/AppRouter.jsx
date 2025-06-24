@@ -15,6 +15,8 @@ import OwnerUserRoute from "./OwnerUserRoute";
 import OwnerLayout from "../layouts/OwnerLayout";
 import OwnerDashbaord from "../pages/venueOwner/OwnerDashbaord";
 import OwnerVenuePage from "../pages/venueOwner/OwnerVenuePage";
+import LandingPage from "../pages/user/LandingPage";
+import VenueDetails from "../pages/user/VenueDetails";
 // import AdminSidebar from "../layouts/AdminSidebar";
 
 export default function AppRouter() {
@@ -22,12 +24,13 @@ export default function AppRouter() {
     <BrowserRouter>
       <Routes>
         {/* <Route path="/state" element={<StateManage />}></Route> */}
-        <Route path="/" element={<LoginPage />}></Route>
 
-        <Route element={<MainLayout />}></Route>
-        <Route element={<GuestRoutes />}>
-          <Route path="/login" element={<LoginPage />}></Route>
-          <Route path="/register" element={<RegisterPage />}></Route>
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<VenueDetails />}></Route>
+          <Route element={<GuestRoutes />}>
+            <Route path="/login" element={<LoginPage />}></Route>
+            <Route path="/register" element={<RegisterPage />}></Route>
+          </Route>
         </Route>
 
         {/* Admin Route */}

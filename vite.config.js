@@ -3,7 +3,13 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   theme: {
     extend: {
+       colors: {
+      primary: "#C91F37",
+      secondary: "#0E0E0E",
+      cream: "#FAF8F3",
+    },
       keyframes: {
+      
         scaleIn: {
           "0%": { transform: "scale(0.9)", opacity: "0" },
           "100%": { transform: "scale(1)", opacity: "1" },
