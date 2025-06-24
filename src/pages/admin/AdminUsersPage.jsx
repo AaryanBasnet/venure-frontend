@@ -90,21 +90,17 @@ const AdminUsersPage = () => {
 
   return (
     <div className="p-4 sm:p-6 bg-gray-50 min-h-screen font-poppins">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h1 className="text-3xl font-extrabold text-gray-900">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
+        <h1 className="text-3xl font-extrabold text-gray-900 leading-tight">
           User Management
         </h1>
-        <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3">
+        <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
           <SearchInput
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by name or email"
-            className="flex-grow sm:flex-grow-0"
+            className="flex-grow sm:flex-grow-0 sm:min-w-[250px]"
           />
-          <button className="flex items-center justify-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 shadow-md">
-            <FiPlus className="text-lg" />
-            User Applications
-          </button>
         </div>
       </div>
 

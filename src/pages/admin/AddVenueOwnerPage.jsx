@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import {
   FiPlus,
   FiMoreVertical,
@@ -8,66 +8,60 @@ import {
 import { MdBlock } from "react-icons/md";
 import SearchInput from "../../components/common/SearchInput";
 import AddOwnerModal from "../../components/modal/AddOwnerModal";
-// import { getVenueOwners, deleteVenueOwner, updateOwnerStatus } from '../../services/venueOwnerService';
+import { useAdminUser } from "../../hooks/admin/useAdminUser";
+import { useDeleteUser } from "../../hooks/admin/useDeleteUser";
+import OwnerTable from "../../components/admin/ownerTable";
 
 const AdminVenueOwnerPage = () => {
-  const [owners, setOwners] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [openActionMenu, setOpenActionMenu] = useState(null);
   const [ownerToDelete, setOwnerToDelete] = useState(null);
+  const [page, setPage] = useState(1);
+  const limit = 5;
 
-  // Function to fetch data from the service layer
-  const fetchOwners = async () => {
-    setLoading(true);
-    try {
-      const data = await getVenueOwners();
-      setOwners(data);
-    } catch (error) {
-      console.error("Failed to fetch owners", error);
-      // Optionally set an error state to show in the UI
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data, isLoading, isError, refetch } = useAdminUser(page, limit);
+  const { mutate: deleteUser } = useDeleteUser();
 
-  // Fetch data when the component mounts
-  useEffect(() => {
-    fetchOwners();
-  }, []);
+  const venueOwners = useMemo(() => {
+    return (data?.data || []).filter(
+      (user) => user.role?.toLowerCase() === "venueowner"
+    );
+  }, [data]);
 
-  // This callback is passed to the modal and triggered on successful form submission
-  const handleOwnerAdded = (newOwner) => {
-    setOwners((prev) => [newOwner, ...prev]); // Optimistically update the UI
-    setIsAddModalOpen(false); // Close the modal
-  };
+  const totalOwners = venueOwners.length;
+  const totalPages = Math.ceil((data?.pagination?.total || 1) / limit);
+
+  const filteredOwners = useMemo(() => {
+    return venueOwners.filter(
+      (owner) =>
+        owner.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        owner.email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [venueOwners, searchQuery]);
 
   const handleDeleteClick = (owner) => {
     setOwnerToDelete(owner);
     setOpenActionMenu(null);
   };
 
-  const confirmDelete = async () => {
-    await deleteVenueOwner(ownerToDelete._id);
-    setOwners((prev) => prev.filter((o) => o._id !== ownerToDelete._id));
-    setOwnerToDelete(null);
+  const confirmDelete = () => {
+    if (!ownerToDelete) return;
+    deleteUser(ownerToDelete._id, {
+      onSuccess: () => {
+        setOwnerToDelete(null);
+        refetch();
+      },
+    });
   };
 
-  const handleUpdateStatus = async (ownerId, currentStatus) => {
-    const newStatus = currentStatus === "Active" ? "Blocked" : "Active";
-    await updateOwnerStatus(ownerId, newStatus);
-    setOwners((prev) =>
-      prev.map((o) => (o._id === ownerId ? { ...o, status: newStatus } : o))
-    );
-    setOpenActionMenu(null);
+  const handlePrev = () => {
+    if (page > 1) setPage(page - 1);
   };
 
-  const filteredOwners = owners.filter(
-    (owner) =>
-      owner.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      owner.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleNext = () => {
+    if (page < totalPages) setPage(page + 1);
+  };
 
   return (
     <div className="p-4 sm:p-6 bg-gray-50 min-h-screen font-poppins">
@@ -90,112 +84,51 @@ const AdminVenueOwnerPage = () => {
 
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                <th className="px-6 py-3">Name</th>
-                <th className="px-6 py-3">Contact</th>
-                <th className="px-6 py-3">Venues Managed</th>
-                <th className="px-6 py-3">Status</th>
-                <th className="px-6 py-3 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {loading ? (
-                <tr>
-                  <td colSpan="5" className="text-center py-8">
-                    Loading...
-                  </td>
-                </tr>
-              ) : (
-                filteredOwners.map((owner) => (
-                  <tr
-                    key={owner._id}
-                    className="hover:bg-gray-50 transition-colors"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-3">
-                        <img
-                          className="h-10 w-10 rounded-full object-cover"
-                          src={owner.avatar}
-                          alt={owner.name}
-                        />
-                        <div className="text-sm font-medium text-gray-900">
-                          {owner.name}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      <div>{owner.email}</div>
-                      <div className="text-xs text-gray-400">{owner.phone}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
-                      {owner.venuesManaged}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2.5 py-1 text-xs leading-5 font-semibold rounded-full ${
-                          owner.status === "Active"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {owner.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-right">
-                      <div className="relative inline-block text-left">
-                        <button
-                          onClick={() =>
-                            setOpenActionMenu(
-                              openActionMenu === owner._id ? null : owner._id
-                            )
-                          }
-                        >
-                          <FiMoreVertical
-                            size={20}
-                            className="text-gray-500 hover:text-gray-800"
-                          />
-                        </button>
-                        {openActionMenu === owner._id && (
-                          <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
-                            <div className="py-1">
-                              <button
-                                onClick={() =>
-                                  handleUpdateStatus(owner._id, owner.status)
-                                }
-                                className="w-full text-left flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                              >
-                                <MdBlock />{" "}
-                                {owner.status === "Active"
-                                  ? "Block"
-                                  : "Unblock"}
-                              </button>
-                              <button
-                                onClick={() => handleDeleteClick(owner)}
-                                className="w-full text-left flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                              >
-                                <FiTrash2 /> Delete
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+          <OwnerTable
+            owners={filteredOwners}
+            isLoading={isLoading}
+            isError={isError}
+            openActionMenu={openActionMenu}
+            setOpenActionMenu={setOpenActionMenu}
+            handleDeleteClick={handleDeleteClick}
+            handleUpdateStatus={() => {}}
+          />
+        </div>
+      </div>
+
+      {/* Pagination */}
+      <div className="mt-6 flex justify-between items-center">
+        <span className="text-sm text-gray-600">
+          Page {page} of {totalPages}
+        </span>
+        <div className="flex space-x-2">
+          <button
+            onClick={handlePrev}
+            disabled={page === 1}
+            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <button
+            onClick={handleNext}
+            disabled={page === totalPages}
+            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50"
+          >
+            Next
+          </button>
         </div>
       </div>
 
       <AddOwnerModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        onOwnerAdded={handleOwnerAdded}
+        onOwnerAdded={() => {
+          setIsAddModalOpen(false);
+          refetch();
+        }}
       />
 
+      {/* Delete Confirmation Modal */}
       {ownerToDelete && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-sm p-6 text-center">

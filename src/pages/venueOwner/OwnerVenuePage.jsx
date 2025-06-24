@@ -14,7 +14,6 @@ const SearchAndFilter = ({ onSearchChange, onStatusChange, onCityChange }) => {
 const OwnerVenuePage = () => {
   const { user } = useContext(AuthContext); // get user from context
 
-
   const {
     data: venues = [],
     isLoading,
@@ -40,11 +39,6 @@ const OwnerVenuePage = () => {
   };
 
   const handleDeleteVenue = async (venueId) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this venue?"
-    );
-    if (!confirmed) return;
-
     setDeletingVenueId(venueId);
     try {
       await deleteVenue(venueId);

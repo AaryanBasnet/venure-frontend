@@ -26,7 +26,6 @@ export default function VenueRegisterForm({
 
   // Debug: Log initial data
   useEffect(() => {
-    console.log("initialData in useEffect:", initialData);
 
     if (mode === "edit" && initialData) {
       setSelectedAmenities(
@@ -57,16 +56,7 @@ export default function VenueRegisterForm({
     }
   }, [initialData, mode]);
 
-  console.log("Formik initial values log:", {
-    venueName: initialData?.venueName,
-    capacity: initialData?.capacity,
-    pricePerHour: initialData?.pricePerHour,
-    description: initialData?.description,
-    address: initialData?.location?.address,
-    city: initialData?.location?.city,
-    state: initialData?.location?.state,
-    country: initialData?.location?.country,
-  });
+ 
 
   const formik = useFormik({
     enableReinitialize: true,
