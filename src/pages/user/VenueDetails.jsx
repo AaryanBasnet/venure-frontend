@@ -1,39 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const VenueDetails = () => {
   const venue = {
-    venueName: 'Golden Hall',
+    venueName: "Golden Hall",
     pricePerHour: 500,
     capacity: 300,
     location: {
-      city: 'Kathmandu',
-      state: 'Bagmati',
-      country: 'Nepal',
-      address: 'New Baneshwor, Kathmandu',
+      city: "Kathmandu",
+      state: "Bagmati",
+      country: "Nepal",
+      address: "New Baneshwor, Kathmandu",
     },
     description:
-      'An elegant multi-purpose hall perfect for weddings, corporate events, and special gatherings. Featuring state-of-the-art lighting, acoustics, and decor.',
+      "An elegant multi-purpose hall perfect for weddings, corporate events, and special gatherings. Featuring state-of-the-art lighting, acoustics, and decor.",
     venueImages: [
       {
-        filename: 'venue1.jpg',
-        url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+        filename: "venue1.jpg",
+        url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
       },
       {
-        filename: 'venue2.jpg',
-        url: 'https://images.unsplash.com/photo-1600585154209-c7e974c3186b?auto=format&fit=crop&w=800&q=80',
+        filename: "venue2.jpg",
+        url: "https://images.unsplash.com/photo-1600585154209-c7e974c3186b?auto=format&fit=crop&w=800&q=80",
       },
       {
-        filename: 'venue3.jpg',
-        url: 'https://images.unsplash.com/photo-1600585154014-8beacd1b8a06?auto=format&fit=crop&w=800&q=80',
+        filename: "venue3.jpg",
+        url: "https://images.unsplash.com/photo-1600585154014-8beacd1b8a06?auto=format&fit=crop&w=800&q=80",
       },
     ],
     amenities: [
-      'Air Conditioning',
-      'Sound System',
-      'Lighting',
-      'Projector',
-      'WiFi',
-      'Parking Facility',
+      "Air Conditioning",
+      "Sound System",
+      "Lighting",
+      "Projector",
+      "WiFi",
+      "Parking Facility",
     ],
   };
 
@@ -53,10 +53,15 @@ const VenueDetails = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6">
         <div>
-          <h1 className="text-4xl font-semibold text-gray-900">{venue.venueName}</h1>
-          <p className="text-xl text-gray-700 mt-2">${venue.pricePerHour} / hour</p>
+          <h1 className="text-4xl font-semibold text-gray-900">
+            {venue.venueName}
+          </h1>
+          <p className="text-xl text-gray-700 mt-2">
+            ${venue.pricePerHour} / hour
+          </p>
           <div className="text-sm text-gray-600 mt-2">
-            {venue.capacity} People &middot; {venue.location.city}, {venue.location.state}
+            {venue.capacity} People &middot; {venue.location.city},{" "}
+            {venue.location.state}
           </div>
         </div>
         <div className="max-w-md text-gray-600">
@@ -102,16 +107,41 @@ const VenueDetails = () => {
 
       {/* Amenities */}
       <div className="bg-gray-900 text-white mt-12 py-12 px-6 rounded-xl">
-        <h2 className="text-3xl font-semibold text-center mb-10">Luxurious Features & Amenities</h2>
+        <h2 className="text-3xl font-semibold text-center mb-10">
+          Luxurious Features & Amenities
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 text-center">
           {venue.amenities.map((amenity, idx) => (
             <div key={idx} className="flex flex-col items-center">
               <div className="text-3xl mb-3">🏷️</div>
               <h4 className="text-lg font-semibold">{amenity}</h4>
-              <p className="text-sm text-gray-300 mt-1">Included in your booking</p>
+              <p className="text-sm text-gray-300 mt-1">
+                Included in your booking
+              </p>
             </div>
           ))}
         </div>
+      </div>
+      <div className="mt-12 px-6 py-10 bg-white shadow rounded-xl flex flex-col md:flex-row items-center justify-between gap-6 border border-orange-200">
+        <div className="max-w-xl">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+            Ready to Book This Venue?
+          </h2>
+          <p className="text-gray-600 text-sm">
+            Only{" "}
+            <span className="text-orange-500 font-semibold">
+              3 weekends left
+            </span>{" "}
+            in July! Don’t miss your chance to host your event at this amazing
+            location.
+          </p>
+        </div>
+        <button
+          onClick={() => (window.location.href = "/checkout")} // or use React Router navigation
+          className="px-6 py-3 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition shadow-md"
+        >
+          Book Now →
+        </button>
       </div>
     </div>
   );
