@@ -18,6 +18,7 @@ import OwnerVenuePage from "../pages/venueOwner/OwnerVenuePage";
 import LandingPage from "../pages/user/LandingPage";
 import VenueDetails from "../pages/user/VenueDetails";
 import BookingPage from "../pages/user/BookingPage";
+import VenueList from "../components/user/VenueList";
 // import AdminSidebar from "../layouts/AdminSidebar";
 
 export default function AppRouter() {
@@ -26,9 +27,8 @@ export default function AppRouter() {
       <Routes>
         {/* <Route path="/state" element={<StateManage />}></Route> */}
 
-
         <Route element={<MainLayout />}>
-                  <Route path="/*" element={<BookingPage />}></Route>
+          <Route path="/*" element={<LandingPage />}></Route>
           <Route element={<GuestRoutes />}>
             <Route path="/login" element={<LoginPage />}></Route>
             <Route path="/register" element={<RegisterPage />}></Route>
