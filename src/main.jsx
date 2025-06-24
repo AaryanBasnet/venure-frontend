@@ -2,7 +2,7 @@ import React from "react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import './App.css'
+import "./App.css";
 
 import AppRouter from "./routers/AppRouter.jsx";
 import AuthContextProvider from "./auth/AuthProvider.jsx";
@@ -13,8 +13,8 @@ const queryClient = new QueryClient(); // <-- instantiate here
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <AuthContextProvider>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <AuthContextProvider>
         <AppRouter />
         <ToastContainer
           position="top-center"
@@ -22,7 +22,7 @@ createRoot(document.getElementById("root")).render(
           hideProgressBar={false}
           theme="dark"
         />
-      </QueryClientProvider>
-    </AuthContextProvider>
+      </AuthContextProvider>
+    </QueryClientProvider>
   </StrictMode>
 );

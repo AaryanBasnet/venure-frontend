@@ -1,47 +1,17 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import UserVenueCard from "../common/UserVenueCard"; // adjust path if needed
-
-const allVenues = [
-  {
-    name: "Mountain View Hall",
-    location: { city: "Kathmandu", state: "Bagmati", country: "Nepal" },
-    venueImages: [{ url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c" }],
-    description: "A serene hall in the mountains.",
-    capacity: 300,
-    pricePerHour: 150,
-    amenities: ["WiFi", "Parking", "AC"]
-  },
-  {
-    name: "Skyline Terrace",
-    location: { city: "Lalitpur", state: "Bagmati", country: "Nepal" },
-    venueImages: [{ url: "https://images.unsplash.com/photo-1589927986089-35812388d1ac" }],
-    description: "Rooftop with amazing views.",
-    capacity: 100,
-    pricePerHour: 90,
-    amenities: ["Rooftop Access", "Bar Service"]
-  },
-  {
-    name: "Riverside Palace",
-    location: { city: "Pokhara", state: "Gandaki", country: "Nepal" },
-    venueImages: [{ url: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6" }],
-    description: "A riverside luxurious venue.",
-    capacity: 200,
-    pricePerHour: 120,
-    amenities: ["WiFi", "Garden Access", "Catering Services"]
-  },
-  {
-    name: "Heritage Banquet",
-    location: { city: "Bhaktapur", state: "Bagmati", country: "Nepal" },
-    venueImages: [{ url: "https://images.unsplash.com/photo-1573164574572-cb89e39749a2" }],
-    description: "Historical and cultural charm venue.",
-    capacity: 250,
-    pricePerHour: 180,
-    amenities: ["Parking", "AC", "Stage Lighting"]
-  }
-];
+import { useGetApprovedVenue } from "../../hooks/user/useGetApprovedVenue";
 
 export default function VenueList() {
+  const {
+    data: venues = [],
+    isLoading,
+    isError,
+    error,
+  } = useGetApprovedVenue();
+
+ 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
@@ -49,32 +19,60 @@ export default function VenueList() {
   const [sortOrder, setSortOrder] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+   if (isLoading)
+    return <div className="text-center py-20">Loading venues...</div>;
+  if (isError)
+    return (
+      <div className="text-center py-20 text-red-600">
+        Error loading venues: {error.message}
+      </div>
+    );
   const venuesPerPage = 6;
 
-  const amenitiesList = ["WiFi", "Parking", "AC", "Rooftop Access", "Bar Service", "Garden Access", "Catering Services", "Stage Lighting"];
-  const cityList = [...new Set(allVenues.map(v => v.location.city))];
+  const amenitiesList = [
+    "WiFi",
+    "Parking",
+    "AC",
+    "Rooftop Access",
+    "Bar Service",
+    "Garden Access",
+    "Catering Services",
+    "Stage Lighting",
+  ];
+  const cityList = [...new Set(venues.map((v) => v.location.city))];
   const capacityRanges = [
     { label: "Any", value: "" },
     { label: "1-50", value: "1-50" },
     { label: "51-100", value: "51-100" },
     { label: "101-200", value: "101-200" },
-    { label: "201+", value: "201-" }
+    { label: "201+", value: "201-" },
   ];
 
   const toggleAmenity = (amenity) => {
     setSelectedAmenities((prev) =>
-      prev.includes(amenity) ? prev.filter((a) => a !== amenity) : [...prev, amenity]
+      prev.includes(amenity)
+        ? prev.filter((a) => a !== amenity)
+        : [...prev, amenity]
     );
   };
 
-  let filteredVenues = allVenues.filter((venue) => {
-    const matchesSearch = venue.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesAmenities = selectedAmenities.length > 0 ? selectedAmenities.every(a => venue.amenities.includes(a)) : true;
-    const matchesCity = selectedCity ? venue.location.city === selectedCity : true;
+  let filteredVenues = venues.filter((venue) => {
+    const matchesSearch = venue.venueName
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesAmenities =
+      selectedAmenities.length > 0
+        ? selectedAmenities.every((a) => venue.amenities.includes(a))
+        : true;
+    const matchesCity = selectedCity
+      ? venue.location.city === selectedCity
+      : true;
     let matchesCapacity = true;
     if (capacityRange === "1-50") matchesCapacity = venue.capacity <= 50;
-    else if (capacityRange === "51-100") matchesCapacity = venue.capacity > 50 && venue.capacity <= 100;
-    else if (capacityRange === "101-200") matchesCapacity = venue.capacity > 100 && venue.capacity <= 200;
+    else if (capacityRange === "51-100")
+      matchesCapacity = venue.capacity > 50 && venue.capacity <= 100;
+    else if (capacityRange === "101-200")
+      matchesCapacity = venue.capacity > 100 && venue.capacity <= 200;
     else if (capacityRange === "201-") matchesCapacity = venue.capacity > 200;
 
     return matchesSearch && matchesAmenities && matchesCity && matchesCapacity;
@@ -88,7 +86,10 @@ export default function VenueList() {
 
   const totalPages = Math.ceil(filteredVenues.length / venuesPerPage);
   const startIndex = (currentPage - 1) * venuesPerPage;
-  const currentVenues = filteredVenues.slice(startIndex, startIndex + venuesPerPage);
+  const currentVenues = filteredVenues.slice(
+    startIndex,
+    startIndex + venuesPerPage
+  );
 
   return (
     <div className="min-h-screen bg-[#fffdf8] px-6 md:px-12 py-16 font-sans">
@@ -128,7 +129,9 @@ export default function VenueList() {
             >
               <option value="">All Locations</option>
               {cityList.map((city, idx) => (
-                <option key={idx} value={city}>{city}</option>
+                <option key={idx} value={city}>
+                  {city}
+                </option>
               ))}
             </select>
 
@@ -138,7 +141,9 @@ export default function VenueList() {
               onChange={(e) => setCapacityRange(e.target.value)}
             >
               {capacityRanges.map((range, idx) => (
-                <option key={idx} value={range.value}>{range.label}</option>
+                <option key={idx} value={range.value}>
+                  {range.label}
+                </option>
               ))}
             </select>
 
@@ -171,7 +176,9 @@ export default function VenueList() {
         </div>
 
         {currentVenues.length === 0 ? (
-          <p className="text-center text-gray-500 text-lg mt-20">No venues found.</p>
+          <p className="text-center text-gray-500 text-lg mt-20">
+            No venues found.
+          </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
             {currentVenues.map((venue, index) => (
@@ -194,7 +201,9 @@ export default function VenueList() {
                 key={idx}
                 onClick={() => setCurrentPage(idx + 1)}
                 className={`px-4 py-2 rounded-full text-sm font-medium shadow-sm border transition-all duration-200 ${
-                  currentPage === idx + 1 ? "bg-rose-500 text-white" : "bg-white text-gray-700 border-gray-300"
+                  currentPage === idx + 1
+                    ? "bg-rose-500 text-white"
+                    : "bg-white text-gray-700 border-gray-300"
                 }`}
               >
                 {idx + 1}

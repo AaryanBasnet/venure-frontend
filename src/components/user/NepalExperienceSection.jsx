@@ -1,9 +1,16 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FaArrowRight } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export default function NepalExperienceSection() {
-  return (
+
+  const navigate = useNavigate();
+
+const handleVenueNavigation = () => {
+    navigate("/venues")
+  }
+    return (
     <section className="bg-cream py-20 px-6 md:px-12 flex flex-col lg:flex-row items-center justify-between gap-10">
       <motion.img
         src="https://images.pexels.com/photos/14716281/pexels-photo-14716281.jpeg"
@@ -36,6 +43,7 @@ export default function NepalExperienceSection() {
         </motion.p>
 
         <motion.button
+        onClick={handleVenueNavigation}
           whileHover={{ scale: 1.05 }}
           className="border border-secondary text-secondary font-medium px-6 py-2 rounded-md flex items-center justify-center gap-2 mx-auto"
         >

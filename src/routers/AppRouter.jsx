@@ -28,12 +28,18 @@ export default function AppRouter() {
         {/* <Route path="/state" element={<StateManage />}></Route> */}
 
         <Route element={<MainLayout />}>
-          <Route path="/*" element={<LandingPage />}></Route>
+          <Route path="/" element={<LandingPage />}>  </Route>
+          
+          <Route path = '/venues' element={<VenueList />} ></Route>
+          <Route path = '/booking' element={<BookingPage />} ></Route>
+          <Route path = '/venue-details' element={<VenueDetails />} ></Route>
+           </Route>
+         
           <Route element={<GuestRoutes />}>
             <Route path="/login" element={<LoginPage />}></Route>
             <Route path="/register" element={<RegisterPage />}></Route>
           </Route>
-        </Route>
+      
 
         {/* Admin Route */}
         <Route element={<AdminUserRoute />}>

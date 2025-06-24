@@ -84,12 +84,15 @@ export default function VenueGallery() {
       {/* Full Section Centered Overlay */}
       <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
         <div className="text-center">
-          <motion.button
+          {/* <motion.button
             whileHover={{ scale: 1.05 }}
             className="pointer-events-auto text-white text-sm uppercase tracking-wide border border-white px-5 py-1 mb-3 hover:bg-white hover:text-black transition"
           >
             Explore
-          </motion.button>
+          </motion.button> */}
+          <div className="text-white text-sm uppercase ">
+            Explore
+          </div>
           <motion.h2
             className="text-white text-5xl font-serif"
             whileHover={{ scale: 1.02 }}
