@@ -19,6 +19,10 @@ import LandingPage from "../pages/user/LandingPage";
 import VenueDetails from "../pages/user/VenueDetails";
 import BookingPage from "../pages/user/BookingPage";
 import VenueList from "../components/user/VenueList";
+import DateAndTimeSelectionPage from "../components/user/DateandTimeSelection";
+import GuestDetailsPage from "../components/user/GuestDetails";
+import AddOnsSelectionPage from "../components/user/AddonSelection";
+import PaymentInformationPage from "../components/user/PaymentInformation";
 // import AdminSidebar from "../layouts/AdminSidebar";
 
 export default function AppRouter() {
@@ -26,21 +30,23 @@ export default function AppRouter() {
     <BrowserRouter>
       <Routes>
         {/* <Route path="/state" element={<StateManage />}></Route> */}
-
         <Route element={<MainLayout />}>
-          <Route path="/" element={<LandingPage />}>  </Route>
-          
-          <Route path = '/venues' element={<VenueList />} ></Route>
-          <Route path = '/booking' element={<BookingPage />} ></Route>
-          <Route path = '/venue-details' element={<VenueDetails />} ></Route>
-           </Route>
-         
-          <Route element={<GuestRoutes />}>
-            <Route path="/login" element={<LoginPage />}></Route>
-            <Route path="/register" element={<RegisterPage />}></Route>
+          <Route path="/" element={<LandingPage />}>
+            {" "}
           </Route>
-      
-
+          <Route path="/venues" element={<VenueList />}></Route>
+          <Route path="/checkout/:id" element={<BookingPage />}>
+            <Route index element={<DateAndTimeSelectionPage />} />
+            <Route path="guests" element={<GuestDetailsPage />} />
+            <Route path="addons" element={<AddOnsSelectionPage />} />
+            <Route path="payment" element={<PaymentInformationPage />} />
+          </Route>
+        </Route>
+        <Route path="/venue/:id" element={<VenueDetails />} />{" "}
+        <Route element={<GuestRoutes />}>
+          <Route path="/login" element={<LoginPage />}></Route>
+          <Route path="/register" element={<RegisterPage />}></Route>
+        </Route>
         {/* Admin Route */}
         <Route element={<AdminUserRoute />}>
           <Route element={<AdminLayout />}>
@@ -51,7 +57,6 @@ export default function AppRouter() {
             <Route path="*" element={<UnAuthorized />} />
           </Route>
         </Route>
-
         {/* Owner Route */}
         <Route element={<OwnerUserRoute />}>
           <Route element={<OwnerLayout />}>
