@@ -1,13 +1,29 @@
 import React from "react";
-import { useOutletContext } from "react-router-dom";
+import { useFormikContext } from "formik";
+import { useNavigate, useParams } from "react-router-dom";
+
+// Define static addOns list (or you can receive it via props if preferred)
+const addOns = [
+  { id: "premium-decoration", name: "Premium Decoration", price: 15000 },
+  { id: "professional-photography", name: "Photography", price: 25000 },
+  { id: "premium-catering", name: "Catering", price: 800, perPerson: true },
+  { id: "dj-sound-system", name: "DJ & Sound", price: 12000 },
+  { id: "guest-transportation", name: "Transportation", price: 8000 },
+];
 
 const AddOnsSelectionPage = () => {
-  const {
-    addOns,
-    selectedAddons,
-    handleAddonToggle,
-    numberOfGuests,
-  } = useOutletContext();
+  const { values, setFieldValue } = useFormikContext();
+  const { selectedAddons = [], numberOfGuests = 0 } = values;
+  const navigate = useNavigate();
+
+  const handleAddonToggle = (addonId) => {
+    const updated = selectedAddons.includes(addonId)
+      ? selectedAddons.filter((id) => id !== addonId)
+      : [...selectedAddons, addonId];
+    setFieldValue("selectedAddons", updated);
+  };
+
+  const { id } = useParams(); // ← Fixes the undefined `id`
 
   return (
     <>
@@ -33,7 +49,8 @@ const AddOnsSelectionPage = () => {
                 <p className="font-medium text-gray-800">{addon.name}</p>
                 {addon.perPerson && (
                   <p className="text-sm text-gray-600">
-                    Cost calculated as ₹{addon.price} × {numberOfGuests || 0} guests
+                    Cost calculated as ₹{addon.price} × {numberOfGuests || 0}{" "}
+                    guests
                   </p>
                 )}
               </div>
@@ -44,6 +61,22 @@ const AddOnsSelectionPage = () => {
             </span>
           </label>
         ))}
+        <div className="mt-6 flex justify-between">
+          <button
+            type="button"
+            onClick={() => navigate(`/checkout/${id}/guests`)}
+            className="bg-gray-300 text-black px-4 py-2 rounded"
+          >
+            Back
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate(`/checkout/${id}/payment`)}
+            className="bg-purple-600 text-white px-4 py-2 rounded"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </>
   );

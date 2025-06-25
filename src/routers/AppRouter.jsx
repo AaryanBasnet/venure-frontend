@@ -36,13 +36,13 @@ export default function AppRouter() {
           </Route>
           <Route path="/venues" element={<VenueList />}></Route>
           <Route path="/checkout/:id" element={<BookingPage />}>
-            <Route index element={<DateAndTimeSelectionPage />} />
+            <Route index  element={<DateAndTimeSelectionPage />} />
             <Route path="guests" element={<GuestDetailsPage />} />
             <Route path="addons" element={<AddOnsSelectionPage />} />
             <Route path="payment" element={<PaymentInformationPage />} />
           </Route>
-        </Route>
         <Route path="/venue/:id" element={<VenueDetails />} />{" "}
+        </Route>
         <Route element={<GuestRoutes />}>
           <Route path="/login" element={<LoginPage />}></Route>
           <Route path="/register" element={<RegisterPage />}></Route>

@@ -1,18 +1,12 @@
 import React from "react";
-import { useOutletContext } from "react-router-dom";
+import { useFormikContext } from "formik";
+import { useNavigate, useParams } from "react-router-dom";
 
 const PaymentInformationPage = () => {
-  const {
-    cardNumber,
-    setCardNumber,
-    expiryDate,
-    setExpiryDate,
-    cvv,
-    setCvv,
-    cardholderName,
-    setCardholderName,
-    handleCompleteBooking,
-  } = useOutletContext();
+  const { values, setFieldValue } = useFormikContext();
+  const navigate = useNavigate();
+  const { id } = useParams(); // ← Fixes the undefined `id`
+  const { cardNumber, expiryDate, cvv, cardholderName } = values;
 
   return (
     <>
@@ -37,7 +31,7 @@ const PaymentInformationPage = () => {
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
               placeholder="1234 5678 9012 3456"
               value={cardNumber}
-              onChange={(e) => setCardNumber(e.target.value)}
+              onChange={(e) => setFieldValue("cardNumber", e.target.value)}
             />
           </div>
 
@@ -55,7 +49,7 @@ const PaymentInformationPage = () => {
                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
                 placeholder="MM/YY"
                 value={expiryDate}
-                onChange={(e) => setExpiryDate(e.target.value)}
+                onChange={(e) => setFieldValue("expiryDate", e.target.value)}
               />
             </div>
             <div>
@@ -71,7 +65,7 @@ const PaymentInformationPage = () => {
                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
                 placeholder="123"
                 value={cvv}
-                onChange={(e) => setCvv(e.target.value)}
+                onChange={(e) => setFieldValue("cvv", e.target.value)}
               />
             </div>
           </div>
@@ -89,7 +83,7 @@ const PaymentInformationPage = () => {
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
               placeholder="Name on card"
               value={cardholderName}
-              onChange={(e) => setCardholderName(e.target.value)}
+              onChange={(e) => setFieldValue("cardholderName", e.target.value)}
             />
           </div>
         </div>
@@ -104,7 +98,19 @@ const PaymentInformationPage = () => {
             industry-standard security measures.
           </p>
         </div>
+        
       </div>
+      <div className="mt-6 flex justify-between">
+          <button
+            type="button"
+            onClick={() => navigate(`/checkout/${id}/addons`)}
+            className="bg-gray-300 text-black px-4 py-2 rounded"
+          >
+            Back
+          </button>
+
+          {/* Submit button is in BookingPage's <Form> already */}
+        </div>
     </>
   );
 };
