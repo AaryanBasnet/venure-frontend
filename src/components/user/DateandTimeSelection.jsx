@@ -1,16 +1,17 @@
 import React from "react";
+import { useOutletContext } from "react-router-dom";
 
-const DateAndTimeSelectionPage = ({
-  selectedDate, setSelectedDate,
-  selectedTimeSlot, setSelectedTimeSlot,
-  currentMonth, setCurrentMonth,
-  currentYear, setCurrentYear,
-  getDaysInMonth, getFirstDayOfMonth,
-  timeSlots,
-  onNext
-}) => {
+export default function DateAndTimeSelectionPage() {
+  const {
+    selectedDate, setSelectedDate,
+    selectedTimeSlot, setSelectedTimeSlot,
+    currentMonth, setCurrentMonth,
+    currentYear, setCurrentYear,
+    getDaysInMonth, getFirstDayOfMonth,
+    timeSlots,
+  } = useOutletContext(); // ✅ This replaces props
 
-  const renderCalendarDays = () => { /* ... (same as before, moved here) */
+  const renderCalendarDays = () => {
     const daysInMonth = getDaysInMonth(currentYear, currentMonth);
     const firstDay = getFirstDayOfMonth(currentYear, currentMonth);
     const days = [];
@@ -21,7 +22,7 @@ const DateAndTimeSelectionPage = ({
 
     for (let i = 1; i <= daysInMonth; i++) {
       const date = new Date(currentYear, currentMonth, i);
-      const isSelected = selectedDate && selectedDate.toDateString() === date.toDateString();
+      const isSelected = selectedDate?.toDateString() === date.toDateString();
       const isToday = date.toDateString() === new Date().toDateString();
 
       days.push(
@@ -37,26 +38,27 @@ const DateAndTimeSelectionPage = ({
         </div>
       );
     }
+
     return days;
   };
 
-  const goToPreviousMonth = () => { /* ... (same as before, moved here) */
-    setCurrentMonth(prevMonth => {
-      if (prevMonth === 0) {
-        setCurrentYear(prevYear => prevYear - 1);
+  const goToPreviousMonth = () => {
+    setCurrentMonth(prev => {
+      if (prev === 0) {
+        setCurrentYear(y => y - 1);
         return 11;
       }
-      return prevMonth - 1;
+      return prev - 1;
     });
   };
 
-  const goToNextMonth = () => { /* ... (same as before, moved here) */
-    setCurrentMonth(prevMonth => {
-      if (prevMonth === 11) {
-        setCurrentYear(prevYear => prevYear + 1);
+  const goToNextMonth = () => {
+    setCurrentMonth(prev => {
+      if (prev === 11) {
+        setCurrentYear(y => y + 1);
         return 0;
       }
-      return prevMonth + 1;
+      return prev + 1;
     });
   };
 
@@ -69,19 +71,21 @@ const DateAndTimeSelectionPage = ({
         <h3 className="text-xl font-medium text-gray-800 mb-4">Select Date</h3>
         <div className="border border-gray-300 rounded-lg p-4">
           <div className="flex justify-between items-center mb-4">
-            <button className="p-2 rounded-full hover:bg-gray-200 transition-colors duration-200" onClick={goToPreviousMonth}>
+            <button onClick={goToPreviousMonth} className="p-2 rounded-full hover:bg-gray-200 transition">
               <i className="fas fa-chevron-left text-gray-600"></i>
             </button>
             <span className="text-lg font-semibold text-gray-800">
               {new Date(currentYear, currentMonth).toLocaleString('default', { month: 'long', year: 'numeric' })}
             </span>
-            <button className="p-2 rounded-full hover:bg-gray-200 transition-colors duration-200" onClick={goToNextMonth}>
+            <button onClick={goToNextMonth} className="p-2 rounded-full hover:bg-gray-200 transition">
               <i className="fas fa-chevron-right text-gray-600"></i>
             </button>
           </div>
-          <div className="grid grid-cols-7 text-center text-sm font-medium text-gray-500 mb-2">
+
+          <div className="grid grid-cols-7 text-sm text-gray-500 font-medium mb-2">
             <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
           </div>
+
           <div className="grid grid-cols-7 gap-2">
             {renderCalendarDays()}
           </div>
@@ -94,19 +98,16 @@ const DateAndTimeSelectionPage = ({
           {timeSlots.map(slot => (
             <div
               key={slot.id}
-              className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer transition-colors duration-200
+              className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer transition
                 ${selectedTimeSlot === slot.id ? 'border-purple-600 bg-purple-50' : 'border-gray-300 hover:bg-gray-50'}
               `}
               onClick={() => setSelectedTimeSlot(slot.id)}
             >
               <span className="text-gray-800 font-medium">{slot.label}</span>
-              <i className={`${slot.icon} text-gray-500`}></i>
             </div>
           ))}
         </div>
       </div>
     </>
   );
-};
-
-export default DateAndTimeSelectionPage;
+}

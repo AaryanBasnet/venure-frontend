@@ -1,43 +1,27 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useVenueDetails } from "../../hooks/user/useVenueDetails";
+import { AuthContext } from "../../auth/AuthProvider";
 
 const VenueDetails = () => {
-  const venue = {
-    venueName: "Golden Hall",
-    pricePerHour: 500,
-    capacity: 300,
-    location: {
-      city: "Kathmandu",
-      state: "Bagmati",
-      country: "Nepal",
-      address: "New Baneshwor, Kathmandu",
-    },
-    description:
-      "An elegant multi-purpose hall perfect for weddings, corporate events, and special gatherings. Featuring state-of-the-art lighting, acoustics, and decor.",
-    venueImages: [
-      {
-        filename: "venue1.jpg",
-        url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        filename: "venue2.jpg",
-        url: "https://images.unsplash.com/photo-1600585154209-c7e974c3186b?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        filename: "venue3.jpg",
-        url: "https://images.unsplash.com/photo-1600585154014-8beacd1b8a06?auto=format&fit=crop&w=800&q=80",
-      },
-    ],
-    amenities: [
-      "Air Conditioning",
-      "Sound System",
-      "Lighting",
-      "Projector",
-      "WiFi",
-      "Parking Facility",
-    ],
-  };
+  const { id } = useParams();
+  console.log(id);
+  const {isAuthenticated} = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const { data: venue, isLoading, isError, error } = useVenueDetails(id);
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error: {error.message}</div>;
+
+  const BASE_URL = "http://localhost:5050"; // Your backend base URL
+
+  <img
+    src={`${BASE_URL}/${venue.venueImages[currentIndex].url}`}
+    alt={`Venue image ${currentIndex + 1}`}
+    className="w-full h-full object-cover"
+  />;
   const totalImages = venue.venueImages.length;
 
   const prevImage = () => {
@@ -46,6 +30,14 @@ const VenueDetails = () => {
 
   const nextImage = () => {
     setCurrentIndex((prev) => (prev === totalImages - 1 ? 0 : prev + 1));
+  };
+
+  const handleCheckout = () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    } else {
+      navigate(`/checkout/${venue._id}`, { state: { venue } });// state is used to pass temporary data to the next page without using global state
+    }
   };
 
   return (
@@ -76,7 +68,7 @@ const VenueDetails = () => {
       <div className="relative w-full h-[500px] rounded-xl overflow-hidden">
         {totalImages > 0 ? (
           <img
-            src={venue.venueImages[currentIndex].url}
+            src={`${BASE_URL}/${venue.venueImages[currentIndex].url}`}
             alt={`Venue image ${currentIndex + 1}`}
             className="w-full h-full object-cover"
           />
@@ -137,7 +129,7 @@ const VenueDetails = () => {
           </p>
         </div>
         <button
-          onClick={() => (window.location.href = "/checkout")} // or use React Router navigation
+          onClick={handleCheckout} // or use React Router navigation
           className="px-6 py-3 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition shadow-md"
         >
           Book Now →

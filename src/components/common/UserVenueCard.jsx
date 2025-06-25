@@ -1,9 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5050";
 
 export default function UserVenueCard({ venue, index }) {
+  const navigate = useNavigate();
   const imageUrl =
     venue.venueImages?.length > 0
       ? `${BASE_URL}/${venue.venueImages[0].url}`
@@ -57,7 +59,10 @@ export default function UserVenueCard({ venue, index }) {
             </div>
           </div>
         )}
-        <button className="w-full border border-rose-400 text-rose-500 font-medium py-3 rounded-full shadow hover:bg-rose-50 transition duration-300 ease-in-out text-sm">
+        <button 
+        onClick={()=> navigate(`/venue/${venue._id}`)}
+        
+        className="w-full border border-rose-400 text-rose-500 font-medium py-3 rounded-full shadow hover:bg-rose-50 transition duration-300 ease-in-out text-sm">
           View Details
         </button>
       </div>
