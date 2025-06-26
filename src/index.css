@@ -1,9 +1,16 @@
-
-
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@400;600&display=swap");
 @import "tailwindcss";
 
+/* Font utilities */
+.font-playfair {
+  font-family: "Playfair Display", serif;
+}
 
+.font-poppins {
+  font-family: "Poppins", sans-serif;
+}
 
+/* Loader spinner */
 .loader-border {
   border: 2px solid transparent;
   border-top-color: white;
@@ -22,6 +29,6 @@
   display: none;
 }
 .no-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
 }

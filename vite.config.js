@@ -3,6 +3,10 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   theme: {
     extend: {
+      fontFamily: {
+      heading: ['"Playfair Display"', 'serif'],
+      body: ['Lato', 'sans-serif'],
+    },
        colors: {
       primary: "#C91F37",
       secondary: "#0E0E0E",

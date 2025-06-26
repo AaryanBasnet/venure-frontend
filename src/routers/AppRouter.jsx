@@ -32,7 +32,7 @@ export default function AppRouter() {
         {/* <Route path="/state" element={<StateManage />}></Route> */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<LandingPage />}>
-            {" "}
+          
           </Route>
           <Route path="/venues" element={<VenueList />}></Route>
           <Route path="/checkout/:id" element={<BookingPage />}>
@@ -41,7 +41,7 @@ export default function AppRouter() {
             <Route path="addons" element={<AddOnsSelectionPage />} />
             <Route path="payment" element={<PaymentInformationPage />} />
           </Route>
-        <Route path="/venue/:id" element={<VenueDetails />} />{" "}
+        <Route path="/venue/:id" element={<VenueDetails />} />
         </Route>
         <Route element={<GuestRoutes />}>
           <Route path="/login" element={<LoginPage />}></Route>

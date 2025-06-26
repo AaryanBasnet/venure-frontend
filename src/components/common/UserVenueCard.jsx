@@ -1,6 +1,13 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import {
+  MapPin,
+  Users,
+  CheckCircle,
+  ArrowRight,
+  Heart,
+} from "lucide-react";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5050";
 
@@ -18,31 +25,40 @@ export default function UserVenueCard({ venue, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.15 }}
-      whileHover={{ scale: 1.03 }}
-      className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-700 ease-in-out transform border border-gray-100"
+      whileHover={{ scale: 1.02 }}
+      className="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-500 ease-in-out border border-gray-100"
     >
       <div className="relative h-64">
         <img
           src={imageUrl}
           alt={venue.venueName}
-          className="w-full h-full object-cover rounded-t-2xl"
+          className="w-full h-full object-cover rounded-t-3xl"
         />
-        <div className="absolute top-5 right-5 bg-white/80 backdrop-blur-md text-gray-800 text-sm font-semibold px-3 py-1.5 rounded-full shadow">
-          ${venue.pricePerHour}/hour
-        </div>
+        <button className="absolute top-4 right-4 bg-white/80 backdrop-blur-md text-gray-800 p-2 rounded-full shadow hover:scale-110 transition">
+          <Heart size={20} className="text-rose-500 fill-rose-100" />
+        </button>
       </div>
-      <div className="p-6">
-        <h3 className="text-2xl font-serif text-gray-800 mb-1 leading-snug">
+
+      <div className="p-6 font-poppins">
+        <h3 className="text-2xl font-playfair text-gray-800 mb-1 leading-snug">
           {venue.venueName}
         </h3>
-        <p className="text-gray-500 text-sm mb-3 flex items-center">
-          <i className="fas fa-map-marker-alt mr-2 text-rose-400"></i>
+
+        <p className="text-sm text-gray-600 mb-3">
+          <span className="font-semibold text-rose-500">${venue.pricePerHour}</span>{" "}
+          <span className="text-xs">/ hour</span>
+        </p>
+
+        <p className="text-gray-500 text-sm mb-2 flex items-center">
+          <MapPin size={16} className="mr-2 text-rose-400" />
           {venue.location?.city}, {venue.location?.state}, {venue.location?.country}
         </p>
+
         <div className="flex items-center text-gray-600 text-sm mb-4">
-          <i className="fas fa-users mr-2 text-rose-400"></i>
-          Capacity: <span className="font-medium ml-1">{venue.capacity}</span> guests
+          <Users size={16} className="mr-2 text-rose-400" />
+          Capacity: <span className="font-semibold ml-1">{venue.capacity}</span> guests
         </div>
+
         {venue.amenities?.length > 0 && (
           <div className="mb-5">
             <h4 className="text-sm font-semibold text-gray-700 mb-2">Key Amenities:</h4>
@@ -52,18 +68,19 @@ export default function UserVenueCard({ venue, index }) {
                   key={idx}
                   className="bg-rose-50 text-rose-700 text-xs px-3 py-1 rounded-full flex items-center shadow-sm"
                 >
-                  <i className="fas fa-check-circle mr-1 text-rose-500"></i>
+                  <CheckCircle size={12} className="mr-1 text-rose-500" />
                   {amenity}
                 </span>
               ))}
             </div>
           </div>
         )}
-        <button 
-        onClick={()=> navigate(`/venue/${venue._id}`)}
-        
-        className="w-full border border-rose-400 text-rose-500 font-medium py-3 rounded-full shadow hover:bg-rose-50 transition duration-300 ease-in-out text-sm">
-          View Details
+
+        <button
+          onClick={() => navigate(`/venue/${venue._id}`)}
+          className="w-full border border-rose-400 text-rose-500 font-medium py-3 rounded-full shadow-sm hover:bg-rose-50 transition duration-300 ease-in-out text-sm flex items-center justify-center gap-2"
+        >
+          View Details <ArrowRight size={16} />
         </button>
       </div>
     </motion.div>

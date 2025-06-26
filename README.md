@@ -70,7 +70,7 @@ src/
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/venure-frontend.git
+git clone https://github.com/AaryanBasnet/venure-frontend.git
 cd venure-frontend
 
 # Install dependencies
@@ -84,7 +84,7 @@ npm run dev
 Create a `.env` file in root:
 
 ```env
-VITE_API_URL=http://localhost:5000/api
+VITE_API_URL=http://localhost:5050/api
 ```
 
 ---
@@ -118,4 +118,4 @@ For inquiries, suggestions, or feedback:
 
 **Author**: Aryan Basnet  
 **Email**: basnetaryan1011@gmail.com  
-**LinkedIn**: [Basnet Aryan]https://www.linkedin.com/in/basnet-aryan-4511a22a4/ 
+**LinkedIn**: [Basnet Aryan](https://www.linkedin.com/in/basnet-aryan-4511a22a4/)
