@@ -3,7 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { Crown, Sparkles, ArrowUpRight, ChevronRight } from "lucide-react";
+import {
+  Crown,
+  Sparkles,
+  ArrowUpRight,
+  ChevronRight,
+  UserCircle2,
+} from "lucide-react";
 import { AuthContext } from "../auth/AuthProvider";
 
 const dropdownVariants = {
