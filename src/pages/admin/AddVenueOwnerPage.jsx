@@ -8,7 +8,7 @@ import {
 import { MdBlock } from "react-icons/md";
 import SearchInput from "../../components/common/SearchInput";
 // import AddOwnerModal from "../../components/modal/AddOwnerModal";
-import AddOwnerModal from "../../components/modal/AddOwnerModal";
+import AddOwnerModal from "../../components/modal/AddOwnerModal";// modal folder name changed for deployment
 import { useAdminUser } from "../../hooks/admin/useAdminUser";
 import { useDeleteUser } from "../../hooks/admin/useDeleteUser";
 import OwnerTable from "../../components/admin/ownerTable";
