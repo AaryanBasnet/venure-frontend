@@ -12,6 +12,7 @@ const AuthContextProvider = ({ children }) => {
     const normalizedUser = {
       ...userData,
       _id: userData._id || userData.id,
+      role: userData.role
     };
 
     localStorage.setItem("user", JSON.stringify(normalizedUser));
@@ -39,6 +40,7 @@ const AuthContextProvider = ({ children }) => {
         const normalizedUser = {
           ...parsedUser,
           _id: parsedUser._id || parsedUser.id,
+          role: parsedUser.role
         };
         setUser(normalizedUser);
       } catch (error) {

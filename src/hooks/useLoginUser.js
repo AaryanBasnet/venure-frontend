@@ -13,18 +13,21 @@ export const useLoginUser = () => {
     mutationFn: loginUserService,
     mutationKey: ["login-key"],
     onSuccess: (data) => {
+      console.log("LOGIN SUCCESS", data); // show me this console log output
       login(data?.userData, data?.token);
       toast.success(data?.message || "Login Success");
 
       const role = data?.userData?.role;
 
-      if (role === "Admin") {
-        navigate("/admin/dashboard");
-      } else if (role === "VenueOwner") {
-        navigate("/owner/dashboard");
-      } else {
-        navigate("/");
-      }
+      setTimeout(() => {
+        if (role === "Admin") {
+          navigate("/admin/dashboard");
+        } else if (role === "VenueOwner") {
+          navigate("/owner/dashboard");
+        } else {
+          navigate("/");
+        }
+      }, 100); // 100ms delay to ensure context updates before routing
     },
     onError: (err) => {
       console.error(err);

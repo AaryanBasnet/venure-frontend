@@ -1,28 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { Crown, Sparkles, ArrowUpRight, ChevronRight } from "lucide-react";
+import { AuthContext } from "../auth/AuthProvider";
 
 const dropdownVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     y: -30,
     scale: 0.95,
-    backdropFilter: "blur(0px)"
+    backdropFilter: "blur(0px)",
   },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
     backdropFilter: "blur(20px)",
-    transition: { 
-      type: "spring", 
-      stiffness: 200, 
-      damping: 25, 
+    transition: {
+      type: "spring",
+      stiffness: 200,
+      damping: 25,
       mass: 0.8,
-      staggerChildren: 0.1
+      staggerChildren: 0.1,
     },
   },
   exit: {
@@ -30,26 +31,26 @@ const dropdownVariants = {
     y: -20,
     scale: 0.95,
     backdropFilter: "blur(0px)",
-    transition: { 
+    transition: {
       duration: 0.4,
-      ease: [0.25, 0.46, 0.45, 0.94]
+      ease: [0.25, 0.46, 0.45, 0.94],
     },
   },
 };
 
 const menuItemVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     y: 20,
-    scale: 0.9
+    scale: 0.9,
   },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { 
+    transition: {
       duration: 0.6,
-      ease: [0.25, 0.46, 0.45, 0.94]
+      ease: [0.25, 0.46, 0.45, 0.94],
     },
   },
   exit: {
@@ -72,13 +73,15 @@ function Header() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  
+
+  const { user, logout } = useContext(AuthContext);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleLandingRedirect = () => {
@@ -112,11 +115,11 @@ function Header() {
         )}
       </AnimatePresence>
 
-      <motion.header 
+      <motion.header
         className={`absolute top-0 left-0 w-full z-50 transition-all duration-500 ${
-          scrolled || menuOpen 
-            ? 'bg-white/95 backdrop-blur-xl shadow-lg border-b border-white/20' 
-            : 'bg-gradient-to-b from-white/90 to-white/70 backdrop-blur-md'
+          scrolled || menuOpen
+            ? "bg-white/95 backdrop-blur-xl shadow-lg border-b border-white/20"
+            : "bg-gradient-to-b from-white/90 to-white/70 backdrop-blur-md"
         }`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
@@ -132,7 +135,10 @@ function Header() {
             whileTap={{ scale: 0.98 }}
           >
             <div className="relative">
-              <Crown size={28} className="text-rose-600 group-hover:text-rose-700 transition-colors duration-300" />
+              <Crown
+                size={28}
+                className="text-rose-600 group-hover:text-rose-700 transition-colors duration-300"
+              />
               <motion.div
                 className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full"
                 animate={{ scale: [1, 1.2, 1] }}
@@ -152,7 +158,49 @@ function Header() {
           {/* Right Actions */}
           <div className="flex items-center gap-3 lg:gap-4">
             {/* Login Button */}
-            <motion.button
+            {user ? (
+              // When user is logged in
+              <motion.div
+                className="relative group"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <button
+                  onClick={() => navigate("/profile")} // or dropdown/menu trigger
+                  className="p-3 lg:p-4 rounded-full border border-slate-200 bg-white/80 backdrop-blur-md hover:border-rose-300 hover:text-rose-600 text-slate-700 transition-all shadow-md hover:shadow-lg"
+                >
+                  <UserCircle2 size={24} />
+                </button>
+
+                {/* Optional: Hover/Dropdown for logout */}
+                <div className="absolute top-full right-0 mt-2 hidden group-hover:block bg-white border border-slate-200 rounded-xl shadow-lg z-50">
+                  <button
+                    onClick={logout}
+                    className="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 rounded-xl"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </motion.div>
+            ) : (
+              // When user is NOT logged in
+              <motion.button
+                onClick={handleLoginRedirect}
+                className="group relative px-4 lg:px-6 py-2 lg:py-3 bg-gradient-to-r from-slate-100 to-slate-50 hover:from-rose-50 hover:to-pink-50 border border-slate-200 hover:border-rose-300 rounded-full font-semibold text-slate-700 hover:text-rose-700 transition-all duration-300 shadow-sm hover:shadow-md text-sm lg:text-base"
+                whileHover={{ scale: 1.02, y: -1 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <span className="flex items-center gap-2">
+                  Login
+                  <ArrowUpRight
+                    size={16}
+                    className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300"
+                  />
+                </span>
+              </motion.button>
+            )}
+
+            {/* <motion.button
               onClick={handleLoginRedirect}
               className="group relative px-4 lg:px-6 py-2 lg:py-3 bg-gradient-to-r from-slate-100 to-slate-50 hover:from-rose-50 hover:to-pink-50 border border-slate-200 hover:border-rose-300 rounded-full font-semibold text-slate-700 hover:text-rose-700 transition-all duration-300 shadow-sm hover:shadow-md text-sm lg:text-base"
               whileHover={{ scale: 1.02, y: -1 }}
@@ -162,15 +210,15 @@ function Header() {
                 Login
                 <ArrowUpRight size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
               </span>
-            </motion.button>
+            </motion.button> */}
 
             {/* Menu Toggle */}
             <motion.button
               onClick={toggleMenu}
               className={`relative p-3 lg:p-4 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-xl ${
                 menuOpen
-                  ? 'bg-gradient-to-r from-rose-500 to-pink-600 text-white border-transparent'
-                  : 'bg-white/80 backdrop-blur-md border border-slate-200 text-slate-700 hover:border-rose-300 hover:text-rose-600'
+                  ? "bg-gradient-to-r from-rose-500 to-pink-600 text-white border-transparent"
+                  : "bg-white/80 backdrop-blur-md border border-slate-200 text-slate-700 hover:border-rose-300 hover:text-rose-600"
               }`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -180,9 +228,13 @@ function Header() {
                 animate={{ rotate: menuOpen ? 180 : 0 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
               >
-                {menuOpen ? <IoClose size={20} /> : <RxHamburgerMenu size={20} />}
+                {menuOpen ? (
+                  <IoClose size={20} />
+                ) : (
+                  <RxHamburgerMenu size={20} />
+                )}
               </motion.div>
-              
+
               {/* Ripple effect */}
               <motion.div
                 className="absolute inset-0 rounded-full bg-gradient-to-r from-rose-400/20 to-pink-400/20"
@@ -206,7 +258,7 @@ function Header() {
             >
               {/* Decorative top border */}
               <div className="w-full h-px bg-gradient-to-r from-transparent via-rose-300/50 to-transparent"></div>
-              
+
               <div className="container mx-auto px-6 lg:px-12 py-8 lg:py-12">
                 {/* Menu Items Grid */}
                 <motion.div
@@ -214,9 +266,9 @@ function Header() {
                   variants={{
                     visible: {
                       transition: {
-                        staggerChildren: 0.1
-                      }
-                    }
+                        staggerChildren: 0.1,
+                      },
+                    },
                   }}
                 >
                   {menuItems.map((item, index) => (
@@ -226,36 +278,43 @@ function Header() {
                       onClick={() => handleMenuItemClick(item.href)}
                       className={`group relative p-4 lg:p-6 rounded-2xl border transition-all duration-300 text-left overflow-hidden ${
                         item.featured
-                          ? 'bg-gradient-to-br from-rose-50 to-pink-50 border-rose-200 hover:border-rose-300'
-                          : 'bg-gradient-to-br from-slate-50 to-white border-slate-200 hover:border-slate-300'
+                          ? "bg-gradient-to-br from-rose-50 to-pink-50 border-rose-200 hover:border-rose-300"
+                          : "bg-gradient-to-br from-slate-50 to-white border-slate-200 hover:border-slate-300"
                       }`}
                       whileHover={{ scale: 1.02, y: -2 }}
                       whileTap={{ scale: 0.98 }}
                     >
                       {/* Background gradient animation */}
-                      <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
-                        item.featured
-                          ? 'bg-gradient-to-r from-rose-100/50 to-pink-100/50'
-                          : 'bg-gradient-to-r from-slate-100/50 to-gray-100/50'
-                      }`} />
-                      
+                      <div
+                        className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
+                          item.featured
+                            ? "bg-gradient-to-r from-rose-100/50 to-pink-100/50"
+                            : "bg-gradient-to-r from-slate-100/50 to-gray-100/50"
+                        }`}
+                      />
+
                       <div className="relative z-10">
                         <div className="flex items-center justify-between mb-2">
-                          <h3 className={`text-xl lg:text-2xl font-serif font-bold transition-colors duration-300 ${
-                            item.featured
-                              ? 'text-rose-700 group-hover:text-rose-800'
-                              : 'text-slate-700 group-hover:text-slate-800'
-                          }`}>
+                          <h3
+                            className={`text-xl lg:text-2xl font-serif font-bold transition-colors duration-300 ${
+                              item.featured
+                                ? "text-rose-700 group-hover:text-rose-800"
+                                : "text-slate-700 group-hover:text-slate-800"
+                            }`}
+                          >
                             {item.name}
                           </h3>
                           {item.featured && (
                             <Sparkles size={18} className="text-rose-500" />
                           )}
                         </div>
-                        
+
                         <div className="flex items-center text-sm text-slate-500 group-hover:text-slate-600 transition-colors duration-300">
                           <span>Explore</span>
-                          <ChevronRight size={14} className="ml-1 group-hover:translate-x-1 transition-transform duration-300" />
+                          <ChevronRight
+                            size={14}
+                            className="ml-1 group-hover:translate-x-1 transition-transform duration-300"
+                          />
                         </div>
                       </div>
                     </motion.button>
@@ -270,11 +329,15 @@ function Header() {
                   className="flex flex-col sm:flex-row items-center justify-between p-6 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-2xl text-white"
                 >
                   <div className="mb-4 sm:mb-0">
-                    <h4 className="text-lg font-bold mb-1">Ready to book your perfect venue?</h4>
-                    <p className="text-slate-300 text-sm">Discover premium locations for your special events.</p>
+                    <h4 className="text-lg font-bold mb-1">
+                      Ready to book your perfect venue?
+                    </h4>
+                    <p className="text-slate-300 text-sm">
+                      Discover premium locations for your special events.
+                    </p>
                   </div>
                   <motion.button
-                    onClick={() => handleMenuItemClick('/venues')}
+                    onClick={() => handleMenuItemClick("/venues")}
                     className="px-6 py-3 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}

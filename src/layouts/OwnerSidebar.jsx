@@ -1,108 +1,342 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../auth/AuthProvider";
 
 // Import your components and icons
 import SidebarOption from "../components/SidebarOption";
 import SidebarToggle from "../components/SidebarToggle";
-import { FiHome, FiUser, FiLogOut } from "react-icons/fi";
+import {
+  FiHome,
+  FiUser,
+  FiLogOut,
+  FiSettings,
+  FiBarChart2,
+  FiCalendar,
+  FiDollarSign,
+  FiMessageSquare,
+  FiCamera,
+  FiStar,
+  FiClock,
+  FiHelpCircle,
+} from "react-icons/fi";
 import { FaBuildingColumns } from "react-icons/fa6";
 import { GrUserAdmin } from "react-icons/gr";
+import { MdDashboard, MdEventAvailable, MdPayment } from "react-icons/md";
+import { BiCalendarEvent } from "react-icons/bi";
 import logo from "../assets/logo.png";
 
-// The component now accepts props from ownerLayout
 const OwnerSidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useContext(AuthContext);
+  const [hoveredItem, setHoveredItem] = useState(null);
 
-  // This effect now runs only ONCE on component mount to set a sensible default.
+  // Handle responsive behavior
   useEffect(() => {
-    if (window.innerWidth < 1024) {
-      setSidebarOpen(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array ensures this runs only once.
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setSidebarOpen(false);
+      }
+    };
+
+    // Set initial state
+    handleResize();
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, [setSidebarOpen]);
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
 
+  // Navigation items organized by sections for venue owners
+  const navigationSections = [
+    {
+      title: "Overview",
+      items: [
+        {
+          Icon: MdDashboard,
+          title: "Dashboard",
+          path: "/owner/dashboard",
+          description: "Main overview",
+          badge: null,
+        },
+        {
+          Icon: FiBarChart2,
+          title: "Analytics",
+          path: "/owner/analytics",
+          description: "Performance metrics",
+          badge: null,
+        },
+      ],
+    },
+    {
+      title: "Venue Management",
+      items: [
+        {
+          Icon: FaBuildingColumns,
+          title: "My Venues",
+          path: "/owner/venues",
+          description: "Manage your venues",
+          badge: "3",
+        },
+        {
+          Icon: FiCamera,
+          title: "Gallery",
+          path: "/owner/gallery",
+          description: "Venue photos",
+          badge: null,
+        },
+        {
+          Icon: FiStar,
+          title: "Reviews",
+          path: "/owner/reviews",
+          description: "Customer feedback",
+          badge: "12",
+        },
+      ],
+    },
+    {
+      title: "Bookings & Revenue",
+      items: [
+        {
+          Icon: BiCalendarEvent,
+          title: "Bookings",
+          path: "/owner/bookings",
+          description: "Manage reservations",
+          badge: "5",
+        },
+        {
+          Icon: FiCalendar,
+          title: "Availability",
+          path: "/owner/availability",
+          description: "Set available dates",
+          badge: null,
+        },
+        {
+          Icon: MdPayment,
+          title: "Payments",
+          path: "/owner/payments",
+          description: "Revenue & payouts",
+          badge: null,
+        },
+      ],
+    },
+    {
+      title: "Communication",
+      items: [
+        {
+          Icon: FiMessageSquare,
+          title: "Messages",
+          path: "/owner/chat",
+          description: "Customer inquiries",
+          badge: "3",
+        },
+        {
+          Icon: FiClock,
+          title: "Support Tickets",
+          path: "/owner/support",
+          description: "Get help",
+          badge: "1",
+        },
+      ],
+    },
+  ];
+
   return (
     <>
+      {/* Overlay for mobile */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Main Sidebar Navigation */}
-      {/* The 'fixed' and 'md:relative' classes have been removed. 
-          The sidebar is now always part of the flex layout. 
-          'flex-shrink-0' is added to prevent it from shrinking.
-      */}
       <nav
         className={`
-          h-screen flex flex-col justify-between flex-shrink-0
-          bg-white border-r-0 transition-all duration-300 shadow-lg
-          ${sidebarOpen ? "w-64" : "w-20"}
+          fixed lg:relative top-0 left-0 h-screen flex flex-col
+          bg-white border-r border-gray-200 transition-all duration-300 
+          shadow-lg z-50 flex-shrink-0
+          ${sidebarOpen ? "w-72" : "w-20"}
         `}
       >
-        {/* Top Section: Logo, User Info, and Navigation */}
-        <div className="px-4 pt-4">
-          <div className="flex items-center gap-3 mb-6">
-            <img
-              src={logo}
-              alt="logo"
-              className="h-10 w-10 object-contain flex-shrink-0"
-            />
+        {/* Header Section */}
+        <div className="px-4 pt-6 pb-4 border-b border-gray-200">
+          <div className="flex items-center gap-3 mb-4">
+            {/* <div className="relative">
+              <img
+                src={logo}
+                alt="logo"
+                className="h-12 w-12 object-contain flex-shrink-0 rounded-lg shadow-sm border border-gray-200"
+              />
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+            </div> */}
+            {/* User Profile Section */}
             {sidebarOpen && (
-              <div className="overflow-hidden">
-                <h1 className="text-sm font-semibold text-gray-800 whitespace-nowrap">
-                  {user?.name || "Aaryan Basnet"}
-                </h1>
-                <p className="text-xs text-gray-500 whitespace-nowrap">{user.role}</p>
+              <div className="mb-4 p-3 bg-gray-50 rounded-lg border w-full border-gray-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                    {(user?.name || "O").charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1 overflow-hidden">
+                    <div className="text-sm font-medium text-gray-900 truncate">
+                      {user?.name || "Owner Name"}
+                    </div>
+                    <div className="text-xs text-gray-600 truncate">
+                      {user?.email || "owner@example.com"}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Performance indicator */}
               </div>
             )}
           </div>
 
-          {/* Menu Options */}
-          <div className="flex flex-col gap-1">
-            <SidebarOption
-              Icon={FiHome}
-              title="Dashboard"
-              path="/owner/dashboard"
-              open={sidebarOpen}
-              active={location.pathname === "/owner/dashboard"}
-            />
-            <SidebarOption
-              Icon={FiUser}
-              title="Users"
-              path="/owner/user"
-              open={sidebarOpen}
-              active={location.pathname === "/owner/user"}
-            />
-            <SidebarOption
-              Icon={FaBuildingColumns}
-              title="Venue"
-              path="/owner/venue"
-              open={sidebarOpen}
-              active={location.pathname === "/owner/venue"}
-            />
-            <SidebarOption
-              Icon={GrUserAdmin}
-              title="Venue Owner"
-              path="/owner/owner"
-              open={sidebarOpen}
-              active={location.pathname === "/owner/owner"}
-            />
-          </div>
+          {/* Quick Stats - Only show when expanded */}
+          {sidebarOpen && (
+            <div className="grid grid-cols-2 gap-2 mt-4">
+              <div className="bg-gray-50 rounded-lg p-2 text-center border border-gray-200">
+                <div className="text-lg font-bold text-gray-900">3</div>
+                <div className="text-xs text-gray-600">Active Venues</div>
+              </div>
+              <div className="bg-gray-50 rounded-lg p-2 text-center border border-gray-200">
+                <div className="text-lg font-bold text-blue-600">$2.4K</div>
+                <div className="text-xs text-gray-600">This Month</div>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Bottom Section: Logout and Toggle Button */}
-        <div className="px-4 pb-4 border-t-0 pt-3 flex items-center justify-between">
-          <SidebarOption
-            Icon={FiLogOut}
-            title="Logout"
-            open={sidebarOpen}
-            onClick={handleLogout}
-          />
-          <SidebarToggle open={sidebarOpen} setOpen={setSidebarOpen} />
+        {/* Navigation Sections */}
+        <div className="flex-1 overflow-y-auto py-4 scrollbar-thin scrollbar-thumb-gray-300">
+          {navigationSections.map((section, sectionIndex) => (
+            <div key={section.title} className={sectionIndex > 0 ? "mt-6" : ""}>
+              {/* Section Header */}
+              {sidebarOpen && (
+                <div className="px-4 mb-2">
+                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    {section.title}
+                  </h3>
+                </div>
+              )}
+
+              {/* Section Items */}
+              <div className="space-y-1 px-2">
+                {section.items.map((item) => (
+                  <div
+                    key={item.path}
+                    onMouseEnter={() => setHoveredItem(item.path)}
+                    onMouseLeave={() => setHoveredItem(null)}
+                    className="relative"
+                  >
+                    <div
+                      className={`
+                        relative transition-all duration-200 rounded-lg mx-1 cursor-pointer
+                        ${
+                          location.pathname === item.path
+                            ? "bg-blue-50 text-blue-600 border border-blue-200"
+                            : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                        }
+                      `}
+                      onClick={() => navigate(item.path)}
+                    >
+                      <div
+                        className={`flex items-center gap-3 px-3 py-3 ${
+                          !sidebarOpen ? "justify-center" : ""
+                        }`}
+                      >
+                        <item.Icon className="w-5 h-5 flex-shrink-0" />
+                        {sidebarOpen && (
+                          <>
+                            <span className="font-medium truncate">
+                              {item.title}
+                            </span>
+                            {item.badge && (
+                              <span className="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">
+                                {item.badge}
+                              </span>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Tooltip for collapsed sidebar */}
+                    {!sidebarOpen && hoveredItem === item.path && (
+                      <div className="absolute left-16 top-1/2 transform -translate-y-1/2 z-50">
+                        <div className="bg-gray-900 text-white px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
+                          <div className="font-medium">{item.title}</div>
+                          <div className="text-xs text-gray-300">
+                            {item.description}
+                          </div>
+                          {item.badge && (
+                            <div className="text-xs text-red-400 mt-1">
+                              {item.badge} new
+                            </div>
+                          )}
+                          {/* Arrow */}
+                          <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1">
+                            <div className="w-2 h-2 bg-gray-900 rotate-45"></div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom Section */}
+        <div className="border-t border-gray-200 p-4">
+          {/* Action Buttons */}
+          <div className="flex items-center justify-between gap-2">
+            {/* Settings Button */}
+            <button
+              onClick={() => navigate("/owner/settings")}
+              className={`
+                flex items-center gap-2 px-3 py-2 rounded-lg
+                text-gray-600 hover:text-gray-900 hover:bg-gray-100
+                transition-all duration-200
+                ${!sidebarOpen ? "w-full justify-center" : ""}
+              `}
+              title="Settings"
+            >
+              <FiSettings className="w-5 h-5" />
+              {sidebarOpen && <span className="text-sm">Settings</span>}
+            </button>
+
+            {/* Logout Button */}
+            <button
+              onClick={handleLogout}
+              className={`
+                flex items-center gap-2 px-3 py-2 rounded-lg
+                text-red-600 hover:text-white hover:bg-red-500
+                transition-all duration-200
+                ${!sidebarOpen ? "w-full justify-center" : ""}
+              `}
+              title="Logout"
+            >
+              <FiLogOut className="w-5 h-5" />
+              {sidebarOpen && <span className="text-sm">Logout</span>}
+            </button>
+
+            {/* Toggle Button */}
+            <SidebarToggle
+              open={sidebarOpen}
+              setOpen={setSidebarOpen}
+              className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg p-2 transition-all duration-200"
+            />
+          </div>
         </div>
       </nav>
     </>

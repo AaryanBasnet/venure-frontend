@@ -33,13 +33,8 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       }
     };
 
-    // Set initial state
     handleResize();
-    
-    // Add event listener
     window.addEventListener('resize', handleResize);
-    
-    // Cleanup
     return () => window.removeEventListener('resize', handleResize);
   }, [setSidebarOpen]);
 
@@ -48,252 +43,220 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
     navigate("/login");
   };
 
-  // Navigation items organized by sections
-  const navigationSections = [
+  // Navigation items with better organization
+  const navigationItems = [
     {
-      title: "Overview",
-      items: [
-        {
-          Icon: MdDashboard,
-          title: "Dashboard",
-          path: "/admin/dashboard",
-          description: "Main overview"
-        },
-        {
-          Icon: MdAnalytics,
-          title: "Analytics",
-          path: "/admin/analytics",
-          description: "View statistics"
-        }
-      ]
+      Icon: MdDashboard,
+      title: "Dashboard",
+      path: "/admin/dashboard",
     },
     {
-      title: "Management",
-      items: [
-        {
-          Icon: FiUser,
-          title: "Users",
-          path: "/admin/user",
-          description: "Manage users"
-        },
-        {
-          Icon: FaBuildingColumns,
-          title: "Venues",
-          path: "/admin/venue",
-          description: "Manage venues"
-        },
-        {
-          Icon: GrUserAdmin,
-          title: "Venue Owners",
-          path: "/admin/owner",
-          description: "Manage owners"
-        },
-        {
-          Icon: FiCalendar,
-          title: "Bookings",
-          path: "/admin/bookings",
-          description: "View bookings"
-        }
-      ]
+      Icon: MdAnalytics,
+      title: "Analytics",
+      path: "/admin/analytics",
     },
     {
-      title: "System",
-      items: [
-        {
-          Icon: FiSettings,
-          title: "Settings",
-          path: "/admin/settings",
-          description: "System settings"
-        },
-        {
-          Icon: FiBell,
-          title: "Notifications",
-          path: "/admin/notifications",
-          description: "Manage alerts"
-        }
-      ]
+      Icon: FiUser,
+      title: "Users",
+      path: "/admin/user",
+    },
+    {
+      Icon: FaBuildingColumns,
+      title: "Venues",
+      path: "/admin/venue",
+    },
+    {
+      Icon: GrUserAdmin,
+      title: "Owners",
+      path: "/admin/owner",
+    },
+    {
+      Icon: FiCalendar,
+      title: "Bookings",
+      path: "/admin/bookings",
+    },
+    {
+      Icon: FiBell,
+      title: "Notifications",
+      path: "/admin/notifications",
+    },
+    {
+      Icon: FiSettings,
+      title: "Settings",
+      path: "/admin/settings",
     }
   ];
 
   return (
     <>
-      {/* Overlay for mobile */}
+      {/* Mobile Overlay with gentle blur */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-slate-900/10 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* Main Sidebar Navigation */}
+      {/* Main Sidebar - Beautiful yet simple */}
       <nav
         className={`
           fixed lg:relative top-0 left-0 h-screen flex flex-col
-          bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900
-          border-r border-slate-700 transition-all duration-300 
-          shadow-2xl z-50 flex-shrink-0
-          ${sidebarOpen ? "w-72" : "w-20"}
+          bg-white/95 backdrop-blur-xl border-r border-slate-200/60 
+          transition-all duration-300 ease-out shadow-lg shadow-slate-200/30
+          z-50 flex-shrink-0
+          ${sidebarOpen ? "w-64" : "w-16"}
         `}
       >
-        {/* Header Section */}
-        <div className="px-4 pt-6 pb-4 border-b border-slate-700">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="relative">
-              <img
-                src={logo}
-                alt="logo"
-                className="h-12 w-12 object-contain flex-shrink-0 rounded-lg shadow-lg"
-              />
-              <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-slate-900"></div>
+        {/* Header with subtle gradient */}
+        <div className="relative p-5 border-b border-slate-100/80">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 to-transparent"></div>
+          <div className="relative flex items-center gap-3">
+            <div className="relative flex-shrink-0">
+              <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
+                <img
+                  src={logo}
+                  alt="logo"
+                  className="h-5 w-5 object-contain"
+                />
+              </div>
+              <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white shadow-sm"></div>
             </div>
             {sidebarOpen && (
               <div className="overflow-hidden">
-                <h1 className="text-lg font-bold text-white whitespace-nowrap">
-                  {user?.name || "Admin Panel"}
+                <h1 className="text-base font-semibold text-slate-800 truncate">
+                  Admin Panel
                 </h1>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                  <p className="text-sm text-slate-300 whitespace-nowrap">
-                    Administrator
-                  </p>
-                </div>
+                <p className="text-xs text-slate-500 truncate font-medium">
+                  {user?.name || "Administrator"}
+                </p>
               </div>
             )}
           </div>
-
-          {/* Quick Stats - Only show when expanded */}
-          {sidebarOpen && (
-            <div className="grid grid-cols-2 gap-2 mt-4">
-              <div className="bg-slate-800 rounded-lg p-2 text-center border border-slate-600">
-                <div className="text-lg font-bold text-blue-400">24</div>
-                <div className="text-xs text-slate-300">Active Users</div>
-              </div>
-              <div className="bg-slate-800 rounded-lg p-2 text-center border border-slate-600">
-                <div className="text-lg font-bold text-green-400">12</div>
-                <div className="text-xs text-slate-300">New Bookings</div>
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Navigation Sections */}
-        <div className="flex-1 overflow-y-auto py-4 scrollbar-thin scrollbar-thumb-slate-600">
-          {navigationSections.map((section, sectionIndex) => (
-            <div key={section.title} className={sectionIndex > 0 ? "mt-6" : ""}>
-              {/* Section Header */}
-              {sidebarOpen && (
-                <div className="px-4 mb-2">
-                  <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                    {section.title}
-                  </h3>
-                </div>
-              )}
-
-              {/* Section Items */}
-              <div className="space-y-1 px-2">
-                {section.items.map((item) => (
-                  <div
-                    key={item.path}
-                    onMouseEnter={() => setHoveredItem(item.path)}
-                    onMouseLeave={() => setHoveredItem(null)}
-                    className="relative"
-                  >
-                    <SidebarOption
-                      Icon={item.Icon}
-                      title={item.title}
-                      path={item.path}
-                      open={sidebarOpen}
-                      active={location.pathname === item.path}
-                      className={`
-                        relative transition-all duration-200 rounded-lg mx-1
-                        ${location.pathname === item.path 
-                          ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/25' 
-                          : 'text-slate-300 hover:bg-slate-700 hover:text-white'
-                        }
-                        ${!sidebarOpen ? 'justify-center' : ''}
-                      `}
-                    />
-                    
-                    {/* Tooltip for collapsed sidebar */}
-                    {!sidebarOpen && hoveredItem === item.path && (
-                      <div className="absolute left-16 top-1/2 transform -translate-y-1/2 z-50">
-                        <div className="bg-slate-800 text-white px-3 py-2 rounded-lg shadow-lg border border-slate-600 whitespace-nowrap">
-                          <div className="font-medium">{item.title}</div>
-                          <div className="text-xs text-slate-300">{item.description}</div>
-                          {/* Arrow */}
-                          <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1">
-                            <div className="w-2 h-2 bg-slate-800 border-l border-b border-slate-600 rotate-45"></div>
-                          </div>
-                        </div>
+        {/* Navigation with beautiful spacing */}
+        <div className="flex-1 overflow-y-auto py-4 px-3">
+          <div className="space-y-1">
+            {navigationItems.map((item, index) => (
+              <div
+                key={item.path}
+                onMouseEnter={() => !sidebarOpen && setHoveredItem(item.path)}
+                onMouseLeave={() => setHoveredItem(null)}
+                className="relative"
+              >
+                <button
+                  onClick={() => navigate(item.path)}
+                  className={`
+                    group w-full flex items-center gap-3 px-3 py-3 rounded-xl
+                    text-sm font-medium transition-all duration-200 ease-out
+                    ${location.pathname === item.path 
+                      ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25 scale-[1.02]' 
+                      : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 hover:scale-[1.01]'
+                    }
+                    ${!sidebarOpen ? 'justify-center px-2' : ''}
+                  `}
+                >
+                  <item.Icon 
+                    className={`
+                      w-5 h-5 flex-shrink-0 transition-transform duration-200
+                      ${location.pathname === item.path 
+                        ? 'text-white' 
+                        : 'text-slate-500 group-hover:text-slate-700 group-hover:scale-110'
+                      }
+                    `} 
+                  />
+                  {sidebarOpen && (
+                    <span className="truncate">{item.title}</span>
+                  )}
+                  
+                  {/* Active indicator dot */}
+                  {location.pathname === item.path && (
+                    <div className="ml-auto w-1.5 h-1.5 bg-white rounded-full opacity-80"></div>
+                  )}
+                </button>
+                
+                {/* Beautiful tooltip */}
+                {!sidebarOpen && hoveredItem === item.path && (
+                  <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50">
+                    <div className="bg-slate-800 text-white px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap shadow-xl shadow-slate-800/25 border border-slate-700/50">
+                      {item.title}
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1">
+                        <div className="w-2 h-2 bg-slate-800 rotate-45 border-l border-b border-slate-700/50"></div>
                       </div>
-                    )}
+                    </div>
                   </div>
-                ))}
+                )}
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        {/* Bottom Section */}
-        <div className="border-t border-slate-700 p-4">
-          {/* User Profile Section */}
+        {/* Footer with elegant design */}
+        <div className="border-t border-slate-100/80 p-4">
+          {/* User profile when expanded */}
           {sidebarOpen && (
-            <div className="mb-4 p-3 bg-slate-800 rounded-lg border border-slate-600">
+            <div className="mb-4 p-3 bg-gradient-to-br from-slate-50 to-slate-100/50 rounded-xl border border-slate-200/50 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                <div className="w-9 h-9 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-sm font-semibold shadow-lg shadow-indigo-500/25">
                   {(user?.name || "A").charAt(0).toUpperCase()}
                 </div>
-                <div className="flex-1 overflow-hidden">
-                  <div className="text-sm font-medium text-white truncate">
-                    {user?.name || "Aaryan Basnet"}
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-semibold text-slate-800 truncate">
+                    {user?.name || "Admin User"}
                   </div>
-                  <div className="text-xs text-slate-400 truncate">
+                  <div className="text-xs text-slate-500 truncate">
                     {user?.email || "admin@example.com"}
                   </div>
                 </div>
+                <div className="w-2 h-2 bg-emerald-400 rounded-full shadow-sm"></div>
               </div>
             </div>
           )}
 
-          {/* Action Buttons */}
-          <div className="flex items-center justify-between gap-2">
-            {/* Help Button */}
+          {/* Action buttons with beautiful styling */}
+          <div className="flex items-center gap-2">
+            {/* Help */}
             <button
               className={`
-                flex items-center gap-2 px-3 py-2 rounded-lg
-                text-slate-300 hover:text-white hover:bg-slate-700
-                transition-all duration-200
-                ${!sidebarOpen ? 'w-full justify-center' : ''}
+                group flex items-center gap-2 px-3 py-2.5 rounded-lg
+                text-slate-500 hover:text-slate-700 hover:bg-slate-50
+                transition-all duration-200 text-sm font-medium
+                hover:scale-[1.02] active:scale-[0.98]
+                ${!sidebarOpen ? 'flex-1 justify-center' : ''}
               `}
               title="Help & Support"
             >
-              <FiHelpCircle className="w-5 h-5" />
-              {sidebarOpen && <span className="text-sm">Help</span>}
+              <FiHelpCircle className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
+              {sidebarOpen && <span>Help</span>}
             </button>
 
-            {/* Logout Button */}
+            {/* Logout with attention-grabbing design */}
             <button
               onClick={handleLogout}
               className={`
-                flex items-center gap-2 px-3 py-2 rounded-lg
-                text-red-400 hover:text-white hover:bg-red-600
-                transition-all duration-200
-                ${!sidebarOpen ? 'w-full justify-center' : ''}
+                group flex items-center gap-2 px-3 py-2.5 rounded-lg
+                text-red-500 hover:text-white hover:bg-gradient-to-r hover:from-red-500 hover:to-red-600
+                transition-all duration-200 text-sm font-medium
+                hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg hover:shadow-red-500/25
+                ${!sidebarOpen ? 'flex-1 justify-center' : ''}
               `}
               title="Logout"
             >
-              <FiLogOut className="w-5 h-5" />
-              {sidebarOpen && <span className="text-sm">Logout</span>}
+              <FiLogOut className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
+              {sidebarOpen && <span>Logout</span>}
             </button>
 
-            {/* Toggle Button */}
+            {/* Toggle with subtle styling */}
             <SidebarToggle 
               open={sidebarOpen} 
               setOpen={setSidebarOpen}
-              className="text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg p-2 transition-all duration-200"
+              className="text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg p-2.5 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
             />
           </div>
         </div>
+
+        {/* Subtle bottom gradient */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
       </nav>
     </>
   );

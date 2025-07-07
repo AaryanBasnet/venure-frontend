@@ -1,24 +1,26 @@
 import React, { useContext, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { AuthContext } from "../../auth/AuthProvider";
 import {
-  MapPin,
-  Users,
-  DollarSign,
+  Speaker,
+  Phone,
+  Crown,
+  CalendarCheck,
   ArrowLeft,
   ArrowRight,
-  Phone,
-  CalendarCheck,
-  Crown,
+  Sparkles,
   Wifi,
   ParkingCircle,
-  Speaker,
-  UtensilsCrossed,
   Snowflake,
+  Speaker as SoundSpeaker,
+  UtensilsCrossed,
   ShieldCheck,
-  Sparkles,
+  Users,
+  MapPin,
+  DollarSign,
 } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
 import { useVenueDetails } from "../../hooks/user/useVenueDetails";
-import { AuthContext } from "../../auth/AuthProvider";
+import { useChat } from "../../hooks/useChat";
 
 const BASE_URL = "http://localhost:5050";
 
@@ -26,18 +28,23 @@ const amenityIcons = {
   Wifi: <Wifi size={28} className="stroke-1" />,
   Parking: <ParkingCircle size={28} className="stroke-1" />,
   "Air Conditioning": <Snowflake size={28} className="stroke-1" />,
-  "Sound System": <Speaker size={28} className="stroke-1" />,
+  "Sound System": <SoundSpeaker size={28} className="stroke-1" />,
   Catering: <UtensilsCrossed size={28} className="stroke-1" />,
   Security: <ShieldCheck size={28} className="stroke-1" />,
 };
 
 const VenueDetails = () => {
   const { id } = useParams();
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const { data: venue, isLoading, isError, error } = useVenueDetails(id);
-  const [currentIndex, setCurrentIndex] = useState(0);
 
+  const { data: venue, isLoading, isError, error } = useVenueDetails(id);
+
+  // Pass venue._id to useChat once venue is loaded
+  const venueId = venue?._id || null;
+  const { startChatWith, activeChat } = useChat(user, venueId);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
   const totalImages = venue?.venueImages?.length || 0;
 
   const prevImage = () => {
@@ -56,13 +63,42 @@ const VenueDetails = () => {
     }
   };
 
+  const handleChatWithOwner = async () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+
+    const ownerId = venue?.owner?._id || venue?.owner;
+
+    if (!ownerId || !venue?._id) {
+      alert("Venue owner information unavailable");
+      return;
+    }
+
+    try {
+     const chat = await startChatWith(ownerId);
+navigate(`/chat`, {
+  state: {
+    chatId: chat._id,
+    currentUserId: user._id, // the user who is initiating the chat
+    venueId: venue._id, // optional if needed later
+  },
+});
+    } catch (err) {
+      console.error("Failed to start chat", err);
+      alert("Unable to start chat");
+    }
+  };
   // Loading & Error Handling
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
         <div className="flex flex-col items-center space-y-4">
           <div className="w-12 h-12 border-4 border-rose-200 border-t-rose-400 rounded-full animate-spin"></div>
-          <div className="text-lg text-slate-600 font-light tracking-wide">Unveiling your venue...</div>
+          <div className="text-lg text-slate-600 font-light tracking-wide">
+            Unveiling your venue...
+          </div>
         </div>
       </div>
     );
@@ -72,7 +108,9 @@ const VenueDetails = () => {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-rose-50 to-rose-100">
         <div className="text-center p-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-rose-200">
-          <div className="text-lg text-rose-700 font-light">We encountered an issue: {error.message}</div>
+          <div className="text-lg text-rose-700 font-light">
+            We encountered an issue: {error.message}
+          </div>
         </div>
       </div>
     );
@@ -82,7 +120,9 @@ const VenueDetails = () => {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
         <div className="text-center p-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-200">
-          <div className="text-lg text-slate-700 font-light">This exquisite venue awaits discovery elsewhere.</div>
+          <div className="text-lg text-slate-700 font-light">
+            This exquisite venue awaits discovery elsewhere.
+          </div>
         </div>
       </div>
     );
@@ -91,7 +131,6 @@ const VenueDetails = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-rose-50">
       <div className="container mx-auto px-6 sm:px-8 lg:px-12 py-16 font-light">
-        
         {/* Elegant Header */}
         <div className="text-center mb-16">
           <div className="flex justify-center mb-6">
@@ -101,20 +140,28 @@ const VenueDetails = () => {
             {venue.venueName}
           </h1>
           <div className="w-24 h-px bg-gradient-to-r from-transparent via-rose-300 to-transparent mx-auto mb-8"></div>
-          
+
           <div className="max-w-3xl mx-auto mb-8">
             <p className="text-xl text-slate-600 leading-relaxed font-light mb-8">
               {venue.description}
             </p>
-            
+
             <div className="flex flex-wrap justify-center gap-8 text-slate-600">
               <div className="flex items-center space-x-2">
                 <Users size={20} className="text-rose-400 stroke-1" />
-                <span className="font-light">Up to <span className="font-medium text-slate-800">{venue.capacity}</span> guests</span>
+                <span className="font-light">
+                  Up to{" "}
+                  <span className="font-medium text-slate-800">
+                    {venue.capacity}
+                  </span>{" "}
+                  guests
+                </span>
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin size={20} className="text-rose-400 stroke-1" />
-                <span className="font-light">{venue.location.city}, {venue.location.state}</span>
+                <span className="font-light">
+                  {venue.location.city}, {venue.location.state}
+                </span>
               </div>
             </div>
           </div>
@@ -125,9 +172,21 @@ const VenueDetails = () => {
               <span>{venue.pricePerHour}</span>
               <span className="text-lg text-slate-500">per hour</span>
             </div>
+
             <button className="flex items-center space-x-3 px-8 py-3 bg-white/70 backdrop-blur-sm border border-slate-200 text-slate-700 rounded-full hover:bg-white hover:shadow-lg transition-all duration-300 font-light group">
-              <Phone size={18} className="stroke-1 group-hover:text-rose-400 transition-colors" />
+              <Phone
+                size={18}
+                className="stroke-1 group-hover:text-rose-400 transition-colors"
+              />
               <span>Contact Host</span>
+            </button>
+
+            <button
+              onClick={handleChatWithOwner}
+              className="flex items-center space-x-3 px-8 py-3 bg-rose-400 text-white rounded-full hover:bg-rose-500 transition-all duration-300 font-light"
+            >
+              <Speaker size={18} className="stroke-1" />
+              <span>Chat with Venue Owner</span>
             </button>
           </div>
         </div>
@@ -155,14 +214,20 @@ const VenueDetails = () => {
                   className="absolute top-1/2 left-8 -translate-y-1/2 w-14 h-14 bg-white/90 backdrop-blur-md text-slate-600 rounded-full shadow-lg hover:bg-white hover:scale-110 hover:shadow-xl transition-all duration-300 flex items-center justify-center group"
                   aria-label="Previous image"
                 >
-                  <ArrowLeft size={20} className="stroke-1 group-hover:text-rose-400 transition-colors" />
+                  <ArrowLeft
+                    size={20}
+                    className="stroke-1 group-hover:text-rose-400 transition-colors"
+                  />
                 </button>
                 <button
                   onClick={nextImage}
                   className="absolute top-1/2 right-8 -translate-y-1/2 w-14 h-14 bg-white/90 backdrop-blur-md text-slate-600 rounded-full shadow-lg hover:bg-white hover:scale-110 hover:shadow-xl transition-all duration-300 flex items-center justify-center group"
                   aria-label="Next image"
                 >
-                  <ArrowRight size={20} className="stroke-1 group-hover:text-rose-400 transition-colors" />
+                  <ArrowRight
+                    size={20}
+                    className="stroke-1 group-hover:text-rose-400 transition-colors"
+                  />
                 </button>
               </>
             )}
@@ -173,7 +238,7 @@ const VenueDetails = () => {
               </div>
             )}
           </div>
-          
+
           {/* Elegant dots indicator */}
           {totalImages > 1 && (
             <div className="flex justify-center mt-8 space-x-3">
@@ -182,9 +247,9 @@ const VenueDetails = () => {
                   key={idx}
                   onClick={() => setCurrentIndex(idx)}
                   className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    idx === currentIndex 
-                      ? 'bg-rose-400 scale-125' 
-                      : 'bg-slate-300 hover:bg-slate-400'
+                    idx === currentIndex
+                      ? "bg-rose-400 scale-125"
+                      : "bg-slate-300 hover:bg-slate-400"
                   }`}
                 />
               ))}
@@ -210,9 +275,13 @@ const VenueDetails = () => {
                 >
                   <div className="flex flex-col items-center text-center space-y-4">
                     <div className="w-16 h-16 bg-gradient-to-br from-rose-50 to-rose-100 rounded-2xl flex items-center justify-center text-rose-400 group-hover:from-rose-100 group-hover:to-rose-200 group-hover:text-rose-500 transition-all duration-300">
-                      {amenityIcons[amenity] || <Sparkles size={28} className="stroke-1" />}
+                      {amenityIcons[amenity] || (
+                        <Sparkles size={28} className="stroke-1" />
+                      )}
                     </div>
-                    <h4 className="text-lg font-light text-slate-800">{amenity}</h4>
+                    <h4 className="text-lg font-light text-slate-800">
+                      {amenity}
+                    </h4>
                     <p className="text-sm text-slate-500 font-light leading-relaxed">
                       Thoughtfully provided for your comfort and convenience
                     </p>
@@ -222,8 +291,13 @@ const VenueDetails = () => {
             </div>
           ) : (
             <div className="text-center p-12 bg-white/40 backdrop-blur-sm rounded-2xl border border-slate-200/50">
-              <Sparkles size={32} className="text-slate-400 mx-auto mb-4 stroke-1" />
-              <div className="text-slate-500 font-light">Bespoke amenities to be revealed</div>
+              <Sparkles
+                size={32}
+                className="text-slate-400 mx-auto mb-4 stroke-1"
+              />
+              <div className="text-slate-500 font-light">
+                Bespoke amenities to be revealed
+              </div>
             </div>
           )}
         </div>
@@ -233,28 +307,33 @@ const VenueDetails = () => {
           <div className="relative p-12 bg-gradient-to-br from-white/80 to-rose-50/80 backdrop-blur-sm rounded-3xl border border-slate-200/50 shadow-xl shadow-slate-300/20 overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-rose-200/30 to-transparent rounded-full -mr-16 -mt-16"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-rose-200/20 to-transparent rounded-full -ml-12 -mb-12"></div>
-            
+
             <div className="relative text-center">
               <div className="flex justify-center mb-6">
                 <div className="w-12 h-12 bg-gradient-to-br from-rose-400 to-rose-500 rounded-2xl flex items-center justify-center">
                   <Sparkles size={24} className="text-white stroke-1" />
                 </div>
               </div>
-              
+
               <h2 className="text-3xl font-extralight text-slate-800 mb-4 tracking-wide">
                 Reserve Your Moment
               </h2>
               <p className="text-lg text-slate-600 font-light leading-relaxed mb-8 max-w-2xl mx-auto">
-                Transform your vision into reality. Our exclusive venues are in high demand, 
-                with limited availability for the upcoming season.
+                Transform your vision into reality. Our exclusive venues are in
+                high demand, with limited availability for the upcoming season.
               </p>
-              
+
               <button
                 onClick={handleCheckout}
                 className="group inline-flex items-center space-x-3 px-12 py-4 bg-gradient-to-r from-rose-400 to-rose-500 text-white rounded-full hover:from-rose-500 hover:to-rose-600 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-rose-300/50"
               >
-                <span className="text-lg font-light tracking-wide">Begin Your Journey</span>
-                <CalendarCheck size={20} className="stroke-1 group-hover:scale-110 transition-transform duration-300" />
+                <span className="text-lg font-light tracking-wide">
+                  Begin Your Journey
+                </span>
+                <CalendarCheck
+                  size={20}
+                  className="stroke-1 group-hover:scale-110 transition-transform duration-300"
+                />
               </button>
             </div>
           </div>
