@@ -5,19 +5,19 @@ import { AuthContext } from "../auth/AuthProvider";
 // Import your components and icons
 import SidebarOption from "../components/SidebarOption";
 import SidebarToggle from "../components/SidebarToggle";
-import { 
-  FiHome, 
-  FiUser, 
-  FiLogOut, 
+import {
+  FiHome,
+  FiUser,
+  FiLogOut,
   FiSettings,
   FiCalendar,
   FiBell,
-  FiHelpCircle 
+  FiHelpCircle,
 } from "react-icons/fi";
 import { FaBuildingColumns } from "react-icons/fa6";
 import { GrUserAdmin } from "react-icons/gr";
 import { MdDashboard, MdAnalytics } from "react-icons/md";
-import logo from "../assets/logo.png";
+import logo from "../../public/venure-icon/favicon-96x96.png";
 
 const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
@@ -34,8 +34,8 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [setSidebarOpen]);
 
   const handleLogout = () => {
@@ -84,14 +84,14 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       Icon: FiSettings,
       title: "Settings",
       path: "/admin/settings",
-    }
+    },
   ];
 
   return (
     <>
       {/* Mobile Overlay with gentle blur */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-slate-900/10 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300"
           onClick={() => setSidebarOpen(false)}
         />
@@ -112,14 +112,13 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 to-transparent"></div>
           <div className="relative flex items-center gap-3">
             <div className="relative flex-shrink-0">
-              <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
+              <div className="w-9 h-9 ">
                 <img
                   src={logo}
                   alt="logo"
-                  className="h-5 w-5 object-contain"
+                  className="h-10 w-10 object-contain"
                 />
               </div>
-              <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white shadow-sm"></div>
             </div>
             {sidebarOpen && (
               <div className="overflow-hidden">
@@ -149,32 +148,34 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
                   className={`
                     group w-full flex items-center gap-3 px-3 py-3 rounded-xl
                     text-sm font-medium transition-all duration-200 ease-out
-                    ${location.pathname === item.path 
-                      ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25 scale-[1.02]' 
-                      : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 hover:scale-[1.01]'
+                    ${
+                      location.pathname === item.path
+                        ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25 scale-[1.02]"
+                        : "text-slate-700 hover:bg-slate-50 hover:text-slate-900 hover:scale-[1.01]"
                     }
-                    ${!sidebarOpen ? 'justify-center px-2' : ''}
+                    ${!sidebarOpen ? "justify-center px-2" : ""}
                   `}
                 >
-                  <item.Icon 
+                  <item.Icon
                     className={`
                       w-5 h-5 flex-shrink-0 transition-transform duration-200
-                      ${location.pathname === item.path 
-                        ? 'text-white' 
-                        : 'text-slate-500 group-hover:text-slate-700 group-hover:scale-110'
+                      ${
+                        location.pathname === item.path
+                          ? "text-white"
+                          : "text-slate-500 group-hover:text-slate-700 group-hover:scale-110"
                       }
-                    `} 
+                    `}
                   />
                   {sidebarOpen && (
                     <span className="truncate">{item.title}</span>
                   )}
-                  
+
                   {/* Active indicator dot */}
                   {location.pathname === item.path && (
                     <div className="ml-auto w-1.5 h-1.5 bg-white rounded-full opacity-80"></div>
                   )}
                 </button>
-                
+
                 {/* Beautiful tooltip */}
                 {!sidebarOpen && hoveredItem === item.path && (
                   <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50">
@@ -222,7 +223,7 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
                 text-slate-500 hover:text-slate-700 hover:bg-slate-50
                 transition-all duration-200 text-sm font-medium
                 hover:scale-[1.02] active:scale-[0.98]
-                ${!sidebarOpen ? 'flex-1 justify-center' : ''}
+                ${!sidebarOpen ? "flex-1 justify-center" : ""}
               `}
               title="Help & Support"
             >
@@ -238,7 +239,7 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
                 text-red-500 hover:text-white hover:bg-gradient-to-r hover:from-red-500 hover:to-red-600
                 transition-all duration-200 text-sm font-medium
                 hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg hover:shadow-red-500/25
-                ${!sidebarOpen ? 'flex-1 justify-center' : ''}
+                ${!sidebarOpen ? "flex-1 justify-center" : ""}
               `}
               title="Logout"
             >
@@ -247,8 +248,8 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
             </button>
 
             {/* Toggle with subtle styling */}
-            <SidebarToggle 
-              open={sidebarOpen} 
+            <SidebarToggle
+              open={sidebarOpen}
               setOpen={setSidebarOpen}
               className="text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg p-2.5 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
             />

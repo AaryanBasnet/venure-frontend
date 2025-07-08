@@ -6,9 +6,11 @@ import one from "../../assets/one.jpg";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Sparkles, MapPin, Crown, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsVisible(true);
@@ -201,20 +203,14 @@ export default function HeroSection() {
             transition={{ delay: 1.6, duration: 0.8 }}
           >
             <motion.button
+            onClick={() => navigate('/venues')}
               className="group relative px-8 py-4 bg-gradient-to-r from-rose-600 to-pink-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-rose-700 to-pink-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <span className="relative z-10">Explore Venues</span>
-            </motion.button>
-
-            <motion.button
-              className="px-8 py-4 border-2 border-slate-300 text-slate-700 font-semibold rounded-xl hover:border-rose-400 hover:text-rose-600 transition-all duration-300 backdrop-blur-sm"
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              Watch Tours
+              
             </motion.button>
           </motion.div>
 

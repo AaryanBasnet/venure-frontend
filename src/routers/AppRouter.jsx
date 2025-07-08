@@ -25,6 +25,7 @@ import AddOnsSelectionPage from "../components/user/AddonSelection";
 import PaymentInformationPage from "../components/user/PaymentInformation";
 import ChatPage from "../pages/user/ChatPage";
 import OwnerChatPage from "../pages/venueOwner/OwnerChatPage";
+import ProfilePage from "../pages/user/ProfilePage";
 // import AdminSidebar from "../layouts/AdminSidebar";
 
 export default function AppRouter() {
@@ -35,6 +36,7 @@ export default function AppRouter() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<LandingPage />}></Route>
           <Route path="/venues" element={<VenueList />}></Route>
+          <Route path= "/profile" element= {<ProfilePage />}> </Route>
           <Route path="/checkout/:id" element={<BookingPage />}>
             <Route index element={<DateAndTimeSelectionPage />} />
             <Route path="guests" element={<GuestDetailsPage />} />

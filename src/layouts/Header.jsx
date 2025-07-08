@@ -1,14 +1,20 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import ProfileDropdown from "../components/common/ProfileDropdown";
 import {
   Crown,
   Sparkles,
   ArrowUpRight,
   ChevronRight,
   UserCircle2,
+  Heart,
+  Calendar,
+  Settings,
+  LogOut,
+  Star,
 } from "lucide-react";
 import { AuthContext } from "../auth/AuthProvider";
 
@@ -78,9 +84,11 @@ const menuItems = [
 function Header() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   const { user, logout } = useContext(AuthContext);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -165,31 +173,8 @@ function Header() {
           <div className="flex items-center gap-3 lg:gap-4">
             {/* Login Button */}
             {user ? (
-              // When user is logged in
-              <motion.div
-                className="relative group"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <button
-                  onClick={() => navigate("/profile")} // or dropdown/menu trigger
-                  className="p-3 lg:p-4 rounded-full border border-slate-200 bg-white/80 backdrop-blur-md hover:border-rose-300 hover:text-rose-600 text-slate-700 transition-all shadow-md hover:shadow-lg"
-                >
-                  <UserCircle2 size={24} />
-                </button>
-
-                {/* Optional: Hover/Dropdown for logout */}
-                <div className="absolute top-full right-0 mt-2 hidden group-hover:block bg-white border border-slate-200 rounded-xl shadow-lg z-50">
-                  <button
-                    onClick={logout}
-                    className="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 rounded-xl"
-                  >
-                    Logout
-                  </button>
-                </div>
-              </motion.div>
+              <ProfileDropdown user={user} logout={logout} />
             ) : (
-              // When user is NOT logged in
               <motion.button
                 onClick={handleLoginRedirect}
                 className="group relative px-4 lg:px-6 py-2 lg:py-3 bg-gradient-to-r from-slate-100 to-slate-50 hover:from-rose-50 hover:to-pink-50 border border-slate-200 hover:border-rose-300 rounded-full font-semibold text-slate-700 hover:text-rose-700 transition-all duration-300 shadow-sm hover:shadow-md text-sm lg:text-base"
