@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../auth/AuthProvider";
+import { Crown } from "lucide-react";
 
 // Import your components and icons
 import SidebarOption from "../components/SidebarOption";
@@ -17,7 +18,8 @@ import {
 import { FaBuildingColumns } from "react-icons/fa6";
 import { GrUserAdmin } from "react-icons/gr";
 import { MdDashboard, MdAnalytics } from "react-icons/md";
-import logo from "../../public/venure-icon/favicon-96x96.png";
+// import logo from "../../public/venure-icon/favicon-96x96.png";
+// import VenureLogo from "../assets/VenureLogo.png";
 
 const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
@@ -109,25 +111,24 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       >
         {/* Header with subtle gradient */}
         <div className="relative p-5 border-b border-slate-100/80">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 to-transparent"></div>
-          <div className="relative flex items-center gap-3">
-            <div className="relative flex-shrink-0">
-              <div className="w-9 h-9 ">
-                <img
-                  src={logo}
-                  alt="logo"
-                  className="h-10 w-10 object-contain"
-                />
-              </div>
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 to-transparent" />
+          <div className="flex items-center gap-3 cursor-pointer group transition-all duration-300">
+            <div className="relative">
+              <Crown
+                size={28}
+                className="text-rose-600 group-hover:text-rose-700 transition-colors duration-300"
+              />
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full animate-ping-once" />
             </div>
+
             {sidebarOpen && (
-              <div className="overflow-hidden">
-                <h1 className="text-base font-semibold text-slate-800 truncate">
-                  Admin Panel
+              <div>
+                <h1 className="text-2xl lg:text-3xl font-serif font-bold bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 bg-clip-text text-transparent group-hover:from-rose-700 group-hover:via-rose-600 group-hover:to-rose-700 transition-all duration-300">
+                  Venure
                 </h1>
-                <p className="text-xs text-slate-500 truncate font-medium">
-                  {user?.name || "Administrator"}
-                </p>
+                <div className="text-xs text-slate-500 font-medium tracking-widest uppercase">
+                  Premium Venues
+                </div>
               </div>
             )}
           </div>

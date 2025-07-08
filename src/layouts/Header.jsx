@@ -153,11 +153,11 @@ function Header() {
                 size={28}
                 className="text-rose-600 group-hover:text-rose-700 transition-colors duration-300"
               />
-              {/* <motion.div
+              <motion.div
                 className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full"
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
-              /> */}
+              />
             </div>
             <div>
               <h1 className="text-2xl lg:text-3xl font-serif font-bold bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 bg-clip-text text-transparent group-hover:from-rose-700 group-hover:via-rose-600 group-hover:to-rose-700 transition-all duration-300">

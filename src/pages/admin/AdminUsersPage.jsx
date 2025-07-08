@@ -4,30 +4,35 @@ import SearchInput from "../../components/common/SearchInput";
 import { useAdminUser } from "../../hooks/admin/useAdminUser";
 import UserTable from "../../components/admin/UserTable";
 import { useDeleteUser } from "../../hooks/admin/useDeleteUser";
+import { useDebounce } from "../../hooks/useDebounce";
 
 const AdminUsersPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [openActionMenu, setOpenActionMenu] = useState(null);
   const [userToDelete, setUserToDelete] = useState(null);
+    const debouncedSearch = useDebounce(searchQuery, 500); // 500ms delay
   const { mutate: deleteUser } = useDeleteUser();
 
   const [page, setPage] = useState(1);
   const limit = 5;
 
-  const { data, isLoading, isError, isFetching } = useAdminUser(page, limit);
-
+  const { data, isLoading, isError } = useAdminUser(
+    page,
+    limit,
+    debouncedSearch
+  );
   const users = data?.data || [];
   const totalUsers = data?.pagination?.total || 0;
   const totalPages = Math.ceil(totalUsers / limit);
 
-  const filteredUsers = useMemo(() => {
-    if (!searchQuery) return users;
-    return users.filter(
-      (user) =>
-        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [searchQuery, users]);
+  // const filteredUsers = useMemo(() => {
+  //   if (!searchQuery) return users;
+  //   return users.filter(
+  //     (user) =>
+  //       user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //       user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  //   );
+  // }, [searchQuery, users]);
 
   const handleDeleteClick = (user) => {
     setUserToDelete(user);
@@ -97,7 +102,10 @@ const AdminUsersPage = () => {
         <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
           <SearchInput
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setPage(1);
+              setSearchQuery(e.target.value);
+            }}
             placeholder="Search by name or email"
             className="flex-grow sm:flex-grow-0 sm:min-w-[250px]"
           />
@@ -105,7 +113,7 @@ const AdminUsersPage = () => {
       </div>
 
       <UserTable
-        users={filteredUsers}
+        users={users}
         openActionMenu={openActionMenu}
         setOpenActionMenu={setOpenActionMenu}
         handleBlockUser={handleBlockUser}

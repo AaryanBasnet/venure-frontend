@@ -5,6 +5,11 @@ export const getAllVenues = () => {
   return instance.get("/admin/venues");
 };
 
+export const getApprovedVenuesCount = () => {
+  console.log("Total venues", getApprovedVenuesCount);
+  return instance.get("/admin/venues/getApprovedCount");
+};
+
 export const updateVenueStatus = (id, status) => {
   console.log("Status update:", id, status);
   // status is a string like "approved"
