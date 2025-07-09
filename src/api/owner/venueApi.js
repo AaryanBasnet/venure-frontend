@@ -1,5 +1,12 @@
 import instance from "../api"; // your base Axios instance
 
+export const getActiveVenues = (ownerId) => {
+  // ✅
+  return instance.get("/venueOwner/venues/approvedCountByOwner", {
+    params: { ownerId },
+  });
+};
+
 // 1. Create venue WITHOUT images (basic data only)
 export const createVenue = (venueData) => {
   return instance.post("/venueOwner/venues", venueData);

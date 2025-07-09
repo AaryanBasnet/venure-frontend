@@ -24,11 +24,31 @@ import { GrUserAdmin } from "react-icons/gr";
 import { MdDashboard, MdEventAvailable, MdPayment } from "react-icons/md";
 import { BiCalendarEvent } from "react-icons/bi";
 import logo from "../assets/logo.png";
+import useActiveVenueCount from "../hooks/owner/useGetActiveVenueCount";
+import { useGetMonthlyEarningsForOwner } from "../hooks/owner/useGetMonthlyEarningForOwner";
 
 const OwnerSidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const { user, logout } = useContext(AuthContext);
+  const ownerId = user?._id;
+  const {
+    data: activeVenueCountData,
+    isLoading: isLoadingActiveVenueCount,
+    isError,
+    error: activeVenueCountError,
+  } = useActiveVenueCount(ownerId);
+
+  const {
+    data: monthlyEarningsData,
+    isLoading: isLoadingEarnings,
+    error: earningsError,
+  } = useGetMonthlyEarningsForOwner();
+  const currentMonthIndex = new Date().getMonth();
+  const currentMonthEarnings =
+    monthlyEarningsData?.[currentMonthIndex]?.totalEarnings ?? 0;
+
   const [hoveredItem, setHoveredItem] = useState(null);
 
   // Handle responsive behavior
@@ -204,11 +224,15 @@ const OwnerSidebar = ({ sidebarOpen, setSidebarOpen }) => {
           {sidebarOpen && (
             <div className="grid grid-cols-2 gap-2 mt-4">
               <div className="bg-gray-50 rounded-lg p-2 text-center border border-gray-200">
-                <div className="text-lg font-bold text-gray-900">3</div>
+                <div className="text-lg font-bold text-gray-900">
+                  {activeVenueCountData?.data?.count}
+                </div>
                 <div className="text-xs text-gray-600">Active Venues</div>
               </div>
               <div className="bg-gray-50 rounded-lg p-2 text-center border border-gray-200">
-                <div className="text-lg font-bold text-blue-600">$2.4K</div>
+                <div className="text-lg font-bold text-blue-600">
+                  {currentMonthEarnings}
+                </div>
                 <div className="text-xs text-gray-600">This Month</div>
               </div>
             </div>
