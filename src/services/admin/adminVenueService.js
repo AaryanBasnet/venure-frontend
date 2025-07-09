@@ -4,9 +4,9 @@ import {
   updateVenueStatus,
 } from "../../api/admin/venueManagementApi";
 
-export const getVenue = async () => {
-  const response = await getAllVenues();
-  return response.data.data;
+export const getVenue = async (params) => {
+  const response = await getAllVenues(params);
+  return response.data;
 };
 
 export const getApprovedVenuesCountService = async () => {

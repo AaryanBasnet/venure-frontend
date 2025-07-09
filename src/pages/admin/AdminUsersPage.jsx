@@ -25,15 +25,7 @@ const AdminUsersPage = () => {
   const totalUsers = data?.pagination?.total || 0;
   const totalPages = Math.ceil(totalUsers / limit);
 
-  // const filteredUsers = useMemo(() => {
-  //   if (!searchQuery) return users;
-  //   return users.filter(
-  //     (user) =>
-  //       user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //       user.email.toLowerCase().includes(searchQuery.toLowerCase())
-  //   );
-  // }, [searchQuery, users]);
-
+  
   const handleDeleteClick = (user) => {
     setUserToDelete(user);
     setOpenActionMenu(null);

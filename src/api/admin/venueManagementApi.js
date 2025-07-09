@@ -1,8 +1,8 @@
 import instance from "../api";
 
-export const getAllVenues = () => {
+export const getAllVenues = (params) => {
   console.log("Fetching venues with params:");
-  return instance.get("/admin/venues");
+  return instance.get("/admin/venues", {params});
 };
 
 export const getApprovedVenuesCount = () => {

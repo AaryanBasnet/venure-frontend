@@ -29,7 +29,6 @@ const amenityIcons = {
   AC: <span className="font-bold text-xs">AC</span>,
 };
 
-// Fixed status background and text colors for Tailwind (no dynamic classes)
 const statusColors = {
   pending: "bg-yellow-100 text-yellow-500",
   approved: "bg-green-100 text-green-500",
@@ -48,46 +47,29 @@ const AdminVenuePage = () => {
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const { data: venues = [], isLoading, isError, error } = useGetVenues();
+  const [page, setPage] = useState(1);
+  const limit = 10;
+
+  const { data, isLoading, isError, error } = useGetVenues(
+    page,
+    limit,
+    activeTab,
+    searchQuery
+  );
+
   const changeStatusMutation = useChangeVenueStatus();
 
-  // Filter out venues missing essential data like location or venueName
-  const filteredVenues = useMemo(() => {
-    const validVenues = (venues || []).filter((v) => v.venueName && v.location);
+  // Data and pagination info from backend
+  const venues = data?.data || [];
+  const totalVenues = data?.pagination?.total || 0;
+  const totalPages = Math.ceil(totalVenues / limit);
 
-    let venuesByTab = validVenues;
-    if (activeTab !== "all") {
-      venuesByTab = validVenues.filter((venue) => venue.status === activeTab);
-    }
+  // Reset page when search or tab changes
+  React.useEffect(() => {
+    setPage(1);
+  }, [activeTab, searchQuery]);
 
-    if (!searchQuery) return venuesByTab;
-
-    return venuesByTab.filter(
-      (venue) =>
-        venue.venueName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        venue.location?.city?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [activeTab, venues, searchQuery]);
-  const handleStatusChange = (venueId, status) => {
-    changeStatusMutation.mutate(
-      { venueId, status },
-      {
-        onSuccess: () => {
-          toast.success(`Venue ${status} successfully.`);
-          setSelectedVenue(null);
-        },
-        onError: (error) => {
-          toast.error("Update failed: " + error.message);
-        },
-      }
-    );
-  };
-
-  const openModal = (venue) => {
-    setSelectedVenue(venue);
-    setCurrentImageIndex(0);
-  };
-
+  // Modal image navigation
   const nextImage = () => {
     if (!selectedVenue) return;
     setCurrentImageIndex(
@@ -104,10 +86,33 @@ const AdminVenuePage = () => {
     );
   };
 
+  // Handle venue status change (approve/reject)
+  const handleStatusChange = (venueId, status) => {
+    changeStatusMutation.mutate(
+      { venueId, status },
+      {
+        onSuccess: () => {
+          toast.success(`Venue ${status} successfully.`);
+          setSelectedVenue(null); // close modal on success
+        },
+        onError: (err) => {
+          toast.error("Update failed: " + (err.message || "Unknown error"));
+        },
+      }
+    );
+  };
+
+  // Open venue detail modal and reset image index
+  const openModal = (venue) => {
+    setSelectedVenue(venue);
+    setCurrentImageIndex(0);
+  };
+
   const tabs = ["pending", "approved", "rejected", "all"];
 
   return (
     <div className="p-4 sm:p-6 bg-gray-50 min-h-screen font-poppins">
+      {/* Header and Search */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h1 className="text-3xl font-bold text-gray-800">Venue Applications</h1>
         <SearchInput
@@ -117,6 +122,7 @@ const AdminVenuePage = () => {
         />
       </div>
 
+      {/* Tabs */}
       <div className="flex border-b border-gray-200 mb-6">
         {tabs.map((tab) => (
           <button
@@ -133,6 +139,7 @@ const AdminVenuePage = () => {
         ))}
       </div>
 
+      {/* Loading/Error/Empty */}
       {isLoading && (
         <div className="text-center py-12 text-blue-600 font-semibold">
           Loading venues...
@@ -141,18 +148,19 @@ const AdminVenuePage = () => {
 
       {isError && (
         <div className="text-center py-12 text-red-600 font-semibold">
-          Error loading venues: {error?.message}
+          Error loading venues: {error?.message || "Unknown error"}
         </div>
       )}
 
-      {!isLoading && filteredVenues.length === 0 && (
+      {!isLoading && venues.length === 0 && (
         <div className="text-center py-12 text-gray-500">
           No venues found matching your criteria.
         </div>
       )}
 
+      {/* Venue Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredVenues.map((venue) => (
+        {venues.map((venue) => (
           <div
             key={venue._id}
             className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
@@ -206,6 +214,30 @@ const AdminVenuePage = () => {
         ))}
       </div>
 
+      {/* Pagination Controls */}
+      <div className="mt-8 flex justify-center items-center space-x-4">
+        <button
+          onClick={() => setPage((old) => Math.max(old - 1, 1))}
+          disabled={page === 1}
+          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <FiChevronLeft />
+          Prev
+        </button>
+        <span className="font-semibold">
+          Page {page} of {totalPages}
+        </span>
+        <button
+          onClick={() => setPage((old) => Math.min(old + 1, totalPages))}
+          disabled={page === totalPages}
+          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Next
+          <FiChevronRight />
+        </button>
+      </div>
+
+      {/* Venue Detail Modal */}
       {selectedVenue && (
         <div
           className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4"
@@ -215,6 +247,7 @@ const AdminVenuePage = () => {
             className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col md:flex-row overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Image Carousel */}
             <div className="w-full md:w-1/2 relative bg-gray-100">
               <img
                 src={
@@ -251,6 +284,8 @@ const AdminVenuePage = () => {
                 </>
               )}
             </div>
+
+            {/* Details & Status Buttons */}
             <div className="w-full md:w-1/2 p-6 flex flex-col overflow-y-auto">
               <div className="flex-grow">
                 <span
@@ -269,9 +304,10 @@ const AdminVenuePage = () => {
                 <p className="text-gray-700 mb-6">
                   {selectedVenue.description || "No description"}
                 </p>
+
                 <div className="grid grid-cols-2 gap-4 text-sm mb-6">
                   <div className="flex items-center gap-2 text-gray-600">
-                    <FiMapPin size={20} className="text-blue-500" />{" "}
+                    <FiMapPin size={20} className="text-blue-500" />
                     <div>
                       <strong>Location</strong>
                       <p>
@@ -281,14 +317,14 @@ const AdminVenuePage = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 text-gray-600">
-                    <FiUsers size={20} className="text-blue-500" />{" "}
+                    <FiUsers size={20} className="text-blue-500" />
                     <div>
                       <strong>Capacity</strong>
                       <p>{selectedVenue.capacity || "N/A"} people</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 text-gray-600">
-                    <FiDollarSign size={20} className="text-blue-500" />{" "}
+                    <FiDollarSign size={20} className="text-blue-500" />
                     <div>
                       <strong>Price</strong>
                       <p>
@@ -301,10 +337,10 @@ const AdminVenuePage = () => {
                     </div>
                   </div>
                 </div>
+
                 <h3 className="font-semibold text-gray-800 mb-2">Amenities</h3>
                 <div className="flex flex-wrap gap-4 mb-6">
-                  {selectedVenue.amenities &&
-                  selectedVenue.amenities.length > 0 ? (
+                  {selectedVenue.amenities && selectedVenue.amenities.length > 0 ? (
                     selectedVenue.amenities.map((amenity) => (
                       <div
                         key={amenity}
@@ -319,6 +355,8 @@ const AdminVenuePage = () => {
                   )}
                 </div>
               </div>
+
+              {/* Approve/Reject buttons only if status is pending */}
               {selectedVenue.status === "pending" && (
                 <div className="mt-auto pt-6 border-t flex gap-4">
                   <button

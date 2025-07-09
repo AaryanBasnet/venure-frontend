@@ -36,6 +36,7 @@ import AdminCard from "../../components/AdminCard";
 import { FaBuildingColumns } from "react-icons/fa6";
 import { useGetCustomerCount } from "../../hooks/admin/useGetCustomerCount";
 import { useGetApprovedVenuesCount } from "../../hooks/admin/useGetApprovedVenuesCount";
+import RecentActivity from "../../components/admin/RecentActivity";
 
 const AdminDashboard = () => {
   const [timeFilter, setTimeFilter] = useState("7d");
@@ -337,7 +338,8 @@ const AdminDashboard = () => {
       {/* Bottom Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Activities */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <RecentActivity />
+        {/* <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">
@@ -367,7 +369,7 @@ const AdminDashboard = () => {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Top Venues */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
