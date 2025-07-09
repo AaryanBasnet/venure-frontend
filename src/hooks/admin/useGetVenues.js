@@ -1,13 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAllVenues } from "../../api/admin/venueManagementApi";
+import { getVenue } from "../../services/admin/adminVenueService";
 
-export const useGetVenues = () => {
+export const useGetVenues = (page = 1, limit = 10, status = "all", search = "") => {
   return useQuery({
-    queryKey: ["admin_venue"],
-    queryFn: async () => {
-      const response = await getAllVenues(); // returns axios response
-      return response.data.data; // ✅ extract only the array
-    },
+    queryKey: ["admin_venues", page, limit, status, search],
+    queryFn: () => getVenue({ page, limit, status, search }),
     keepPreviousData: true,
   });
 };
