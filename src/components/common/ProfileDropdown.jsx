@@ -16,7 +16,7 @@ const dropdownVariants = {
   transition: { duration: 0.3 },
 };
 
-const ProfileDropdown = ({ user, logout }) => {
+const ProfileDropdown = ({ user, logout, avatarUrl }) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
@@ -43,9 +43,9 @@ const ProfileDropdown = ({ user, logout }) => {
         className="p-1.5 rounded-full border border-slate-200 bg-white hover:border-rose-300 transition-all shadow-md hover:shadow-lg"
       >
         <img
-          src={user.avatar || "/default-avatar.png"}
+          src={avatarUrl}
           alt="User avatar"
-          className="w-8 h-8 rounded-full object-cover"
+          className="w-10 h-10 rounded-full object-cover border border-rose-400 shadow-sm"
         />
       </button>
 
@@ -66,7 +66,7 @@ const ProfileDropdown = ({ user, logout }) => {
               <UserCircle2 size={16} /> View Profile
             </button>
             <button
-              onClick={() => handleNavigate("/bookings")}
+              onClick={() => handleNavigate("/my-bookings")}
               className="w-full flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
             >
               <Calendar size={16} /> My Bookings

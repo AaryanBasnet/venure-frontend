@@ -17,6 +17,7 @@ import {
   Star,
 } from "lucide-react";
 import { AuthContext } from "../auth/AuthProvider";
+import { useUserProfile } from "../hooks/user/useUserProfile";
 
 const dropdownVariants = {
   hidden: {
@@ -85,10 +86,16 @@ function Header() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+
   const [scrolled, setScrolled] = useState(false);
 
   const { user, logout } = useContext(AuthContext);
+  const { data: profileData, isLoading: profileLoading } = useUserProfile();
   const dropdownRef = useRef(null);
+  const avatarBaseUrl = import.meta.env.VITE_API_BASE_URL.replace("/api", "");
+  const avatarUrl = profileData?.user?.avatar
+    ? `${avatarBaseUrl}${profileData.user.avatar}`
+    : null;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -173,7 +180,22 @@ function Header() {
           <div className="flex items-center gap-3 lg:gap-4">
             {/* Login Button */}
             {user ? (
-              <ProfileDropdown user={user} logout={logout} />
+              profileLoading ? (
+                <div className="w-10 h-10 rounded-full bg-gray-200 animate-pulse" />
+              ) : (
+                <ProfileDropdown
+                  user={profileData?.user || user}
+                  logout={logout}
+                  avatarUrl={
+                    profileData?.user?.avatar
+                      ? `${import.meta.env.VITE_API_BASE_URL.replace(
+                          "/api",
+                          ""
+                        )}${profileData.user.avatar}`
+                      : "/default-avatar.png"
+                  }
+                />
+              )
             ) : (
               <motion.button
                 onClick={handleLoginRedirect}

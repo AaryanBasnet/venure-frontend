@@ -11,8 +11,9 @@ import {
 
 const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5050";
 
-export default function UserVenueCard({ venue, index }) {
+export default function UserVenueCard({ venue, index, isFavorite, onToggleFavorite }) {
   const navigate = useNavigate();
+
   const imageUrl =
     venue.venueImages?.length > 0
       ? `${BASE_URL}/${venue.venueImages[0].url}`
@@ -34,8 +35,17 @@ export default function UserVenueCard({ venue, index }) {
           alt={venue.venueName}
           className="w-full h-full object-cover rounded-t-3xl"
         />
-        <button className="absolute top-4 right-4 bg-white/80 backdrop-blur-md text-gray-800 p-2 rounded-full shadow hover:scale-110 transition">
-          <Heart size={20} className="text-rose-500 fill-rose-100" />
+
+        <button
+          onClick={onToggleFavorite}
+          className="absolute top-4 right-4 bg-white/80 backdrop-blur-md p-2 rounded-full shadow hover:scale-110 transition"
+        >
+          <Heart
+            size={20}
+            className={`transition ${
+              isFavorite ? "text-rose-500 fill-rose-500" : "text-gray-400"
+            }`}
+          />
         </button>
       </div>
 
@@ -45,23 +55,29 @@ export default function UserVenueCard({ venue, index }) {
         </h3>
 
         <p className="text-sm text-gray-600 mb-3">
-          <span className="font-semibold text-rose-500">${venue.pricePerHour}</span>{" "}
+          <span className="font-semibold text-rose-500">
+            ${venue.pricePerHour}
+          </span>{" "}
           <span className="text-xs">/ hour</span>
         </p>
 
         <p className="text-gray-500 text-sm mb-2 flex items-center">
           <MapPin size={16} className="mr-2 text-rose-400" />
-          {venue.location?.city}, {venue.location?.state}, {venue.location?.country}
+          {venue.location?.city}, {venue.location?.state},{" "}
+          {venue.location?.country}
         </p>
 
         <div className="flex items-center text-gray-600 text-sm mb-4">
           <Users size={16} className="mr-2 text-rose-400" />
-          Capacity: <span className="font-semibold ml-1">{venue.capacity}</span> guests
+          Capacity:{" "}
+          <span className="font-semibold ml-1">{venue.capacity}</span> guests
         </div>
 
         {venue.amenities?.length > 0 && (
           <div className="mb-5">
-            <h4 className="text-sm font-semibold text-gray-700 mb-2">Key Amenities:</h4>
+            <h4 className="text-sm font-semibold text-gray-700 mb-2">
+              Key Amenities:
+            </h4>
             <div className="flex flex-wrap gap-2">
               {venue.amenities.map((amenity, idx) => (
                 <span
