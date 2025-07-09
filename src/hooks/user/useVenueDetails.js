@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { getVenueById } from "../../services/user/userVenueService"
+import { getVenueById } from "../../services/user/venueService"
 
 
 export const useVenueDetails = (id) => {

@@ -13,7 +13,7 @@ import AdminVenuePage from "../pages/admin/AdminVenuePage";
 import AdminVenueOwnerPage from "../pages/admin/AddVenueOwnerPage";
 import OwnerUserRoute from "./OwnerUserRoute";
 import OwnerLayout from "../layouts/OwnerLayout";
-import OwnerDashbaord from "../pages/venueOwner/OwnerDashbaord";
+import OwnerDashbaord from "../pages/venueOwner/OwnerDashboard";
 import OwnerVenuePage from "../pages/venueOwner/OwnerVenuePage";
 import LandingPage from "../pages/user/LandingPage";
 import VenueDetails from "../pages/user/VenueDetails";
@@ -26,6 +26,11 @@ import PaymentInformationPage from "../components/user/PaymentInformation";
 import ChatPage from "../pages/user/ChatPage";
 import OwnerChatPage from "../pages/venueOwner/OwnerChatPage";
 import ProfilePage from "../pages/user/ProfilePage";
+import OwnerBookingsPage from "../pages/venueOwner/OwnerBookingPage";
+import FavoriteSection from "../components/user/FavoriteSection";
+import MyBookings from "../components/user/MyBookings";
+import AboutUs from "../pages/user/AboutUs";
+import ContactUs from "../pages/user/ContactUs";
 // import AdminSidebar from "../layouts/AdminSidebar";
 
 export default function AppRouter() {
@@ -35,8 +40,16 @@ export default function AppRouter() {
         {/* <Route path="/state" element={<StateManage />}></Route> */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<LandingPage />}></Route>
+          <Route path="/about" element={<AboutUs />}></Route>
+          <Route path="/contact" element={<ContactUs />}></Route>
+
           <Route path="/venues" element={<VenueList />}></Route>
-          <Route path= "/profile" element= {<ProfilePage />}> </Route>
+          <Route path="/favorites" element={<FavoriteSection />}></Route>
+          <Route path="/my-bookings" element={<MyBookings />}></Route>
+
+          <Route path="/profile" element={<ProfilePage />}>
+            {" "}
+          </Route>
           <Route path="/checkout/:id" element={<BookingPage />}>
             <Route index element={<DateAndTimeSelectionPage />} />
             <Route path="guests" element={<GuestDetailsPage />} />
@@ -65,7 +78,7 @@ export default function AppRouter() {
         <Route element={<OwnerUserRoute />}>
           <Route element={<OwnerLayout />}>
             <Route path="/owner/dashboard" element={<OwnerDashbaord />} />
-            {/* <Route path="/admin/user" element={<AdminUsersPage />} /> */}
+            <Route path="/owner/bookings" element={<OwnerBookingsPage />} />
             <Route path="/owner/venues" element={<OwnerVenuePage />} />
             <Route path="/owner/chat" element={<OwnerChatPage />} />
 
