@@ -1,17 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
-import UserVenueCard from "../common/UserVenueCard"; // adjust path if needed
-import { useGetApprovedVenue } from "../../hooks/user/useGetApprovedVenue";
+import UserVenueCard from "../common/UserVenueCard";
+import { useFilterVenues } from "../../hooks/user/useFilterVenues";
+import { useGetFavoriteVenueIds } from "../../hooks/user/useGetFavoriteVenueIds";
+import { useToggleFavoriteVenue } from "../../hooks/user/useToggleFavoriteVenue";
+import { useDebounce } from "../../hooks/useDebounce";
 
 export default function VenueList() {
-  const {
-    data: venues = [],
-    isLoading,
-    isError,
-    error,
-  } = useGetApprovedVenue();
-
- 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
@@ -19,25 +14,40 @@ export default function VenueList() {
   const [sortOrder, setSortOrder] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-   if (isLoading)
-    return <div className="text-center py-20">Loading venues...</div>;
-  if (isError)
-    return (
-      <div className="text-center py-20 text-red-600">
-        Error loading venues: {error.message}
-      </div>
-    );
-  const venuesPerPage = 6;
+
+  // ✅ Debounced filter values
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const debouncedCity = useDebounce(selectedCity, 300);
+  const debouncedAmenities = useDebounce(selectedAmenities.join(","), 300);
+  const debouncedCapacity = useDebounce(capacityRange, 300);
+  const debouncedSort = useDebounce(sortOrder, 300);
+
+  // ✅ Memoized filters object to prevent re-fetch on same values
+  const filters = useMemo(() => ({
+    search: debouncedSearchTerm || undefined,
+    city: debouncedCity || undefined,
+    capacityRange: debouncedCapacity || undefined,
+    sort: debouncedSort || undefined,
+    amenities: debouncedAmenities || undefined,
+    page: currentPage,
+    limit: 6,
+  }), [debouncedSearchTerm, debouncedCity, debouncedCapacity, debouncedSort, debouncedAmenities, currentPage]);
+
+  const { data, isLoading, isError, error } = useFilterVenues(filters);
+  const venues = data?.data || [];
+  const totalPages = data?.pages || 1;
+
+  const { data: favoriteVenueIds = [], isLoading: favLoading } = useGetFavoriteVenueIds();
+  const { mutate: toggleFavorite } = useToggleFavoriteVenue();
+
+  // ✅ Reset page to 1 when filters (excluding page) change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedSearchTerm, debouncedCity, debouncedAmenities, debouncedCapacity, debouncedSort]);
 
   const amenitiesList = [
-    "WiFi",
-    "Parking",
-    "AC",
-    "Rooftop Access",
-    "Bar Service",
-    "Garden Access",
-    "Catering Services",
-    "Stage Lighting",
+    "WiFi", "Parking", "AC", "Rooftop Access", "Bar Service",
+    "Garden Access", "Catering Services", "Stage Lighting",
   ];
   const cityList = [...new Set(venues.map((v) => v.location.city))];
   const capacityRanges = [
@@ -50,46 +60,16 @@ export default function VenueList() {
 
   const toggleAmenity = (amenity) => {
     setSelectedAmenities((prev) =>
-      prev.includes(amenity)
-        ? prev.filter((a) => a !== amenity)
-        : [...prev, amenity]
+      prev.includes(amenity) ? prev.filter((a) => a !== amenity) : [...prev, amenity]
     );
   };
 
-  let filteredVenues = venues.filter((venue) => {
-    const matchesSearch = venue.venueName
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesAmenities =
-      selectedAmenities.length > 0
-        ? selectedAmenities.every((a) => venue.amenities.includes(a))
-        : true;
-    const matchesCity = selectedCity
-      ? venue.location.city === selectedCity
-      : true;
-    let matchesCapacity = true;
-    if (capacityRange === "1-50") matchesCapacity = venue.capacity <= 50;
-    else if (capacityRange === "51-100")
-      matchesCapacity = venue.capacity > 50 && venue.capacity <= 100;
-    else if (capacityRange === "101-200")
-      matchesCapacity = venue.capacity > 100 && venue.capacity <= 200;
-    else if (capacityRange === "201-") matchesCapacity = venue.capacity > 200;
+  useEffect(() => {
+  console.log("Search Term Changed:", searchTerm);
+}, [searchTerm]);
 
-    return matchesSearch && matchesAmenities && matchesCity && matchesCapacity;
-  });
-
-  if (sortOrder === "low-to-high") {
-    filteredVenues.sort((a, b) => a.pricePerHour - b.pricePerHour);
-  } else if (sortOrder === "high-to-low") {
-    filteredVenues.sort((a, b) => b.pricePerHour - a.pricePerHour);
-  }
-
-  const totalPages = Math.ceil(filteredVenues.length / venuesPerPage);
-  const startIndex = (currentPage - 1) * venuesPerPage;
-  const currentVenues = filteredVenues.slice(
-    startIndex,
-    startIndex + venuesPerPage
-  );
+  if (isLoading) return <div className="text-center py-20">Loading venues...</div>;
+  if (isError) return <div className="text-center py-20 text-red-600">Error loading venues: {error.message}</div>;
 
   return (
     <div className="min-h-screen bg-[#fffdf8] px-6 md:px-12 py-16 font-sans">
@@ -129,9 +109,7 @@ export default function VenueList() {
             >
               <option value="">All Locations</option>
               {cityList.map((city, idx) => (
-                <option key={idx} value={city}>
-                  {city}
-                </option>
+                <option key={idx} value={city}>{city}</option>
               ))}
             </select>
 
@@ -141,9 +119,7 @@ export default function VenueList() {
               onChange={(e) => setCapacityRange(e.target.value)}
             >
               {capacityRanges.map((range, idx) => (
-                <option key={idx} value={range.value}>
-                  {range.label}
-                </option>
+                <option key={idx} value={range.value}>{range.label}</option>
               ))}
             </select>
 
@@ -175,20 +151,23 @@ export default function VenueList() {
           ))}
         </div>
 
-        {currentVenues.length === 0 ? (
-          <p className="text-center text-gray-500 text-lg mt-20">
-            No venues found.
-          </p>
+        {venues.length === 0 ? (
+          <p className="text-center text-gray-500 text-lg mt-20">No venues found.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-            {currentVenues.map((venue, index) => (
+            {venues.map((venue, index) => (
               <motion.div
-                key={index}
+                key={venue._id}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05, duration: 0.5 }}
               >
-                <UserVenueCard venue={venue} index={index} />
+                <UserVenueCard
+                  venue={venue}
+                  index={index}
+                  isFavorite={favoriteVenueIds.includes(venue._id)}
+                  onToggleFavorite={() => toggleFavorite(venue._id)}
+                />
               </motion.div>
             ))}
           </div>

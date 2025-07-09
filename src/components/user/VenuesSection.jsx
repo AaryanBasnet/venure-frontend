@@ -2,14 +2,21 @@ import React from "react";
 import { motion } from "framer-motion";
 import UserVenueCard from "../common/UserVenueCard";
 import { useNavigate } from "react-router-dom";
-import { useGetApprovedVenue } from "../../hooks/user/useGetApprovedVenue";
+import { useFilterVenues } from "../../hooks/user/useFilterVenues";
 
 export default function VenuesSection() {
-  const { data: venues = [], isLoading, isError, error } = useGetApprovedVenue();
+  const { data, isLoading, isError, error } = useFilterVenues();
+  const venues = data?.data || []; // <-- Correct: extract array from nested data object
   const navigate = useNavigate();
 
-  if (isLoading) return <div className="text-center py-20">Loading venues...</div>;
-  if (isError) return <div className="text-center py-20 text-red-600">Error loading venues: {error.message}</div>;
+  if (isLoading)
+    return <div className="text-center py-20">Loading venues...</div>;
+  if (isError)
+    return (
+      <div className="text-center py-20 text-red-600">
+        Error loading venues: {error.message}
+      </div>
+    );
 
   const handleVenueNavigation = () => {
     navigate("/venues");
@@ -37,7 +44,7 @@ export default function VenuesSection() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-14 max-w-7xl mx-auto">
-        {venues.slice(0,3).map((venue, index) => (
+        {venues.slice(0, 3).map((venue, index) => (
           <UserVenueCard key={venue._id} venue={venue} index={index} />
         ))}
       </div>
