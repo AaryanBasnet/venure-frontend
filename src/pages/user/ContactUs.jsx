@@ -1,16 +1,30 @@
-import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Clock, Send, MessageCircle, Calendar, Star, Sparkles, Crown, CheckCircle, ArrowRight } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  Phone,
+  Mail,
+  MapPin,
+  Clock,
+  Send,
+  MessageCircle,
+  Calendar,
+  Star,
+  Sparkles,
+  Crown,
+  CheckCircle,
+  ArrowRight,
+} from "lucide-react";
+import useSubmitContact from "../../hooks/useSubmitContact";
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    eventType: '',
-    guestCount: '',
-    date: '',
-    budget: '',
-    message: ''
+    name: "",
+    email: "",
+    phone: "",
+    eventType: "",
+    guestCount: "",
+    date: "",
+    budget: "",
+    message: "",
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -19,65 +33,73 @@ const ContactUs = () => {
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
+  const { mutateAsync: submitContact, isPending } = useSubmitContact();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    setTimeout(() => setIsSubmitted(false), 3000);
+    try {
+      await submitContact(formData);
+      setIsSubmitted(true);
+      toast.success("Message sent successfully!");
+      setFormData({ name: "", email: "", phone: "", message: "" });
+      setTimeout(() => setIsSubmitted(false), 3000);
+    } catch (err) {
+      toast.error("Failed to send message");
+    }
   };
 
   const contactInfo = [
     {
       icon: Phone,
-      title: 'Phone',
-      detail: '+1 (555) 123-4567',
-      subtitle: 'Mon-Fri 9AM-8PM EST',
-      color: 'text-rose-500'
+      title: "Phone",
+      detail: "+1 (555) 123-4567",
+      subtitle: "Mon-Fri 9AM-8PM EST",
+      color: "text-rose-500",
     },
     {
       icon: Mail,
-      title: 'Email',
-      detail: 'hello@premiumvenues.com',
-      subtitle: 'We reply within 2 hours',
-      color: 'text-pink-500'
+      title: "Email",
+      detail: "hello@premiumvenues.com",
+      subtitle: "We reply within 2 hours",
+      color: "text-pink-500",
     },
     {
       icon: MapPin,
-      title: 'Office',
-      detail: '123 Luxury Avenue, NYC',
-      subtitle: 'By appointment only',
-      color: 'text-purple-500'
+      title: "Office",
+      detail: "123 Luxury Avenue, NYC",
+      subtitle: "By appointment only",
+      color: "text-purple-500",
     },
     {
       icon: Clock,
-      title: 'Support Hours',
-      detail: '24/7 Available',
-      subtitle: 'Emergency support anytime',
-      color: 'text-yellow-500'
-    }
+      title: "Support Hours",
+      detail: "24/7 Available",
+      subtitle: "Emergency support anytime",
+      color: "text-yellow-500",
+    },
   ];
 
   const eventTypes = [
-    'Wedding Reception',
-    'Corporate Event',
-    'Birthday Party',
-    'Anniversary',
-    'Baby Shower',
-    'Graduation Party',
-    'Holiday Party',
-    'Other'
+    "Wedding Reception",
+    "Corporate Event",
+    "Birthday Party",
+    "Anniversary",
+    "Baby Shower",
+    "Graduation Party",
+    "Holiday Party",
+    "Other",
   ];
 
   const budgetRanges = [
-    'Under $5,000',
-    '$5,000 - $10,000',
-    '$10,000 - $25,000',
-    '$25,000 - $50,000',
-    '$50,000 - $100,000',
-    'Over $100,000'
+    "Under $5,000",
+    "$5,000 - $10,000",
+    "$10,000 - $25,000",
+    "$25,000 - $50,000",
+    "$50,000 - $100,000",
+    "Over $100,000",
   ];
 
   return (
@@ -89,13 +111,13 @@ const ContactUs = () => {
             key={i}
             className="absolute animate-pulse rounded-full opacity-20"
             style={{
-              width: Math.random() * 4 + 2 + 'px',
-              height: Math.random() * 4 + 2 + 'px',
-              left: Math.random() * 100 + '%',
-              top: Math.random() * 100 + '%',
-              animationDelay: Math.random() * 3 + 's',
-              animationDuration: (Math.random() * 3 + 2) + 's',
-              background: `linear-gradient(45deg, #e11d48, #db2777, #7e22ce)`
+              width: Math.random() * 4 + 2 + "px",
+              height: Math.random() * 4 + 2 + "px",
+              left: Math.random() * 100 + "%",
+              top: Math.random() * 100 + "%",
+              animationDelay: Math.random() * 3 + "s",
+              animationDuration: Math.random() * 3 + 2 + "s",
+              background: `linear-gradient(45deg, #e11d48, #db2777, #7e22ce)`,
             }}
           />
         ))}
@@ -104,19 +126,22 @@ const ContactUs = () => {
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-        
+
         <div className="relative z-10 max-w-4xl mx-auto text-center text-white px-6">
           <div className="mb-8 inline-flex items-center space-x-2 bg-gradient-to-r from-rose-500/20 to-pink-500/20 backdrop-blur-sm rounded-full px-4 py-2 border border-rose-300/30">
             <MessageCircle className="w-5 h-5 text-rose-400 animate-pulse" />
-            <span className="text-sm font-medium text-rose-100">Let's Talk</span>
+            <span className="text-sm font-medium text-rose-100">
+              Let's Talk
+            </span>
           </div>
-          
+
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-rose-200 to-pink-200 bg-clip-text text-transparent">
             Get in Touch
           </h1>
-          
+
           <p className="text-xl md:text-2xl mb-8 text-slate-300 font-light leading-relaxed max-w-2xl mx-auto">
-            Ready to create an extraordinary celebration? Our expert team is here to bring your vision to life
+            Ready to create an extraordinary celebration? Our expert team is
+            here to bring your vision to life
           </p>
         </div>
       </section>
@@ -133,15 +158,19 @@ const ContactUs = () => {
                 onMouseLeave={() => setHoveredCard(null)}
               >
                 <div className="mb-4">
-                  <div className={`w-12 h-12 rounded-full bg-gradient-to-br from-rose-500 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                  <div
+                    className={`w-12 h-12 rounded-full bg-gradient-to-br from-rose-500 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform`}
+                  >
                     <info.icon className="w-6 h-6 text-white" />
                   </div>
                 </div>
-                
-                <h3 className="text-lg font-bold text-slate-800 mb-2">{info.title}</h3>
+
+                <h3 className="text-lg font-bold text-slate-800 mb-2">
+                  {info.title}
+                </h3>
                 <p className="text-slate-900 font-medium mb-1">{info.detail}</p>
                 <p className="text-slate-500 text-sm">{info.subtitle}</p>
-                
+
                 {hoveredCard === index && (
                   <div className="absolute inset-0 bg-gradient-to-br from-rose-500/10 to-pink-500/10 rounded-2xl pointer-events-none" />
                 )}
@@ -157,10 +186,14 @@ const ContactUs = () => {
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-6">
               Plan Your Perfect
-              <span className="bg-gradient-to-r from-rose-500 to-pink-500 bg-clip-text text-transparent"> Event</span>
+              <span className="bg-gradient-to-r from-rose-500 to-pink-500 bg-clip-text text-transparent">
+                {" "}
+                Event
+              </span>
             </h2>
             <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-              Tell us about your vision and we'll help you find the perfect venue
+              Tell us about your vision and we'll help you find the perfect
+              venue
             </p>
           </div>
 
@@ -170,9 +203,12 @@ const ContactUs = () => {
                 <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
                   <CheckCircle className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-slate-800 mb-4">Thank You!</h3>
+                <h3 className="text-2xl font-bold text-slate-800 mb-4">
+                  Thank You!
+                </h3>
                 <p className="text-slate-600 text-lg">
-                  We've received your message and will get back to you within 2 hours.
+                  We've received your message and will get back to you within 2
+                  hours.
                 </p>
               </div>
             ) : (
@@ -180,7 +216,9 @@ const ContactUs = () => {
                 {/* Basic Info */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-slate-700 font-medium mb-2">Full Name *</label>
+                    <label className="block text-slate-700 font-medium mb-2">
+                      Full Name *
+                    </label>
                     <input
                       type="text"
                       name="name"
@@ -192,7 +230,9 @@ const ContactUs = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-700 font-medium mb-2">Email *</label>
+                    <label className="block text-slate-700 font-medium mb-2">
+                      Email *
+                    </label>
                     <input
                       type="email"
                       name="email"
@@ -207,7 +247,9 @@ const ContactUs = () => {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-slate-700 font-medium mb-2">Phone</label>
+                    <label className="block text-slate-700 font-medium mb-2">
+                      Phone
+                    </label>
                     <input
                       type="tel"
                       name="phone"
@@ -217,64 +259,12 @@ const ContactUs = () => {
                       placeholder="(555) 123-4567"
                     />
                   </div>
-                  <div>
-                    <label className="block text-slate-700 font-medium mb-2">Event Date</label>
-                    <input
-                      type="date"
-                      name="date"
-                      value={formData.date}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 transition-all"
-                    />
-                  </div>
-                </div>
-
-                {/* Event Details */}
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-slate-700 font-medium mb-2">Event Type</label>
-                    <select
-                      name="eventType"
-                      value={formData.eventType}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 transition-all"
-                    >
-                      <option value="">Select event type</option>
-                      {eventTypes.map((type) => (
-                        <option key={type} value={type}>{type}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-slate-700 font-medium mb-2">Guest Count</label>
-                    <input
-                      type="number"
-                      name="guestCount"
-                      value={formData.guestCount}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 transition-all"
-                      placeholder="Number of guests"
-                    />
-                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-slate-700 font-medium mb-2">Budget Range</label>
-                  <select
-                    name="budget"
-                    value={formData.budget}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 transition-all"
-                  >
-                    <option value="">Select budget range</option>
-                    {budgetRanges.map((range) => (
-                      <option key={range} value={range}>{range}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-slate-700 font-medium mb-2">Message</label>
+                  <label className="block text-slate-700 font-medium mb-2">
+                    Message
+                  </label>
                   <textarea
                     name="message"
                     value={formData.message}
@@ -306,7 +296,10 @@ const ContactUs = () => {
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
               Why Choose Our
-              <span className="bg-gradient-to-r from-rose-500 to-pink-500 bg-clip-text text-transparent"> Expert Team</span>
+              <span className="bg-gradient-to-r from-rose-500 to-pink-500 bg-clip-text text-transparent">
+                {" "}
+                Expert Team
+              </span>
             </h2>
           </div>
 
@@ -315,7 +308,9 @@ const ContactUs = () => {
               <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center">
                 <Clock className="w-8 h-8 text-white" />
               </div>
-              <div className="text-3xl font-bold text-slate-800 mb-2">2 Hours</div>
+              <div className="text-3xl font-bold text-slate-800 mb-2">
+                2 Hours
+              </div>
               <div className="text-slate-600">Average Response Time</div>
             </div>
 
@@ -323,7 +318,9 @@ const ContactUs = () => {
               <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center">
                 <Star className="w-8 h-8 text-white" />
               </div>
-              <div className="text-3xl font-bold text-slate-800 mb-2">4.9/5</div>
+              <div className="text-3xl font-bold text-slate-800 mb-2">
+                4.9/5
+              </div>
               <div className="text-slate-600">Client Satisfaction</div>
             </div>
 
@@ -344,19 +341,25 @@ const ContactUs = () => {
           <div className="mb-8">
             <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-rose-500/20 to-pink-500/20 backdrop-blur-sm rounded-full px-4 py-2 border border-rose-300/30">
               <Sparkles className="w-4 h-4 text-rose-400" />
-              <span className="text-sm font-medium text-rose-100">Premium Support</span>
+              <span className="text-sm font-medium text-rose-100">
+                Premium Support
+              </span>
             </div>
           </div>
-          
+
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
             Need immediate
-            <span className="bg-gradient-to-r from-rose-400 to-pink-400 bg-clip-text text-transparent"> assistance?</span>
+            <span className="bg-gradient-to-r from-rose-400 to-pink-400 bg-clip-text text-transparent">
+              {" "}
+              assistance?
+            </span>
           </h2>
-          
+
           <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-            Our dedicated team is available 24/7 for urgent inquiries and last-minute bookings
+            Our dedicated team is available 24/7 for urgent inquiries and
+            last-minute bookings
           </p>
-          
+
           <div className="flex justify-center">
             <a
               href="tel:+15551234567"
