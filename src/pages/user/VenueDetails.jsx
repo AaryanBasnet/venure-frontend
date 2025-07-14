@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { useVenueDetails } from "../../hooks/user/useVenueDetails";
 import { useChat } from "../../hooks/useChat";
+import VenueReviews from "../../components/user/VenueReviews";
 
 const BASE_URL = "http://localhost:5050";
 
@@ -77,14 +78,14 @@ const VenueDetails = () => {
     }
 
     try {
-     const chat = await startChatWith(ownerId);
-navigate(`/chat`, {
-  state: {
-    chatId: chat._id,
-    currentUserId: user._id, // the user who is initiating the chat
-    venueId: venue._id, // optional if needed later
-  },
-});
+      const chat = await startChatWith(ownerId);
+      navigate(`/chat`, {
+        state: {
+          chatId: chat._id,
+          currentUserId: user._id, // the user who is initiating the chat
+          venueId: venue._id, // optional if needed later
+        },
+      });
     } catch (err) {
       console.error("Failed to start chat", err);
       alert("Unable to start chat");
@@ -339,6 +340,11 @@ navigate(`/chat`, {
           </div>
         </div>
       </div>
+      <VenueReviews
+        venue={venue}
+        user={user}
+        isAuthenticated={isAuthenticated}
+      />{" "}
     </div>
   );
 };
