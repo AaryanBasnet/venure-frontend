@@ -1,16 +1,20 @@
-import React from "react";
+import React, { useContext } from "react";
 import { motion } from "framer-motion";
 import { useToggleFavoriteVenue } from "../../hooks/user/useToggleFavoriteVenue";
 import { useFavoriteVenues } from "../../hooks/user/useFavoriteVenues";
 import UserVenueCard from "../common/UserVenueCard";
+import { AuthContext } from "../../auth/AuthProvider";
 
 export default function FavoriteSection() {
+  const { user } = useContext(AuthContext);
   const {
     data: favoriteVenues = [],
     isLoading,
     isError,
     error,
-  } = useFavoriteVenues();
+  } = useFavoriteVenues({
+    enabled: !!user,
+  });
   const { mutate: toggleFavorite } = useToggleFavoriteVenue();
 
   if (isLoading)
