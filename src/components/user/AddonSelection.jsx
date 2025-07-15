@@ -49,7 +49,7 @@ const AddOnsSelectionPage = () => {
                 <p className="font-medium text-gray-800">{addon.name}</p>
                 {addon.perPerson && (
                   <p className="text-sm text-gray-600">
-                    Cost calculated as ₹{addon.price} × {numberOfGuests || 0}{" "}
+                    Cost calculated as Nrs.{addon.price} × {numberOfGuests || 0}{" "}
                     guests
                   </p>
                 )}

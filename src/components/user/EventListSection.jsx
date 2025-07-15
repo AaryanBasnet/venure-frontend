@@ -1,39 +1,71 @@
 import React, { useState } from "react";
-import { Plus, Minus, Sparkles, Heart, Users, Calendar, Star } from "lucide-react";
+import {
+  Plus,
+  Minus,
+  Sparkles,
+  Heart,
+  Users,
+  Calendar,
+  Star,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const events = [
   {
     title: "Weddings",
-    description: "Celebrate your special day with timeless elegance and unforgettable moments in our enchanting venues designed for love stories.",
+    description:
+      "Celebrate your special day with timeless elegance and unforgettable moments in our enchanting venues designed for love stories.",
     icon: Heart,
     color: "from-rose-500 to-pink-600",
     accent: "rose",
-    features: ["Bridal Suite", "Photography Areas", "Dance Floor", "Catering Service"]
+    features: [
+      "Bridal Suite",
+      "Photography Areas",
+      "Dance Floor",
+      "Catering Service",
+    ],
   },
   {
     title: "Corporate Events",
-    description: "Host productive and inspiring business events in a refined atmosphere with state-of-the-art facilities and professional service.",
+    description:
+      "Host productive and inspiring business events in a refined atmosphere with state-of-the-art facilities and professional service.",
     icon: Users,
     color: "from-blue-500 to-indigo-600",
     accent: "blue",
-    features: ["AV Equipment", "Conference Rooms", "Networking Spaces", "Catering Options"]
+    features: [
+      "AV Equipment",
+      "Conference Rooms",
+      "Networking Spaces",
+      "Catering Options",
+    ],
   },
   {
     title: "Family Functions",
-    description: "Make memories with your loved ones in a comfortable and beautiful setting that brings generations together in harmony.",
+    description:
+      "Make memories with your loved ones in a comfortable and beautiful setting that brings generations together in harmony.",
     icon: Users,
     color: "from-amber-500 to-orange-600",
     accent: "amber",
-    features: ["Kid-Friendly Areas", "Traditional Setup", "Family Dining", "Entertainment Zone"]
+    features: [
+      "Kid-Friendly Areas",
+      "Traditional Setup",
+      "Family Dining",
+      "Entertainment Zone",
+    ],
   },
   {
     title: "Anniversaries",
-    description: "Toast to milestones in a romantic and intimate environment tailored for you, where every detail reflects your journey together.",
+    description:
+      "Toast to milestones in a romantic and intimate environment tailored for you, where every detail reflects your journey together.",
     icon: Calendar,
     color: "from-purple-500 to-violet-600",
     accent: "purple",
-    features: ["Romantic Lighting", "Intimate Setting", "Custom Decor", "Special Menus"]
+    features: [
+      "Romantic Lighting",
+      "Intimate Setting",
+      "Custom Decor",
+      "Special Menus",
+    ],
   },
 ];
 
@@ -56,7 +88,7 @@ export default function EventListSection() {
       </div>
 
       {/* Left Image Section */}
-      <motion.div 
+      <motion.div
         className="w-full lg:w-1/2 relative group"
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
@@ -69,9 +101,9 @@ export default function EventListSection() {
           className="w-full h-full object-cover relative z-10 rounded-r-3xl lg:rounded-r-none"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20 z-20"></div>
-        
+
         {/* Floating Stats */}
-        <motion.div 
+        <motion.div
           className="absolute top-8 left-8 bg-white/10 backdrop-blur-lg rounded-2xl p-6 z-30"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -89,7 +121,7 @@ export default function EventListSection() {
       {/* Right Content Section */}
       <div className="w-full lg:w-1/2 px-8 md:px-16 py-16 flex flex-col justify-center relative">
         {/* Section Header */}
-        <motion.div 
+        <motion.div
           className="mb-12"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -108,7 +140,8 @@ export default function EventListSection() {
             </span>
           </h2>
           <p className="text-stone-600 text-lg font-light leading-relaxed">
-            Every celebration deserves perfection. Discover our curated event experiences.
+            Every celebration deserves perfection. Discover our curated event
+            experiences.
           </p>
         </motion.div>
 
@@ -117,7 +150,7 @@ export default function EventListSection() {
           {events.map((event, index) => {
             const isOpen = openIndices.includes(index);
             const IconComponent = event.icon;
-            
+
             return (
               <motion.div
                 key={index}
@@ -127,8 +160,14 @@ export default function EventListSection() {
                 transition={{ duration: 0.6, delay: 0.4 + index * 0.1 }}
               >
                 {/* Gradient Background */}
-                <div className={`absolute inset-0 bg-gradient-to-r ${event.color} opacity-0 ${isOpen ? 'opacity-5' : 'group-hover:opacity-5'} rounded-2xl transition-all duration-500`}></div>
-                
+                <div
+                  className={`absolute inset-0 bg-gradient-to-r ${
+                    event.color
+                  } opacity-0 ${
+                    isOpen ? "opacity-5" : "group-hover:opacity-5"
+                  } rounded-2xl transition-all duration-500`}
+                ></div>
+
                 <div className="relative bg-white/40 backdrop-blur-sm border border-white/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
                   {/* Header */}
                   <div
@@ -137,14 +176,16 @@ export default function EventListSection() {
                   >
                     <div className="flex items-center gap-4">
                       {/* Icon */}
-                      <div className={`p-3 bg-gradient-to-r ${event.color} rounded-xl shadow-lg`}>
+                      <div
+                        className={`p-3 bg-gradient-to-r ${event.color} rounded-xl shadow-lg`}
+                      >
                         <IconComponent className="w-6 h-6 text-white" />
                       </div>
-                      
+
                       <div>
                         <div className="flex items-center gap-3 mb-1">
                           <span className="text-xs text-stone-500 font-mono bg-stone-100 px-3 py-1 rounded-full">
-                            {String(index + 1).padStart(2, '0')}
+                            {String(index + 1).padStart(2, "0")}
                           </span>
                         </div>
                         <h3 className="text-2xl font-serif font-medium text-stone-800 group-hover:text-stone-900 transition-colors">
@@ -156,9 +197,9 @@ export default function EventListSection() {
                     {/* Toggle Button */}
                     <motion.div
                       className={`p-3 rounded-full transition-all duration-300 ${
-                        isOpen 
-                          ? `bg-gradient-to-r ${event.color} shadow-lg` 
-                          : 'bg-stone-200 hover:bg-stone-300'
+                        isOpen
+                          ? `bg-gradient-to-r ${event.color} shadow-lg`
+                          : "bg-stone-200 hover:bg-stone-300"
                       }`}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
@@ -186,7 +227,7 @@ export default function EventListSection() {
                           <p className="text-stone-700 text-lg font-light leading-relaxed mb-6">
                             {event.description}
                           </p>
-                          
+
                           {/* Features */}
                           <div className="grid grid-cols-2 gap-3 mb-6">
                             {event.features.map((feature, idx) => (
@@ -197,21 +238,15 @@ export default function EventListSection() {
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: idx * 0.1 }}
                               >
-                                <div className={`w-2 h-2 bg-gradient-to-r ${event.color} rounded-full`}></div>
-                                <span className="text-stone-600 text-sm">{feature}</span>
+                                <div
+                                  className={`w-2 h-2 bg-gradient-to-r ${event.color} rounded-full`}
+                                ></div>
+                                <span className="text-stone-600 text-sm">
+                                  {feature}
+                                </span>
                               </motion.div>
                             ))}
                           </div>
-                          
-                          {/* CTA Button */}
-                          <motion.button
-                            className={`bg-gradient-to-r ${event.color} text-white px-6 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2`}
-                            whileHover={{ scale: 1.02, y: -1 }}
-                            whileTap={{ scale: 0.98 }}
-                          >
-                            Learn More
-                            <Plus className="w-4 h-4" />
-                          </motion.button>
                         </div>
                       </motion.div>
                     )}
@@ -222,24 +257,7 @@ export default function EventListSection() {
           })}
         </div>
 
-        {/* Bottom CTA */}
-        <motion.div 
-          className="mt-12 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.6 }}
-        >
-          <p className="text-stone-600 text-sm mb-4">
-            Ready to plan your perfect event?
-          </p>
-          <motion.button
-            className="bg-gradient-to-r from-amber-600 to-rose-600 text-white px-8 py-4 rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Start Planning Today
-          </motion.button>
-        </motion.div>
+        
       </div>
     </section>
   );

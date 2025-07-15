@@ -69,7 +69,7 @@ const BookingSummary = ({
               <li key={addon.id}>
                 {addon.name}{" "}
                 {addon.perPerson &&
-                  `(₹${addon.price.toLocaleString()} × ${numberOfGuests || 0})`}
+                  `(Nrs.${addon.price.toLocaleString()} × ${numberOfGuests || 0})`}
               </li>
             );
           })}
@@ -80,7 +80,7 @@ const BookingSummary = ({
       <div className="border-t border-gray-200 pt-4 mt-4">
         <p className="text-xl font-bold text-purple-600 flex justify-between items-center">
           <span>Total:</span>
-          <span>₹{total.toLocaleString()}</span>
+          <span>Nrs.{total.toLocaleString()}</span>
         </p>
         <p className="text-xs text-gray-500 mt-2 leading-tight">
           • 25% advance payment required

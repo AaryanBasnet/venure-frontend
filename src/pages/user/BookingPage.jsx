@@ -43,7 +43,7 @@ const initialValues = {
 };
 
 export default function BookingPage() {
-  const {user} = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -79,50 +79,54 @@ export default function BookingPage() {
     return total;
   };
 
-const handleSubmit = (values, { setSubmitting }) => {
-  if (!user) {
-    toast.error("User not logged in");
-    setSubmitting(false);
-    return;
-  }
+  const handleSubmit = (values, { setSubmitting }) => {
+    if (!user) {
+      toast.error("User not logged in");
+      setSubmitting(false);
+      return;
+    }
 
-  const selectedSlot = timeSlots.find((slot) => slot.id === values.selectedTimeSlot);
-  const hours = selectedSlot?.hours || 0;
+    const selectedSlot = timeSlots.find(
+      (slot) => slot.id === values.selectedTimeSlot
+    );
+    const hours = selectedSlot?.hours || 0;
 
-  const payload = {
-    customer: user._id,
-    venue: id,
-    bookingDate: values.selectedDate,
-    timeSlot: values.selectedTimeSlot,
-    hoursBooked: hours,
-    numberOfGuests: parseInt(values.numberOfGuests),
-    eventType: values.eventType,
-    specialRequirements: values.specialRequirements || "",
-    contactName: values.contactName,
-    phoneNumber: values.phoneNumber,
-    selectedAddons: (values.selectedAddons || []).map((addonId) => {
-      const addon = addOns.find((a) => a.id === addonId);
-      return addon ? { ...addon } : null;
-    }).filter(Boolean),
-    totalPrice: calculateTotal(values),
-    paymentDetails: {
-      cardNumber: values.cardNumber,
-      expiryDate: values.expiryDate,
-      cvv: values.cvv,
-      cardholderName: values.cardholderName,
-    },
+    const payload = {
+      customer: user._id,
+      venue: id,
+      bookingDate: values.selectedDate,
+      timeSlot: selectedSlot?.label,
+      hoursBooked: hours,
+      numberOfGuests: parseInt(values.numberOfGuests),
+      eventType: values.eventType,
+      specialRequirements: values.specialRequirements || "",
+      contactName: values.contactName,
+      phoneNumber: values.phoneNumber,
+      selectedAddons: (values.selectedAddons || [])
+        .map((addonId) => {
+          const addon = addOns.find((a) => a.id === addonId);
+          return addon ? { ...addon } : null;
+        })
+        .filter(Boolean),
+      totalPrice: calculateTotal(values),
+      paymentDetails: {
+        cardNumber: values.cardNumber,
+        expiryDate: values.expiryDate,
+        cvv: values.cvv,
+        cardholderName: values.cardholderName,
+      },
+    };
+
+    createBooking.mutate(payload, {
+      onSuccess: () => {
+        setSubmitting(false);
+        navigate("/my-bookings");
+      },
+      onError: () => {
+        setSubmitting(false);
+      },
+    });
   };
-
-  createBooking.mutate(payload, {
-    onSuccess: () => {
-      setSubmitting(false);
-      navigate("/booking-success");
-    },
-    onError: () => {
-      setSubmitting(false);
-    },
-  });
-};
 
   const outletContext = {
     currentYear,
@@ -177,17 +181,17 @@ const handleSubmit = (values, { setSubmitting }) => {
 
               <Form>
                 <Outlet context={outletContext} />
-                 {isLastStep && (
-                <div className="mt-8">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isSubmitting ? "Processing..." : "Complete Booking"}
-                  </button>
-                </div>
-              )}
+                {isLastStep && (
+                  <div className="mt-8">
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isSubmitting ? "Processing..." : "Complete Booking"}
+                    </button>
+                  </div>
+                )}
               </Form>
             </div>
 
@@ -205,8 +209,6 @@ const handleSubmit = (values, { setSubmitting }) => {
                 timeSlots={timeSlots}
                 addOns={addOns}
               />
-
-             
             </div>
           </div>
         )}
