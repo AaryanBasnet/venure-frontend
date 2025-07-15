@@ -5,6 +5,7 @@ import {
   Building2,
   DollarSign,
   Terminal,
+  User2Icon,
 } from "lucide-react";
 import { useActivityLogs } from "../../hooks/admin/useActivityLogs";
 import dayjs from "../../utils/dayjsConfig"; // <-- dayjs configured
@@ -15,6 +16,7 @@ const iconMap = {
   venue: Building2,
   payment: DollarSign,
   system: Terminal,
+  registration: User2Icon
 };
 
 const colorMap = {

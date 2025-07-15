@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../auth/AuthProvider";
-import { Crown } from "lucide-react";
+import { Crown, Phone } from "lucide-react";
 
-// Import your components and icons
 import SidebarOption from "../components/SidebarOption";
 import SidebarToggle from "../components/SidebarToggle";
 import {
@@ -18,8 +17,7 @@ import {
 import { FaBuildingColumns } from "react-icons/fa6";
 import { GrUserAdmin } from "react-icons/gr";
 import { MdDashboard, MdAnalytics } from "react-icons/md";
-// import logo from "../../public/venure-icon/favicon-96x96.png";
-// import VenureLogo from "../assets/VenureLogo.png";
+
 
 const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
@@ -52,11 +50,7 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       title: "Dashboard",
       path: "/admin/dashboard",
     },
-    {
-      Icon: MdAnalytics,
-      title: "Analytics",
-      path: "/admin/analytics",
-    },
+   
     {
       Icon: FiUser,
       title: "Users",
@@ -74,19 +68,19 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
     },
     {
       Icon: FiCalendar,
-      title: "Bookings",
-      path: "/admin/bookings",
+      title: "Testimonial",
+      path: "/admin/testimonial",
     },
     {
-      Icon: FiBell,
-      title: "Notifications",
-      path: "/admin/notifications",
+      Icon: Phone,
+      title: "Contact",
+      path: "/admin/contact",
     },
-    {
-      Icon: FiSettings,
-      title: "Settings",
-      path: "/admin/settings",
-    },
+    // {
+    //   Icon: FiSettings,
+    //   title: "Settings",
+    //   path: "/admin/settings",
+    // },
   ];
 
   return (
@@ -216,21 +210,8 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
           )}
 
           {/* Action buttons with beautiful styling */}
-          <div className="flex items-center gap-2">
-            {/* Help */}
-            <button
-              className={`
-                group flex items-center gap-2 px-3 py-2.5 rounded-lg
-                text-slate-500 hover:text-slate-700 hover:bg-slate-50
-                transition-all duration-200 text-sm font-medium
-                hover:scale-[1.02] active:scale-[0.98]
-                ${!sidebarOpen ? "flex-1 justify-center" : ""}
-              `}
-              title="Help & Support"
-            >
-              <FiHelpCircle className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
-              {sidebarOpen && <span>Help</span>}
-            </button>
+          <div className="flex justify-around items-center gap-2">
+            
 
             {/* Logout with attention-grabbing design */}
             <button
