@@ -9,6 +9,8 @@ const UserTable = ({
   handleBlockUser,
   handleDeleteClick,
 }) => {
+  const avatarBaseUrl = import.meta.env.VITE_API_BASE_URL.replace("/api", "");
+
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
       <div className="overflow-x-auto">
@@ -34,12 +36,19 @@ const UserTable = ({
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-4">
                       {user.avatar ? (
-                        <img
-                          className="h-14 w-14 rounded-full object-cover border-2 border-blue-200 shadow-sm"
-                          src={user.avatar}
-                          alt={user.name}
-                          loading="lazy"
-                        />
+                        <div className="relative ">
+                          <div className="w-14 h-14 rounded-full bg-gradient-to-br p-1 shadow-2xl">
+                            <img
+                              src={`${avatarBaseUrl}${user.avatar}`}
+                              alt={`${user.name}'s avatar`}
+                              className="w-full h-full rounded-full object-cover bg-white"
+                              onError={(e) => {
+                                e.target.src =
+                                  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iNzUiIGN5PSI3NSIgcj0iNzUiIGZpbGw9IiNmM2Y0ZjYiLz48Y2lyY2xlIGN4PSI3NSIgY3k9IjY1IiByPSIyNSIgZmlsbD0iIzY2NzI4MCIvPjxwYXRoIGQ9Ik0yNSAxMjVjMC0yNy42MTMgMjIuMzg3LTUwIDUwLTUwczUwIDIyLjM4NyA1MCA1MHYyNUgyNXYtMjV6IiBmaWxsPSIjNjY3MjgwIi8+PC9zdmc+";
+                              }}
+                            />
+                          </div>
+                        </div>
                       ) : (
                         <div className="h-14 w-14 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg uppercase border-2 border-blue-200 shadow-sm">
                           {user.name?.charAt(0) || "U"}

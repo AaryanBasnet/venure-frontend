@@ -51,6 +51,9 @@ const AdminUsersPage = () => {
     if (page < totalPages) setPage(page + 1);
   };
 
+    const avatarBaseUrl = import.meta.env.VITE_API_BASE_URL.replace("/api", "");
+
+
   if (isLoading)
     return (
       <div className="flex justify-center items-center h-screen text-lg text-gray-700">
