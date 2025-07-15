@@ -1,4 +1,3 @@
-// src/pages/user/ChatPage.jsx
 import React, { useContext, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import ChatList from "../../components/ChatList";
@@ -12,9 +11,8 @@ function useQuery() {
 
 export default function ChatPage() {
   const { user } = useContext(AuthContext);
-  const location = useLocation();
   const query = useQuery();
-  const participantId = query.get("user"); // user = venue owner id
+  const participantId = query.get("user");
 
   const {
     chats,
@@ -25,7 +23,6 @@ export default function ChatPage() {
     startChatWith,
   } = useChat(user);
 
-  // Start chat if user ID is provided in query
   useEffect(() => {
     if (participantId && user?._id) {
       startChatWith(participantId);
@@ -33,13 +30,19 @@ export default function ChatPage() {
   }, [participantId, user?._id, startChatWith]);
 
   return (
-    <div className="flex pt-30 h-[750px] border rounded shadow overflow-hidden bg-white">
-      <ChatList
-        chats={chats}
-        activeChat={activeChat}
-        onSelect={loadMessages}
-      />
-      <div className="flex-1 flex flex-col">
+    <div className="flex flex-col md:flex-row h-[calc(100vh-64px)] w-full bg-white border shadow rounded overflow-hidden">
+      {/* Chat List */}
+      <div className="w-full md:w-[300px] h-[300px] md:h-auto overflow-y-auto border-r">
+        <ChatList
+          chats={chats}
+          activeChat={activeChat}
+          onSelect={loadMessages}
+          currentUserId={user?._id}
+        />
+      </div>
+
+      {/* Chat Box */}
+      <div className="flex-1 h-[calc(100vh-300px)] md:h-full flex flex-col min-h-0">
         {activeChat ? (
           <ChatBox
             messages={messages}
@@ -48,7 +51,7 @@ export default function ChatPage() {
             currentUserId={user?._id}
           />
         ) : (
-          <div className="p-5 text-center text-gray-500">
+          <div className="flex-1 flex items-center justify-center text-gray-500">
             Select a conversation to start chatting.
           </div>
         )}

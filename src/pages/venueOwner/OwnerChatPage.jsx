@@ -8,56 +8,66 @@ import { MessageCircle, Users, Clock } from "lucide-react";
 
 export default function OwnerChatPage() {
   const { user } = useContext(AuthContext);
-  const {
-    chats,
-    activeChat,
-    messages,
-    loadMessages,
-    sendNewMessage,
-  } = useChat(user);
+  const { chats, activeChat, messages, loadMessages, sendNewMessage } =
+    useChat(user);
 
   // Memoize callbacks to prevent unnecessary re-renders
-  const handleLoadMessages = useCallback((chat) => {
-    loadMessages(chat);
-  }, [loadMessages]);
+  const handleLoadMessages = useCallback(
+    (chat) => {
+      loadMessages(chat);
+    },
+    [loadMessages]
+  );
 
-  const handleSendMessage = useCallback((message) => {
-    sendNewMessage(message);
-  }, [sendNewMessage]);
+  const handleSendMessage = useCallback(
+    (message) => {
+      sendNewMessage(message);
+    },
+    [sendNewMessage]
+  );
 
   // Memoize computed values
   const chatCount = useMemo(() => chats?.length || 0, [chats?.length]);
 
   // Memoize the chat list component to prevent unnecessary re-renders
-  const chatListComponent = useMemo(() => (
-    <ChatList 
-      chats={chats} 
-      activeChat={activeChat} 
-      onSelect={handleLoadMessages} 
-    />
-  ), [chats, activeChat, handleLoadMessages]);
+  const chatListComponent = useMemo(
+    () => (
+      <ChatList
+        chats={chats}
+        activeChat={activeChat}
+        onSelect={handleLoadMessages}
+        currentUserId={user?._id}
+      />
+    ),
+    [chats, activeChat, handleLoadMessages, user?._id]
+  );
 
   // Memoize the empty state to prevent re-renders
-  const emptyState = useMemo(() => (
-    <div className="flex-1 flex items-center justify-center bg-gradient-to-b from-gray-50 to-white">
-      <div className="text-center max-w-md mx-auto p-8">
-        <div className="w-20 h-20 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <MessageCircle className="w-10 h-10 text-blue-600" />
-        </div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">
-          No conversation selected
-        </h3>
-        <p className="text-gray-500 mb-6">
-          Choose a conversation from the sidebar to start responding to customer inquiries
-        </p>
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <p className="text-sm text-blue-800">
-            💡 <strong>Tip:</strong> New messages will appear in real-time when customers reach out
+  const emptyState = useMemo(
+    () => (
+      <div className="flex-1 flex items-center justify-center bg-gradient-to-b from-gray-50 to-white">
+        <div className="text-center max-w-md mx-auto p-8">
+          <div className="w-20 h-20 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <MessageCircle className="w-10 h-10 text-blue-600" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            No conversation selected
+          </h3>
+          <p className="text-gray-500 mb-6">
+            Choose a conversation from the sidebar to start responding to
+            customer inquiries
           </p>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-sm text-blue-800">
+              💡 <strong>Tip:</strong> New messages will appear in real-time
+              when customers reach out
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-  ), []);
+    ),
+    []
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-4">
@@ -77,7 +87,7 @@ export default function OwnerChatPage() {
               </p>
             </div>
           </div>
-          
+
           {/* Stats Bar */}
           <div className="flex gap-4 mt-4">
             <div className="bg-white rounded-lg px-4 py-2 shadow-sm border border-gray-200">
@@ -110,7 +120,7 @@ export default function OwnerChatPage() {
                   {chatCount} total conversations
                 </p>
               </div>
-              <div className="overflow-y-auto h-full">
+              <div className="overflow-y-auto h-full scrollbar-thin scrollbar-thumb-gray-300">
                 {chatListComponent}
               </div>
             </div>
@@ -125,15 +135,15 @@ export default function OwnerChatPage() {
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
                           <span className="text-white font-semibold text-sm">
-                            {activeChat.customerName?.[0]?.toUpperCase() || 'U'}
+                            {activeChat.customerName?.[0]?.toUpperCase() || "U"}
                           </span>
                         </div>
                         <div>
                           <h3 className="font-semibold text-gray-900">
-                            {activeChat.customerName || 'Customer'}
+                            {activeChat.customerName || "Customer"}
                           </h3>
                           <p className="text-sm text-gray-500">
-                            {activeChat.status || 'Active conversation'}
+                            {activeChat.status || "Active conversation"}
                           </p>
                         </div>
                       </div>
@@ -143,12 +153,13 @@ export default function OwnerChatPage() {
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Chat Messages */}
-                  <div className="flex-1 bg-gradient-to-b from-gray-50 to-white">
-                    <ChatBox 
+                  <div className="flex-1 bg-gradient-to-b from-gray-50 to-white overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300">
+                    {" "}
+                    <ChatBox
                       key={activeChat._id} // Force re-mount when chat changes
-                      messages={messages} 
+                      messages={messages}
                       onSend={handleSendMessage}
                       activeChat={activeChat}
                       currentUserId={user?._id}
@@ -166,14 +177,6 @@ export default function OwnerChatPage() {
         <div className="mt-6 flex justify-between items-center">
           <div className="text-sm text-gray-500">
             Last updated: {new Date().toLocaleTimeString()}
-          </div>
-          <div className="flex gap-2">
-            <button className="px-4 py-2 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-              Export Chats
-            </button>
-            <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-              Settings
-            </button>
           </div>
         </div>
       </div>

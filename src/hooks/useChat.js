@@ -9,7 +9,7 @@ import {
   sendMessage,
   subscribeToMessages,
   unsubscribeFromMessages,
-} from "../services/socket";
+} from "../utils/socket";
 
 export function useChat(currentUser, venueId = null) {
   const [chats, setChats] = useState([]);
