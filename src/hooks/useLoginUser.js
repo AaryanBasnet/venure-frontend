@@ -12,9 +12,8 @@ export const useLoginUser = () => {
   return useMutation({
     mutationFn: loginUserService,
     mutationKey: ["login-key"],
-    onSuccess: (data) => {
-      console.log("LOGIN SUCCESS", data); // show me this console log output
-      login(data?.userData, data?.token);
+    onSuccess: async (data) => {
+      await login(data?.userData, data?.token);
       toast.success(data?.message || "Login Success");
 
       const role = data?.userData?.role;
@@ -27,7 +26,7 @@ export const useLoginUser = () => {
         } else {
           navigate("/");
         }
-      }, 100); // 100ms delay to ensure context updates before routing
+      }); // 100ms delay to ensure context updates before routing
     },
     onError: (err) => {
       console.error(err);
