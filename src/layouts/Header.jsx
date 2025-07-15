@@ -9,12 +9,7 @@ import {
   Sparkles,
   ArrowUpRight,
   ChevronRight,
-  UserCircle2,
-  Heart,
-  Calendar,
-  Settings,
-  LogOut,
-  Star,
+  User2,
 } from "lucide-react";
 import { AuthContext } from "../auth/AuthProvider";
 import { useUserProfile } from "../hooks/user/useUserProfile";
@@ -77,21 +72,21 @@ const menuItemVariants = {
 const menuItems = [
   { name: "Home", href: "/", featured: false },
   { name: "Venues", href: "/venues", featured: true },
-  { name: "Services", href: "/services", featured: false },
   { name: "About", href: "/about", featured: false },
   { name: "Contact", href: "/contact", featured: false },
 ];
 
-function Header() {
+export default function Header() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
-
   const [scrolled, setScrolled] = useState(false);
 
   const { user, logout } = useContext(AuthContext);
-  const { data: profileData, isLoading: profileLoading } = useUserProfile();
-  const dropdownRef = useRef(null);
+
+  const { data: profileData, isLoading: profileLoading } = useUserProfile({
+    enabled: !!user,
+  });
+
   const avatarBaseUrl = import.meta.env.VITE_API_BASE_URL.replace("/api", "");
   const avatarUrl = profileData?.user?.avatar
     ? `${avatarBaseUrl}${profileData.user.avatar}`
@@ -119,11 +114,9 @@ function Header() {
     setMenuOpen(false);
   };
 
-  const toggleMenu = () => setMenuOpen((prev) => !prev);
-
   return (
     <>
-      {/* Backdrop blur overlay when menu is open */}
+      {/* Backdrop */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -137,7 +130,7 @@ function Header() {
       </AnimatePresence>
 
       <motion.header
-        className={`absolute top-0 left-0 w-full z-50 transition-all duration-500 ${
+        className={`sticky top-0 left-0 w-full z-50 transition-all duration-500 ${
           scrolled || menuOpen
             ? "bg-white/95 backdrop-blur-xl shadow-lg border-b border-white/20"
             : "bg-gradient-to-b from-white/90 to-white/70 backdrop-blur-md"
@@ -146,9 +139,8 @@ function Header() {
         animate={{ y: 0 }}
         transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
-        {/* Top Bar */}
         <div className="flex justify-between items-center px-6 lg:px-12 py-4 lg:py-6">
-          {/* Logo Section */}
+          {/* Logo */}
           <motion.div
             onClick={handleLandingRedirect}
             className="flex items-center gap-3 cursor-pointer group"
@@ -176,9 +168,8 @@ function Header() {
             </div>
           </motion.div>
 
-          {/* Right Actions */}
+          {/* Actions */}
           <div className="flex items-center gap-3 lg:gap-4">
-            {/* Login Button */}
             {user ? (
               profileLoading ? (
                 <div className="w-10 h-10 rounded-full bg-gray-200 animate-pulse" />
@@ -186,14 +177,7 @@ function Header() {
                 <ProfileDropdown
                   user={profileData?.user || user}
                   logout={logout}
-                  avatarUrl={
-                    profileData?.user?.avatar
-                      ? `${import.meta.env.VITE_API_BASE_URL.replace(
-                          "/api",
-                          ""
-                        )}${profileData.user.avatar}`
-                      : "/default-avatar.png"
-                  }
+                  avatarUrl={avatarUrl }
                 />
               )
             ) : (
@@ -213,21 +197,8 @@ function Header() {
               </motion.button>
             )}
 
-            {/* <motion.button
-              onClick={handleLoginRedirect}
-              className="group relative px-4 lg:px-6 py-2 lg:py-3 bg-gradient-to-r from-slate-100 to-slate-50 hover:from-rose-50 hover:to-pink-50 border border-slate-200 hover:border-rose-300 rounded-full font-semibold text-slate-700 hover:text-rose-700 transition-all duration-300 shadow-sm hover:shadow-md text-sm lg:text-base"
-              whileHover={{ scale: 1.02, y: -1 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <span className="flex items-center gap-2">
-                Login
-                <ArrowUpRight size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
-              </span>
-            </motion.button> */}
-
-            {/* Menu Toggle */}
             <motion.button
-              onClick={toggleMenu}
+              onClick={() => setMenuOpen(!menuOpen)}
               className={`relative p-3 lg:p-4 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-xl ${
                 menuOpen
                   ? "bg-gradient-to-r from-rose-500 to-pink-600 text-white border-transparent"
@@ -235,20 +206,8 @@ function Header() {
               }`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
             >
-              <motion.div
-                animate={{ rotate: menuOpen ? 180 : 0 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-              >
-                {menuOpen ? (
-                  <IoClose size={20} />
-                ) : (
-                  <RxHamburgerMenu size={20} />
-                )}
-              </motion.div>
-
-              {/* Ripple effect */}
+              {menuOpen ? <IoClose size={20} /> : <RxHamburgerMenu size={20} />}
               <motion.div
                 className="absolute inset-0 rounded-full bg-gradient-to-r from-rose-400/20 to-pink-400/20"
                 initial={{ scale: 0, opacity: 0 }}
@@ -259,7 +218,7 @@ function Header() {
           </div>
         </div>
 
-        {/* Elegant Dropdown Menu */}
+        {/* Dropdown menu */}
         <AnimatePresence>
           {menuOpen && (
             <motion.div
@@ -269,22 +228,16 @@ function Header() {
               exit="exit"
               className="absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl shadow-2xl border-b border-slate-200/50 z-40"
             >
-              {/* Decorative top border */}
-              <div className="w-full h-px bg-gradient-to-r from-transparent via-rose-300/50 to-transparent"></div>
+              <div className="w-full h-px bg-gradient-to-r from-transparent via-rose-300/50 to-transparent" />
 
               <div className="container mx-auto px-6 lg:px-12 py-8 lg:py-12">
-                {/* Menu Items Grid */}
                 <motion.div
                   className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 lg:gap-6 mb-8"
                   variants={{
-                    visible: {
-                      transition: {
-                        staggerChildren: 0.1,
-                      },
-                    },
+                    visible: { transition: { staggerChildren: 0.1 } },
                   }}
                 >
-                  {menuItems.map((item, index) => (
+                  {menuItems.map((item) => (
                     <motion.button
                       key={item.name}
                       variants={menuItemVariants}
@@ -297,7 +250,6 @@ function Header() {
                       whileHover={{ scale: 1.02, y: -2 }}
                       whileTap={{ scale: 0.98 }}
                     >
-                      {/* Background gradient animation */}
                       <div
                         className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
                           item.featured
@@ -305,7 +257,6 @@ function Header() {
                             : "bg-gradient-to-r from-slate-100/50 to-gray-100/50"
                         }`}
                       />
-
                       <div className="relative z-10">
                         <div className="flex items-center justify-between mb-2">
                           <h3
@@ -321,7 +272,6 @@ function Header() {
                             <Sparkles size={18} className="text-rose-500" />
                           )}
                         </div>
-
                         <div className="flex items-center text-sm text-slate-500 group-hover:text-slate-600 transition-colors duration-300">
                           <span>Explore</span>
                           <ChevronRight
@@ -334,7 +284,7 @@ function Header() {
                   ))}
                 </motion.div>
 
-                {/* Bottom CTA Section */}
+                {/* Bottom CTA */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -366,5 +316,3 @@ function Header() {
     </>
   );
 }
-
-export default Header;

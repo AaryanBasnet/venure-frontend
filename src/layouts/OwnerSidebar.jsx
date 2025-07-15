@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../auth/AuthProvider";
 
-// Import your components and icons
 import SidebarOption from "../components/SidebarOption";
 import SidebarToggle from "../components/SidebarToggle";
 import {
@@ -84,14 +83,12 @@ const OwnerSidebar = ({ sidebarOpen, setSidebarOpen }) => {
           title: "Dashboard",
           path: "/owner/dashboard",
           description: "Main overview",
-          badge: null,
         },
         {
           Icon: FiBarChart2,
           title: "Analytics",
           path: "/owner/analytics",
           description: "Performance metrics",
-          badge: null,
         },
       ],
     },
@@ -103,21 +100,13 @@ const OwnerSidebar = ({ sidebarOpen, setSidebarOpen }) => {
           title: "My Venues",
           path: "/owner/venues",
           description: "Manage your venues",
-          badge: "3",
         },
-        {
-          Icon: FiCamera,
-          title: "Gallery",
-          path: "/owner/gallery",
-          description: "Venue photos",
-          badge: null,
-        },
+
         {
           Icon: FiStar,
           title: "Reviews",
           path: "/owner/reviews",
           description: "Customer feedback",
-          badge: "12",
         },
       ],
     },
@@ -129,21 +118,13 @@ const OwnerSidebar = ({ sidebarOpen, setSidebarOpen }) => {
           title: "Bookings",
           path: "/owner/bookings",
           description: "Manage reservations",
-          badge: "5",
         },
-        {
-          Icon: FiCalendar,
-          title: "Availability",
-          path: "/owner/availability",
-          description: "Set available dates",
-          badge: null,
-        },
+
         {
           Icon: MdPayment,
           title: "Payments",
           path: "/owner/payments",
           description: "Revenue & payouts",
-          badge: null,
         },
       ],
     },
@@ -155,14 +136,6 @@ const OwnerSidebar = ({ sidebarOpen, setSidebarOpen }) => {
           title: "Messages",
           path: "/owner/chat",
           description: "Customer inquiries",
-          badge: "3",
-        },
-        {
-          Icon: FiClock,
-          title: "Support Tickets",
-          path: "/owner/support",
-          description: "Get help",
-          badge: "1",
         },
       ],
     },
@@ -231,7 +204,7 @@ const OwnerSidebar = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
               <div className="bg-gray-50 rounded-lg p-2 text-center border border-gray-200">
                 <div className="text-lg font-bold text-blue-600">
-                  {currentMonthEarnings}
+                  Rs.{currentMonthEarnings}
                 </div>
                 <div className="text-xs text-gray-600">This Month</div>
               </div>
@@ -283,11 +256,6 @@ const OwnerSidebar = ({ sidebarOpen, setSidebarOpen }) => {
                             <span className="font-medium truncate">
                               {item.title}
                             </span>
-                            {item.badge && (
-                              <span className="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">
-                                {item.badge}
-                              </span>
-                            )}
                           </>
                         )}
                       </div>
@@ -325,7 +293,7 @@ const OwnerSidebar = ({ sidebarOpen, setSidebarOpen }) => {
           {/* Action Buttons */}
           <div className="flex items-center justify-between gap-2">
             {/* Settings Button */}
-            <button
+            {/* <button
               onClick={() => navigate("/owner/settings")}
               className={`
                 flex items-center gap-2 px-3 py-2 rounded-lg
@@ -337,7 +305,7 @@ const OwnerSidebar = ({ sidebarOpen, setSidebarOpen }) => {
             >
               <FiSettings className="w-5 h-5" />
               {sidebarOpen && <span className="text-sm">Settings</span>}
-            </button>
+            </button> */}
 
             {/* Logout Button */}
             <button

@@ -7,18 +7,21 @@ const AuthContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const login = (userData, token) => {
-    setLoading(true);
+    return new Promise((resolve) => {
+      setLoading(true);
 
-    const normalizedUser = {
-      ...userData,
-      _id: userData._id || userData.id,
-      role: userData.role
-    };
+      const normalizedUser = {
+        ...userData,
+        _id: userData._id || userData.id,
+        role: userData.role,
+      };
 
-    localStorage.setItem("user", JSON.stringify(normalizedUser));
-    localStorage.setItem("token", token);
-    setUser(normalizedUser);
-    setLoading(false);
+      localStorage.setItem("user", JSON.stringify(normalizedUser));
+      localStorage.setItem("token", token);
+      setUser(normalizedUser);
+      setLoading(false);
+      resolve(); 
+    });
   };
 
   const logout = () => {
@@ -40,7 +43,7 @@ const AuthContextProvider = ({ children }) => {
         const normalizedUser = {
           ...parsedUser,
           _id: parsedUser._id || parsedUser.id,
-          role: parsedUser.role
+          role: parsedUser.role,
         };
         setUser(normalizedUser);
       } catch (error) {
