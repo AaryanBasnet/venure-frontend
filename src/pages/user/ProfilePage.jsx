@@ -222,34 +222,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Stats Section */}
-        <div className="bg-gradient-to-r from-rose-50/80 to-pink-50/80 backdrop-blur-sm border border-rose-200/50 rounded-2xl p-8 shadow-lg mb-12 animate-slide-up-delayed">
-          <h3 className="text-2xl font-serif text-slate-800 mb-8 text-center">
-            Your Venure Journey
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center hover:scale-105 transition-transform cursor-pointer">
-              <div className="text-4xl font-bold text-rose-600 mb-2">
-                {user.totalBookings}
-              </div>
-              <div className="text-slate-600 font-medium">Total Bookings</div>
-            </div>
-            <div className="text-center hover:scale-105 transition-transform cursor-pointer">
-              <div className="text-4xl font-bold text-rose-600 mb-2">
-                {user.favoriteVenues}
-              </div>
-              <div className="text-slate-600 font-medium">Favorite Venues</div>
-            </div>
-            <div className="text-center hover:scale-105 transition-transform cursor-pointer">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <span className="text-4xl font-bold text-rose-600">4.9</span>
-                <Star className="w-6 h-6 text-yellow-500 fill-yellow-500" />
-              </div>
-              <div className="text-slate-600 font-medium">Your Rating</div>
-            </div>
-          </div>
-        </div>
-
+      
         {/* Premium Benefits */}
         <div className="bg-white/70 backdrop-blur-sm border border-white/50 rounded-2xl p-8 shadow-lg animate-slide-up-delayed">
           <h3 className="text-2xl font-serif text-slate-800 mb-8 text-center flex items-center justify-center gap-3">
