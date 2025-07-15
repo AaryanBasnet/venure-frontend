@@ -25,9 +25,10 @@ const Button = ({ children, onClick, className = "", ...props }) => {
 const VenueCard = ({ venue, onEdit, onDelete, isDeleting }) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
+
   const {
     venueName,
-    rating,
+    averageRating,
     status,
     description,
     location,
@@ -37,6 +38,9 @@ const VenueCard = ({ venue, onEdit, onDelete, isDeleting }) => {
     bookings,
     venueImages,
   } = venue;
+
+
+
 
   const backendBaseUrl = "http://localhost:5050/";
   const imageUrl =
@@ -60,13 +64,13 @@ const VenueCard = ({ venue, onEdit, onDelete, isDeleting }) => {
             className="w-full h-48 object-cover"
           />
           <div className="absolute top-3 left-3 bg-white bg-opacity-90 px-2 py-1 rounded-full text-sm font-medium flex items-center">
-            <FaStar className="mr-1 text-yellow-500" /> {rating}
+            <FaStar className="mr-1 text-yellow-500" /> {averageRating}
           </div>
-          <div
+          {/* <div
             className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold ${statusColors[status]}`}
           >
             {status}
-          </div>
+          </div> */}
         </div>
 
         <div className="p-5 flex-grow flex flex-col justify-between">
@@ -111,11 +115,9 @@ const VenueCard = ({ venue, onEdit, onDelete, isDeleting }) => {
             </div>
           </div>
           <div className="mt-auto pt-4 border-t border-gray-200 flex justify-between items-center text-sm text-gray-600">
-            <span>{bookings} bookings</span>
+            <span>{venue.bookingCount ?? 0} bookings</span>
             <div className="flex space-x-3">
-              <Button className="text-gray-500 hover:text-gray-700 p-1">
-                <FaEye />
-              </Button>
+              
               <Button
                 className="text-gray-500 hover:text-gray-700 p-1"
                 onClick={() => onEdit(venue)}

@@ -1,11 +1,13 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function NepalExperienceSection() {
+  const navigate = useNavigate();
   const handleVenueNavigation = () => {
-    console.log("Navigate to venues");
-  }
+    navigate("/venues");
+  };
 
   return (
     <section className="relative bg-gradient-to-br from-stone-50 via-amber-50 to-rose-50 py-24 px-6 md:px-16 overflow-hidden">
@@ -18,7 +20,6 @@ export default function NepalExperienceSection() {
 
       <div className="relative max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-16">
-          
           {/* Left Image */}
           <motion.div
             className="relative group"

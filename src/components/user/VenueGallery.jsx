@@ -1,8 +1,26 @@
 import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Sparkles, Star } from "lucide-react";
+import { useFilterVenues } from "../../hooks/user/useFilterVenues";
 
 export default function VenueGallery() {
+  const filters = {};
+  const { data, isLoading, isError, error } = useFilterVenues(filters);
+  const venues = data?.data || [];
+
+  const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5050";
+
+  // Map backend venues to the shape used in UI rendering
+  const mappedVenues = venues.map((v) => ({
+    id: v._id,
+    image: v.venueImages?.[0]?.url || "/fallback-image.jpg",
+    title: v.venueName,
+    location: v.location
+      ? `${v.location.city}, ${v.location.state}`
+      : "Unknown location",
+    rating: v.averageRating || 0,
+  }));
+
   const scrollRef = useRef(null);
 
   const scrollLeft = () => {
@@ -25,50 +43,21 @@ export default function VenueGallery() {
     }
   };
 
-  const venues = [
-    {
-      image: "https://images.pexels.com/photos/169190/pexels-photo-169190.jpeg",
-      title: "Heritage Palace",
-      location: "Kathmandu Valley",
-      rating: 4.9
-    },
-    {
-      image: "https://images.pexels.com/photos/32632283/pexels-photo-32632283.jpeg",
-      title: "Mountain Vista Resort",
-      location: "Pokhara Hills",
-      rating: 4.8
-    },
-    {
-      image: "https://images.pexels.com/photos/14716281/pexels-photo-14716281.jpeg",
-      title: "Traditional Gardens",
-      location: "Bhaktapur",
-      rating: 4.9
-    },
-    {
-      image: "https://images.pexels.com/photos/5039363/pexels-photo-5039363.jpeg",
-      title: "Royal Courtyard",
-      location: "Patan Durbar",
-      rating: 5.0
-    },
-    {
-      image: "https://images.pexels.com/photos/28613084/pexels-photo-28613084.jpeg",
-      title: "Himalayan Retreat",
-      location: "Nagarkot",
-      rating: 4.7
-    },
-    {
-      image: "https://images.pexels.com/photos/7666505/pexels-photo-7666505.jpeg",
-      title: "Ancient Temple Grounds",
-      location: "Swayambhunath",
-      rating: 4.8
-    },
-    {
-      image: "https://images.pexels.com/photos/12876497/pexels-photo-12876497.jpeg",
-      title: "Lakeside Pavilion",
-      location: "Phewa Lake",
-      rating: 4.9
-    },
-  ];
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen text-white text-lg">
+        Loading venues...
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center h-screen text-red-500 text-lg">
+        Error loading venues: {error.message || "Unknown error"}
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 min-h-screen">
@@ -80,7 +69,7 @@ export default function VenueGallery() {
       </div>
 
       {/* Navigation Buttons */}
-      <motion.div 
+      <motion.div
         className="absolute left-6 top-1/2 z-30 -translate-y-1/2"
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -89,12 +78,13 @@ export default function VenueGallery() {
         <button
           onClick={scrollLeft}
           className="group bg-white/10 backdrop-blur-md border border-white/20 rounded-full p-4 shadow-2xl hover:bg-white/20 transition-all duration-300 hover:scale-110"
+          aria-label="Scroll left"
         >
           <ChevronLeft className="w-6 h-6 text-white group-hover:text-amber-300 transition-colors" />
         </button>
       </motion.div>
 
-      <motion.div 
+      <motion.div
         className="absolute right-6 top-1/2 z-30 -translate-y-1/2"
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -103,6 +93,7 @@ export default function VenueGallery() {
         <button
           onClick={scrollRight}
           className="group bg-white/10 backdrop-blur-md border border-white/20 rounded-full p-4 shadow-2xl hover:bg-white/20 transition-all duration-300 hover:scale-110"
+          aria-label="Scroll right"
         >
           <ChevronRight className="w-6 h-6 text-white group-hover:text-amber-300 transition-colors" />
         </button>
@@ -110,13 +101,12 @@ export default function VenueGallery() {
 
       {/* Central Title Overlay */}
       <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
-        <motion.div 
+        <motion.div
           className="text-center"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
         >
-          {/* Decorative elements */}
           <div className="flex items-center justify-center mb-4">
             <Sparkles className="w-6 h-6 text-amber-400 mr-3" />
             <div className="h-px w-20 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
@@ -139,7 +129,8 @@ export default function VenueGallery() {
           </motion.h2>
 
           <p className="text-white/70 text-lg font-light max-w-md mx-auto leading-relaxed">
-            Discover extraordinary spaces where every celebration becomes an unforgettable masterpiece
+            Discover extraordinary spaces where every celebration becomes an
+            unforgettable masterpiece
           </p>
         </motion.div>
       </div>
@@ -152,87 +143,96 @@ export default function VenueGallery() {
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 0.2 }}
       >
-        {venues.map((venue, idx) => (
-          <motion.div
-            key={idx}
-            className="group relative snap-start rounded-3xl overflow-hidden min-w-[85vw] sm:min-w-[45vw] md:min-w-[400px] h-[500px] md:h-[600px] shadow-2xl"
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ 
-              duration: 0.8,
-              delay: idx * 0.1,
-              ease: "easeOut"
-            }}
-            whileHover={{ y: -10, scale: 1.02 }}
-            style={{ willChange: "transform" }}
-          >
-            {/* Glow effect */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-amber-500/30 to-rose-500/30 rounded-3xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            
-            {/* Image */}
-            <div className="relative h-full w-full overflow-hidden">
-              <img
-                src={venue.image}
-                alt={venue.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              
-              {/* Gradient overlays */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-              <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            </div>
+        {mappedVenues.map((venue, idx) => {
+          // Compose image URL, handling backend relative URLs vs absolute URLs
+          const imgSrc = venue.image.startsWith("http")
+            ? venue.image
+            : `${BASE_URL}/${venue.image}`;
 
-            {/* Content overlay */}
-            <div className="absolute bottom-0 left-0 right-0 p-8">
-              {/* Rating */}
-              <motion.div 
-                className="flex items-center mb-3"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 + idx * 0.1 }}
-              >
-                <div className="flex items-center bg-white/10 backdrop-blur-md rounded-full px-3 py-1">
-                  <Star className="w-4 h-4 text-amber-400 fill-current mr-1" />
-                  <span className="text-white text-sm font-medium">{venue.rating}</span>
-                </div>
-              </motion.div>
+          return (
+            <motion.div
+              key={venue.id}
+              className="group relative snap-start rounded-3xl overflow-hidden min-w-[85vw] sm:min-w-[45vw] md:min-w-[400px] h-[500px] md:h-[600px] shadow-2xl"
+              initial={{ opacity: 0, y: 50, scale: 0.9 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{
+                duration: 0.8,
+                delay: idx * 0.1,
+                ease: "easeOut",
+              }}
+              whileHover={{ y: -10, scale: 1.02 }}
+              style={{ willChange: "transform" }}
+            >
+              {/* Glow effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-amber-500/30 to-rose-500/30 rounded-3xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-              {/* Title */}
-              <motion.h3
-                className="text-white text-2xl md:text-3xl font-serif font-medium mb-2"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + idx * 0.1 }}
-              >
-                {venue.title}
-              </motion.h3>
+              {/* Image */}
+              <div className="relative h-full w-full overflow-hidden">
+                <img
+                  src={imgSrc}
+                  alt={venue.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
 
-              {/* Location */}
-              <motion.p
-                className="text-white/80 text-lg font-light mb-4"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 + idx * 0.1 }}
-              >
-                {venue.location}
-              </motion.p>
+                {/* Gradient overlays */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              </div>
 
-              {/* CTA Button */}
-              <motion.button
-                className="group/btn bg-white/10 backdrop-blur-md border border-white/30 text-white px-6 py-3 rounded-full font-medium hover:bg-white hover:text-black transition-all duration-300 flex items-center gap-2"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 + idx * 0.1 }}
-              >
-                View Details
-                <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-              </motion.button>
-            </div>
-          </motion.div>
-        ))}
+              {/* Content overlay */}
+              <div className="absolute bottom-0 left-0 right-0 p-8">
+                {/* Rating */}
+                <motion.div
+                  className="flex items-center mb-3"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + idx * 0.1 }}
+                >
+                  <div className="flex items-center bg-white/10 backdrop-blur-md rounded-full px-3 py-1">
+                    <Star className="w-4 h-4 text-amber-400 fill-current mr-1" />
+                    <span className="text-white text-sm font-medium">
+                      {venue.rating.toFixed(1)}
+                    </span>
+                  </div>
+                </motion.div>
+
+                {/* Title */}
+                <motion.h3
+                  className="text-white text-2xl md:text-3xl font-serif font-medium mb-2"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + idx * 0.1 }}
+                >
+                  {venue.title}
+                </motion.h3>
+
+                {/* Location */}
+                <motion.p
+                  className="text-white/80 text-lg font-light mb-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 + idx * 0.1 }}
+                >
+                  {venue.location}
+                </motion.p>
+
+                {/* CTA Button */}
+                <motion.button
+                  className="group/btn bg-white/10 backdrop-blur-md border border-white/30 text-white px-6 py-3 rounded-full font-medium hover:bg-white hover:text-black transition-all duration-300 flex items-center gap-2"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 + idx * 0.1 }}
+                >
+                  View Details
+                  <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                </motion.button>
+              </div>
+            </motion.div>
+          );
+        })}
       </motion.div>
 
       {/* Bottom decorative line */}

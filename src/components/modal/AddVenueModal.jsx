@@ -13,7 +13,6 @@ const AddVenueModal = ({ isOpen, onClose, children }) => {
         >
           ✕
         </button>
-        <h2 className="text-xl font-semibold mb-4">Create New Venue</h2>
         {children}
       </div>
     </div>

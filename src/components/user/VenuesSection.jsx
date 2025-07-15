@@ -3,10 +3,20 @@ import { motion } from "framer-motion";
 import UserVenueCard from "../common/UserVenueCard";
 import { useNavigate } from "react-router-dom";
 import { useFilterVenues } from "../../hooks/user/useFilterVenues";
+import { useGetFavoriteVenueIds } from "../../hooks/user/useGetFavoriteVenueIds";
+import { useToggleFavoriteVenue } from "../../hooks/user/useToggleFavoriteVenue";
+import { useTopVenuesByBooking } from "../../hooks/admin/useTopVenuesByBooking";
 
 export default function VenuesSection() {
   const { data, isLoading, isError, error } = useFilterVenues();
-  const venues = data?.data || []; // <-- Correct: extract array from nested data object
+  const { data: topVenues = [] } = useTopVenuesByBooking();
+  const { data: favoriteVenueIds = [], isLoading: favLoading } =
+    useGetFavoriteVenueIds();
+  const { mutate: toggleFavorite } = useToggleFavoriteVenue();
+  const venues = topVenues.map((venue) => ({
+    ...venue,
+    _id: venue.venueId,
+  }));
   const navigate = useNavigate();
 
   if (isLoading)
@@ -44,8 +54,14 @@ export default function VenuesSection() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-14 max-w-7xl mx-auto">
-        {venues.slice(0, 3).map((venue, index) => (
-          <UserVenueCard key={venue._id} venue={venue} index={index} />
+        {venues.slice(0, 5).map((venue, index) => (
+          <UserVenueCard
+            key={venue._id}
+            venue={venue}
+            index={index}
+            isFavorite={favoriteVenueIds.includes(venue._id)}
+            onToggleFavorite={() => toggleFavorite(venue._id)}
+          />
         ))}
       </div>
     </section>
