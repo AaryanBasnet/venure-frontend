@@ -17,7 +17,7 @@ const MonthlyEarningsChart = ({ data }) => {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="month" />
           <YAxis />
-          <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
+          <Tooltip formatter={(value) => `Nrs.${value.toLocaleString()}`} />
           <Line
             type="monotone"
             dataKey="totalEarnings"

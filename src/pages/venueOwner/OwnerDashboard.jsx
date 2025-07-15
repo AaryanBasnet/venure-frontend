@@ -6,6 +6,7 @@ import { StatCard } from "../../components/common/StatCard";
 import { AuthContext } from "../../auth/AuthProvider";
 import useActiveVenueCount from "../../hooks/owner/useGetActiveVenueCount";
 import { useGetTotalBookingsForOwner } from "../../hooks/owner/useGetTotalBookingsForOwner";
+import NotificationDropdown from "../../components/NotificationDropdown";
 
 // Mock data for demonstration - replace with actual hooks/API calls
 const mockStats = {
@@ -111,9 +112,7 @@ export default function OwnerDashboard() {
               </p>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                Add New Venue
-              </button>
+              <NotificationDropdown />
               <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
                 <span className="text-sm font-medium text-gray-700">JD</span>
               </div>

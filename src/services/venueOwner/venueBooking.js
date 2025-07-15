@@ -1,4 +1,4 @@
-import { fetchBookingsForOwner, cancelBooking, approveBooking, getMonthlyEarningsForOwner } from "../../api/owner/venueBooking";
+import { fetchBookingsForOwner, cancelBooking, approveBooking, getMonthlyEarningsForOwner, getApprovedBookingsCountForVenues } from "../../api/owner/venueBooking";
 import { getTotalBookingsForOwner } from "../../api/user/booking";
 
 export const fetchBookingsForOwnerService = async () => {
@@ -43,3 +43,8 @@ export const getTotalBookingsForOwnerService = async () => {
   const res = await getTotalBookingsForOwner();
   return res.data.data;
 }
+
+export const getApprovedBookingsForVenueService = async (venueIds) => {
+  const res = await getApprovedBookingsCountForVenues(venueIds);
+  return res;
+};

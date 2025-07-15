@@ -6,10 +6,7 @@ import VenueRegisterForm from "../../components/owner/venueRegistrationForm";
 import { useVenuesByOwner } from "../../hooks/owner/useVenuesByOwner";
 import { deleteVenue } from "../../api/owner/venueApi";
 import { sanitizeVenue } from "../../utils/sanitizeVenue";
-
-const SearchAndFilter = ({ onSearchChange, onStatusChange, onCityChange }) => {
-  // ... your SearchAndFilter code here
-};
+import useGetBookingCount from "../../hooks/owner/useGetBookingCount";
 
 const OwnerVenuePage = () => {
   const { user } = useContext(AuthContext); // get user from context
@@ -20,6 +17,13 @@ const OwnerVenuePage = () => {
     error,
     refetch,
   } = useVenuesByOwner(user?._id);
+
+  //  const { data } = useGetBookingCount("686f9db0389cd5e8aedf6755");
+  //  console.log(data);
+
+  const venueIds = venues.map((v) => v._id.toString());
+  const { data: bookingCounts = {}, isLoading: countsLoading } =
+    useGetBookingCount(venueIds);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
@@ -73,12 +77,6 @@ const OwnerVenuePage = () => {
         </button>
       </div>
 
-      <SearchAndFilter
-        onSearchChange={setSearchTerm}
-        onStatusChange={setFilterStatus}
-        onCityChange={setFilterCity}
-      />
-
       {venues.length === 0 ? (
         <p className="text-center text-gray-600 text-lg mt-10">
           No venues found.
@@ -87,10 +85,14 @@ const OwnerVenuePage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {venues.map((rawVenue) => {
             const venue = sanitizeVenue(rawVenue);
+
             return (
               <VenueCard
                 key={venue._id}
-                venue={venue}
+                venue={{
+                  ...venue,
+                  bookingCount: bookingCounts[venue._id.toString()] || 0,
+                }}
                 onEdit={openEditModal}
                 onDelete={() => handleDeleteVenue(venue._id)}
                 isDeleting={deletingVenueId === venue._id}
