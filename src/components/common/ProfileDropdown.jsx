@@ -1,13 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  UserCircle2,
-  Calendar,
-  Heart,
-  Settings,
-  LogOut,
-} from "lucide-react";
+import { UserCircle2, Calendar, Heart, Settings, LogOut } from "lucide-react";
 
 const dropdownVariants = {
   initial: { opacity: 0, y: -10 },
@@ -42,11 +36,15 @@ const ProfileDropdown = ({ user, logout, avatarUrl }) => {
         onClick={() => setOpen((prev) => !prev)}
         className="p-1.5 rounded-full border border-slate-200 bg-white hover:border-rose-300 transition-all shadow-md hover:shadow-lg"
       >
-        <img
-          src={avatarUrl}
-          alt="User avatar"
-          className="w-10 h-10 rounded-full object-cover border border-rose-400 shadow-sm"
-        />
+        {avatarUrl ? (
+          <img
+            src={avatarUrl}
+            alt="User avatar"
+            className="w-10 h-10 rounded-full object-cover border border-rose-400 shadow-sm"
+          />
+        ) : (
+          <UserCircle2 className="w-6 h-6 text-gray-500" />
+        )}
       </button>
 
       <AnimatePresence>

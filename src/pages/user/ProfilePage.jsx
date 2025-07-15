@@ -18,9 +18,12 @@ import {
   useUpdateUserProfile,
 } from "../../hooks/user/useUserProfile";
 import EditProfileModal from "../../components/modal/EditProfileModal";
+import { toast } from "react-toastify";
 
 const ProfilePage = () => {
-  const { data, isLoading, isError } = useUserProfile();
+  const { data, isLoading, isError } = useUserProfile({
+    
+  });
   const updateMutation = useUpdateUserProfile();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,7 +65,7 @@ const ProfilePage = () => {
       await updateMutation.mutateAsync(formData);
       setIsModalOpen(false);
     } catch (error) {
-      // Optionally show error toast here
+      toast.error("Profile not updated")
     }
   };
 
