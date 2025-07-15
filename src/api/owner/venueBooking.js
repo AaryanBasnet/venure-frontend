@@ -11,9 +11,9 @@ export const fetchBookingsForOwner = async () => {
 };
 ///owner/monthly-earning
 export const getMonthlyEarningsForOwner = async () => {
-  console.log("getMonthlyEarningsForOwner", getMonthlyEarningsForOwner)
-  return await instance.get("/bookings/owner/monthly-earning")
-}
+  console.log("getMonthlyEarningsForOwner", getMonthlyEarningsForOwner);
+  return await instance.get("/bookings/owner/monthly-earning");
+};
 
 export const cancelBooking = async (bookingId) => {
   try {
@@ -35,4 +35,15 @@ export const approveBooking = async (bookingId) => {
   }
 };
 
-
+export const getApprovedBookingsCountForVenues = async (venueIds) => {
+  try {
+    const res = await instance.post(
+      `/bookings/venues/approved-bookings-count`,
+      { venueIds }
+    );
+    return res.data.data;
+  } catch (error) {
+    console.error("Failed to fetch approved bookings count:", error);
+    throw error;
+  }
+};
