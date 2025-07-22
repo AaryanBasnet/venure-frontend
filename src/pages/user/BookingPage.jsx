@@ -8,7 +8,17 @@ import { AuthContext } from "../../auth/AuthProvider";
 
 import { useCreateBooking } from "../../hooks/user/useCreateBooking";
 
-// Helpers
+import {
+  Elements,
+  useStripe,
+  useElements,
+  CardElement,
+} from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+
+// Helpers and constants remain unchanged
 const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
 const getFirstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
 
@@ -18,7 +28,6 @@ const timeSlots = [
   { id: "slot3", label: "7:00 PM - 11:00 PM", hours: 4 },
   { id: "slot4", label: "Full Day (9:00 AM - 11:00 PM)", hours: 14 },
 ];
-
 const addOns = [
   { id: "premium-decoration", name: "Premium Decoration", price: 15000 },
   { id: "professional-photography", name: "Photography", price: 25000 },
@@ -36,19 +45,19 @@ const initialValues = {
   contactName: "",
   phoneNumber: "",
   selectedAddons: [],
-  cardNumber: "",
-  expiryDate: "",
-  cvv: "",
-  cardholderName: "",
+  
 };
 
-export default function BookingPage() {
+function BookingFormInner() {
   const { user } = useContext(AuthContext);
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const createBooking = useCreateBooking();
   const { data: activeVenue, isLoading } = useVenueDetails(id);
+
+  const stripe = useStripe();
+  const elements = useElements();
 
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -79,9 +88,15 @@ export default function BookingPage() {
     return total;
   };
 
-  const handleSubmit = (values, { setSubmitting }) => {
+  const handleSubmit = async (values, { setSubmitting }) => {
     if (!user) {
       toast.error("User not logged in");
+      setSubmitting(false);
+      return;
+    }
+
+    if (!stripe || !elements) {
+      toast.error("Stripe has not loaded yet.");
       setSubmitting(false);
       return;
     }
@@ -109,23 +124,27 @@ export default function BookingPage() {
         })
         .filter(Boolean),
       totalPrice: calculateTotal(values),
-      paymentDetails: {
-        cardNumber: values.cardNumber,
-        expiryDate: values.expiryDate,
-        cvv: values.cvv,
-        cardholderName: values.cardholderName,
-      },
     };
 
-    createBooking.mutate(payload, {
-      onSuccess: () => {
-        setSubmitting(false);
-        navigate("/my-bookings");
+    // Pass stripe elements and cardElement to mutation
+    createBooking.mutate(
+      {
+        bookingData: payload,
+        stripe,
+        cardElement: elements.getElement(CardElement),
+        elements,
       },
-      onError: () => {
-        setSubmitting(false);
-      },
-    });
+      {
+        onSuccess: () => {
+          setSubmitting(false);
+          navigate("/my-bookings");
+        },
+        onError: (error) => {
+          setSubmitting(false);
+          toast.error(error.message || "Booking failed");
+        },
+      }
+    );
   };
 
   const outletContext = {
@@ -214,5 +233,13 @@ export default function BookingPage() {
         )}
       </Formik>
     </div>
+  );
+}
+
+export default function BookingPage() {
+  return (
+    <Elements stripe={stripePromise}>
+      <BookingFormInner />
+    </Elements>
   );
 }

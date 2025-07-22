@@ -4,7 +4,14 @@ import { toast } from "react-toastify";
 
 export const useCreateBooking = () => {
   return useMutation({
-    mutationFn: createBookingService,
+    mutationFn: async ({ bookingData, stripe, cardElement, elements }) => {
+      return await createBookingService(
+        bookingData,
+        stripe,
+        cardElement,
+        elements
+      );
+    },
     mutationKey: ["create_booking"],
 
     onSuccess: (data) => {
@@ -13,7 +20,7 @@ export const useCreateBooking = () => {
     },
     onError: (err) => {
       console.log(err);
-      toast.error("Booking failed");
+      toast.error(err.message || "Booking failed");
     },
   });
 };
