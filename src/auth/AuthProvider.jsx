@@ -19,6 +19,7 @@ const AuthContextProvider = ({ children }) => {
       localStorage.setItem("user", JSON.stringify(normalizedUser));
       localStorage.setItem("token", token);
       setUser(normalizedUser);
+      console.log(normalizedUser)
       setLoading(false);
       resolve(); 
     });

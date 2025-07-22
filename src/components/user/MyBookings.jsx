@@ -26,6 +26,8 @@ export default function MyBookings() {
     enabled: !!user,
   });
 
+  console.log(bookings);
+
   const getStatusIcon = (status) => {
     switch (status.toLowerCase()) {
       case "approved":
