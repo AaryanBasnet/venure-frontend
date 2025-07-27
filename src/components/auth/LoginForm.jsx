@@ -3,7 +3,7 @@ import { useLoginUser } from "../../hooks/useLoginUser";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-export default function LoginForm() {
+export default function LoginForm({ onForgotPassword }) {
   const { mutate, isPending } = useLoginUser();
 
   const validationSchema = Yup.object({
@@ -76,12 +76,12 @@ export default function LoginForm() {
               Remember me
             </span>
           </label>
-          <a
-            href="#"
+          <button
+            onClick={onForgotPassword}
             className="text-sm font-poppins  text-indigo-600 hover:underline"
           >
             Forgot password?
-          </a>
+          </button>
         </div>
 
         <button

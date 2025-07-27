@@ -25,7 +25,6 @@ const Button = ({ children, onClick, className = "", ...props }) => {
 const VenueCard = ({ venue, onEdit, onDelete, isDeleting }) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
-
   const {
     venueName,
     averageRating,
@@ -38,9 +37,6 @@ const VenueCard = ({ venue, onEdit, onDelete, isDeleting }) => {
     bookings,
     venueImages,
   } = venue;
-
-
-
 
   const backendBaseUrl = "http://localhost:5050/";
   const imageUrl =
@@ -115,9 +111,11 @@ const VenueCard = ({ venue, onEdit, onDelete, isDeleting }) => {
             </div>
           </div>
           <div className="mt-auto pt-4 border-t border-gray-200 flex justify-between items-center text-sm text-gray-600">
-            <span>{venue.bookingCount ?? 0} bookings</span>
+            <div className="inline-block bg-green-600 text-amber-50 px-4 py-1 rounded-full border border-green-700 text-sm">
+              Approved
+            </div>
+
             <div className="flex space-x-3">
-              
               <Button
                 className="text-gray-500 hover:text-gray-700 p-1"
                 onClick={() => onEdit(venue)}

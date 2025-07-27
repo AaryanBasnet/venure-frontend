@@ -43,10 +43,7 @@ const StatCard = React.memo(({ stat }) => {
             "flex items-center gap-1 text-sm",
             stat.trend === "up" ? "text-green-600" : "text-red-600"
           )}
-        >
-          <TrendIcon className="w-4 h-4" />
-          {stat.change}
-        </div>
+        ></div>
       </div>
       <div className="mt-4">
         <h3 className="text-2xl font-bold text-gray-900">{stat.value}</h3>
@@ -118,8 +115,6 @@ const AdminDashboard = () => {
       {
         title: "Total Users",
         value: isCustomerLoading ? "Loading..." : customerCount ?? 0,
-        change: "+12.5%",
-        trend: "up",
         icon: FaUsers,
         color: "blue",
         description: "Registered users",
@@ -129,8 +124,7 @@ const AdminDashboard = () => {
         value: isRevenueLoading
           ? "Loading..."
           : `Nrs. ${currentMonthEarnings.toLocaleString()}`,
-        change: "+8.2%",
-        trend: "up",
+
         icon: FaDollarSign,
         color: "green",
         description: "This month",
@@ -138,8 +132,7 @@ const AdminDashboard = () => {
       {
         title: "Active Venues",
         value: isVenueLoading ? "Loading..." : venueCount ?? 0,
-        change: "+5.1%",
-        trend: "up",
+
         icon: FaBuildingColumns,
         color: "purple",
         description: "Currently listed",
@@ -147,8 +140,7 @@ const AdminDashboard = () => {
       {
         title: "Today's Bookings",
         value: isBookingLoading ? "Loading..." : bookingCount ?? 0,
-        change: "-2.3%",
-        trend: "down",
+
         icon: FaCalendarCheck,
         color: "orange",
         description: "New bookings today",
@@ -172,20 +164,18 @@ const AdminDashboard = () => {
       <header className="mb-8">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Dashboard Overview
+            </h1>
             <p className="text-gray-600 mt-1">
               Welcome back! Here's what's happening with your platform.
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-start  sm:items-center gap-2 sm:gap-4">
             {/* Search Bar */}
-            
-
             {/* Notifications */}
             <NotificationDropdown />
-
-            
           </div>
         </div>
       </header>
@@ -201,7 +191,10 @@ const AdminDashboard = () => {
       </section>
 
       {/* Bottom Section */}
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-6" aria-label="Dashboard details">
+      <section
+        className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+        aria-label="Dashboard details"
+      >
         {/* Recent Activities */}
         <RecentActivity />
 
@@ -212,7 +205,10 @@ const AdminDashboard = () => {
         >
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 id="top-venues-heading" className="text-lg font-semibold text-gray-900">
+              <h3
+                id="top-venues-heading"
+                className="text-lg font-semibold text-gray-900"
+              >
                 Top Performing Venues
               </h3>
               <p className="text-sm text-gray-600">Based on bookings</p>

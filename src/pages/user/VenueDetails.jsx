@@ -169,8 +169,8 @@ const VenueDetails = () => {
 
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
             <div className="flex items-center space-x-2 text-3xl font-light text-slate-800">
-              <DollarSign size={28} className="text-rose-400 stroke-1" />
-              <span>{venue.pricePerHour}</span>
+              {/* <DollarSign size={28} className="text-rose-400 stroke-1" /> */}
+              <span>Rs. {venue.pricePerHour}</span>
               <span className="text-lg text-slate-500">per hour</span>
             </div>
 

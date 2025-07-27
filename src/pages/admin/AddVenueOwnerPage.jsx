@@ -1,14 +1,7 @@
-import React, { useState, useMemo } from "react";
-import {
-  FiPlus,
-  FiMoreVertical,
-  FiTrash2,
-  FiAlertTriangle,
-} from "react-icons/fi";
-import { MdBlock } from "react-icons/md";
+import React, { useState } from "react";
+import { FiPlus, FiAlertTriangle } from "react-icons/fi";
 import SearchInput from "../../components/common/SearchInput";
-// import AddOwnerModal from "../../components/modal/AddOwnerModal";
-import AddOwnerModal from "../../components/modal/AddOwnerModal";// modal folder name changed for deployment
+import AddOwnerModal from "../../components/modal/AddOwnerModal";
 import { useAdminUser } from "../../hooks/admin/useAdminUser";
 import { useDeleteUser } from "../../hooks/admin/useDeleteUser";
 import OwnerTable from "../../components/admin/ownerTable";
@@ -21,25 +14,11 @@ const AdminVenueOwnerPage = () => {
   const [page, setPage] = useState(1);
   const limit = 5;
 
-  const { data, isLoading, isError, refetch } = useAdminUser(page, limit);
+  const { data, isLoading, isError, refetch } = useAdminUser(page, limit, searchQuery, "VenueOwner");
   const { mutate: deleteUser } = useDeleteUser();
 
-  const venueOwners = useMemo(() => {
-    return (data?.data || []).filter(
-      (user) => user.role?.toLowerCase() === "venueowner"
-    );
-  }, [data]);
-
-  const totalOwners = venueOwners.length;
+  const owners = data?.data || [];
   const totalPages = Math.ceil((data?.pagination?.total || 1) / limit);
-
-  const filteredOwners = useMemo(() => {
-    return venueOwners.filter(
-      (owner) =>
-        owner.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        owner.email.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [venueOwners, searchQuery]);
 
   const handleDeleteClick = (owner) => {
     setOwnerToDelete(owner);
@@ -71,7 +50,10 @@ const AdminVenueOwnerPage = () => {
         <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-2">
           <SearchInput
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setPage(1);
+            }}
             placeholder="Search by name or email"
           />
           <button
@@ -86,7 +68,7 @@ const AdminVenueOwnerPage = () => {
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <OwnerTable
-            owners={filteredOwners}
+            owners={owners}
             isLoading={isLoading}
             isError={isError}
             openActionMenu={openActionMenu}
@@ -134,17 +116,11 @@ const AdminVenueOwnerPage = () => {
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-sm p-6 text-center">
             <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
-              <FiAlertTriangle
-                className="h-6 w-6 text-red-600"
-                aria-hidden="true"
-              />
+              <FiAlertTriangle className="h-6 w-6 text-red-600" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mt-4">
-              Delete Owner
-            </h3>
+            <h3 className="text-lg font-medium text-gray-900 mt-4">Delete Owner</h3>
             <p className="mt-2 text-sm text-gray-500">
-              Are you sure you want to delete{" "}
-              <strong>{ownerToDelete.name}</strong>?
+              Are you sure you want to delete <strong>{ownerToDelete.name}</strong>?
             </p>
             <div className="mt-6 flex justify-center space-x-4">
               <button

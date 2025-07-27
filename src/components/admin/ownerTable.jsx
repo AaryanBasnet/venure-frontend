@@ -26,6 +26,7 @@ const OwnerTable = ({
       </div>
     );
   }
+  const avatarBaseUrl = import.meta.env.VITE_API_BASE_URL.replace("/api", "");
 
   return (
     <div className="bg-white rounded-lg shadow-sm overflow-hidden">
@@ -45,10 +46,13 @@ const OwnerTable = ({
                   <div className="flex items-center gap-4">
                     {owner.avatar ? (
                       <img
-                        className="h-14 w-14 rounded-full object-cover border-2 border-blue-200 shadow-sm"
-                        src={owner.avatar}
-                        alt={owner.name}
-                        loading="lazy"
+                        src={`${avatarBaseUrl}${owner.avatar}`}
+                        alt={`${owner.name}'s avatar`}
+                        className="w-full h-full rounded-full object-cover bg-white"
+                        onError={(e) => {
+                          e.target.src =
+                            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iNzUiIGN5PSI3NSIgcj0iNzUiIGZpbGw9IiNmM2Y0ZjYiLz48Y2lyY2xlIGN4PSI3NSIgY3k9IjY1IiByPSIyNSIgZmlsbD0iIzY2NzI4MCIvPjxwYXRoIGQ9Ik0yNSAxMjVjMC0yNy42MTMgMjIuMzg3LTUwIDUwLTUwczUwIDIyLjM4NyA1MCA1MHYyNUgyNXYtMjV6IiBmaWxsPSIjNjY3MjgwIi8+PC9zdmc+";
+                        }}
                       />
                     ) : (
                       <div className="h-14 w-14 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg uppercase border-2 border-blue-200 shadow-sm">

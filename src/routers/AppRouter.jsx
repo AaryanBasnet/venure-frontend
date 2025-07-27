@@ -14,6 +14,7 @@ import OwnerUserRoute from "./OwnerUserRoute";
 // Utility
 import UnAuthorized from "../pages/UnAuthorized";
 import UserRoleRoute from "./UserRoleRoute";
+import PasswordResetFlow from "../components/auth/PasswordResetFlow";
 
 // Lazy loaded pages
 const LoginPage = lazy(() => import("../pages/LoginPage"));
@@ -117,6 +118,7 @@ export default function AppRouter() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
           </Route>
+          <Route path="/password-reset" element={<PasswordResetFlow />} />
 
           {/* Admin Protected Routes */}
           <Route element={<AdminUserRoute />}>

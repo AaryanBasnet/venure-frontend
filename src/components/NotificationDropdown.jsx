@@ -81,9 +81,10 @@ export default function NotificationDropdown() {
 
       {/* Dropdown Panel */}
       {open && (
-        <div className="absolute right-0 z-50 mt-3 w-96 bg-white rounded-2xl shadow-2xl border border-slate-200/50 backdrop-blur-lg overflow-hidden transform transition-all duration-300 ease-out">
+        <div className="z-[9999] mt-3 sm:absolute sm:right-0 sm:top-full fixed sm:mt-3 top-20 inset-x-4 sm:inset-x-auto w-full sm:w-96 max-w-full sm:max-w-[24rem] bg-white rounded-2xl shadow-2xl border border-slate-200/50 backdrop-blur-lg overflow-hidden transform transition-all duration-300 ease-out">
+          {" "}
           {/* Header */}
-          <div className="p-6 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-rose-50/30">
+          <div className="p-6 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-rose-50/30 ">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-r from-rose-500 to-pink-600 rounded-full">
@@ -121,7 +122,6 @@ export default function NotificationDropdown() {
               </div>
             </div>
           </div>
-
           {/* Notifications List */}
           <div className="max-h-96 overflow-y-auto">
             {notifications.length === 0 ? (
@@ -193,7 +193,6 @@ export default function NotificationDropdown() {
               </div>
             )}
           </div>
-
           {/* Footer */}
           {notifications.length > 0 && (
             <div className="p-4 border-t border-slate-100 bg-gradient-to-r from-slate-50 to-rose-50/30">
