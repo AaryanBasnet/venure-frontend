@@ -26,7 +26,7 @@ export const useLoginUser = () => {
         } else {
           navigate("/");
         }
-      }); // 100ms delay to ensure context updates before routing
+      }, 100); // 100ms delay to ensure context updates before routing
     },
     onError: (err) => {
       console.error(err);

@@ -66,16 +66,7 @@ export default function LoginForm({ onForgotPassword }) {
           )}
         </div>
 
-        <div className="flex items-center font-poppins  justify-between">
-          <label className="flex items-center text-sm">
-            <input
-              type="checkbox"
-              className="form-checkbox h-4 w-4 text-indigo-600"
-            />
-            <span className="ml-2 font-poppins  text-gray-700">
-              Remember me
-            </span>
-          </label>
+        <div className="flex items-center font-poppins justify-end">
           <button
             onClick={onForgotPassword}
             className="text-sm font-poppins  text-indigo-600 hover:underline"

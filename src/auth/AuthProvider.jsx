@@ -5,11 +5,11 @@ export const AuthContext = createContext();
 const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const login = (userData, token) => {
     return new Promise((resolve) => {
-      setLoading(true);
-
+      setIsLoggingIn(true);
       const normalizedUser = {
         ...userData,
         _id: userData._id || userData.id,
@@ -19,9 +19,12 @@ const AuthContextProvider = ({ children }) => {
       localStorage.setItem("user", JSON.stringify(normalizedUser));
       localStorage.setItem("token", token);
       setUser(normalizedUser);
-      console.log(normalizedUser)
-      setLoading(false);
-      resolve(); 
+
+      // Resolve after ensuring state is updated
+      setTimeout(() => {
+        setIsLoggingIn(false);
+        resolve();
+      }, 0);
     });
   };
 
