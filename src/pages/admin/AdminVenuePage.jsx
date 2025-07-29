@@ -162,6 +162,7 @@ const AdminVenuePage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {venues.map((venue) => (
           <div
+            data-testid="venue-card"
             key={venue._id}
             className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
           >
@@ -240,6 +241,7 @@ const AdminVenuePage = () => {
       {/* Venue Detail Modal */}
       {selectedVenue && (
         <div
+          data-testid="venue-modal"
           className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4"
           onClick={() => setSelectedVenue(null)}
         >
@@ -340,7 +342,8 @@ const AdminVenuePage = () => {
 
                 <h3 className="font-semibold text-gray-800 mb-2">Amenities</h3>
                 <div className="flex flex-wrap gap-4 mb-6">
-                  {selectedVenue.amenities && selectedVenue.amenities.length > 0 ? (
+                  {selectedVenue.amenities &&
+                  selectedVenue.amenities.length > 0 ? (
                     selectedVenue.amenities.map((amenity) => (
                       <div
                         key={amenity}
