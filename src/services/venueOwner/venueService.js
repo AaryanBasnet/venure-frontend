@@ -57,38 +57,8 @@ export const fetchVenuesByOwnerService = async (ownerId) => {
   const response = await getVenuesByOwner(ownerId);
   return response.data.data;
 };
-
-// UPDATE Venue
-export const updateVenueService = async ({
-  venueId,
-  updatedData,
-  newImages,
-}) => {
-  const formData = new FormData(); // Convert location to JSON string
-
-  formData.append(
-    "location",
-    JSON.stringify({
-      address: updatedData.address || "",
-      city: updatedData.city || "",
-      state: updatedData.state || "",
-      country: updatedData.country || "",
-    })
-  );
-
-  Object.entries(updatedData).forEach(([key, value]) => {
-    if (!["address", "city", "state", "country", "location"].includes(key)) {
-      formData.append(
-        key,
-        typeof value === "object" ? JSON.stringify(value) : value
-      );
-    }
-  });
-
-  if (newImages?.length > 0) {
-    newImages.forEach((file) => formData.append("venueImages", file));
-  }
-
-  const response = await updateVenue(venueId, formData);
+export const updateVenueService = async ({ venueId, updatedData }) => {
+  // `updatedData` is already a FormData created in the React component
+  const response = await updateVenue(venueId, updatedData);
   return response.data;
 };

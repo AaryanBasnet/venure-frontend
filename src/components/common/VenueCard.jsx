@@ -119,6 +119,8 @@ const VenueCard = ({ venue, onEdit, onDelete, isDeleting }) => {
               <Button
                 className="text-gray-500 hover:text-gray-700 p-1"
                 onClick={() => onEdit(venue)}
+                aria-label={`Edit venue ${venue.venueName}`}
+                title="Edit venue"
               >
                 <FaEdit />
               </Button>
@@ -126,6 +128,8 @@ const VenueCard = ({ venue, onEdit, onDelete, isDeleting }) => {
                 className="text-red-500 hover:text-red-700 p-1 flex items-center"
                 onClick={() => setShowConfirm(true)}
                 disabled={isDeleting}
+                aria-label={`Delete venue ${venue.venueName}`}
+                title="Delete venue"
               >
                 <FaTrash />
               </Button>

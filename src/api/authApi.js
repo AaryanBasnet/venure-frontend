@@ -9,5 +9,4 @@ export const forgotPasswordApi = (data) => axios.post("/auth/forgot-password", d
 // Verify the code user received via email
 export const verifyResetCodeApi = (data) => axios.post("/auth/verify-reset-code", data);
 
-// Reset password using email, code, and new password (no token in URL)
 export const resetPasswordApi = (data) => axios.post("/auth/reset-password", data);
