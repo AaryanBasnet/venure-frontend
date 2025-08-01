@@ -16,7 +16,7 @@ test("Customer can like a venue", async ({ customerUser }) => {
   }).waitFor();
 
   // Find the first venue card by image alt text (assumes venue name is unique)
-  const venueImage = await page.getByRole("img", { name: /Test Venue2/i });
+  const venueImage = await page.getByRole("img", { name: /Test Venue55/i });
   const cardContainer = venueImage.locator(".."); // div wrapping image + button
 
   // Locate the heart button inside the image container
@@ -45,7 +45,7 @@ test("Customer can unlike a venue", async ({ customerUser }) => {
     name: "Explore Our Premium Venues",
   }).waitFor();
 
-  const venueImage = await page.getByRole("img", { name: /Test Venue2/i });
+  const venueImage = await page.getByRole("img", { name: /Test Venue55/i });
   const cardContainer = venueImage.locator("..");
   const heartButton = cardContainer.locator("button").first();
   const heartIcon = heartButton.locator("svg");

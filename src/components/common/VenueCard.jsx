@@ -45,9 +45,9 @@ const VenueCard = ({ venue, onEdit, onDelete, isDeleting }) => {
       : "https://via.placeholder.com/400x200?text=Venue+Image";
 
   const statusColors = {
-    Approved: "bg-green-100 text-green-700",
-    Pending: "bg-yellow-100 text-yellow-700",
-    Rejected: "bg-red-100 text-red-700",
+    approved: "bg-green-100 text-green-700",
+    pending: "bg-yellow-100 text-yellow-700",
+    rejected: "bg-red-100 text-red-700",
   };
 
   return (
@@ -111,8 +111,13 @@ const VenueCard = ({ venue, onEdit, onDelete, isDeleting }) => {
             </div>
           </div>
           <div className="mt-auto pt-4 border-t border-gray-200 flex justify-between items-center text-sm text-gray-600">
-            <div className="inline-block bg-green-600 text-amber-50 px-4 py-1 rounded-full border border-green-700 text-sm">
-              Approved
+            <div
+              className={`inline-block px-4 py-1 rounded-full border text-sm font-medium ${
+                statusColors[venue.status] ||
+                "bg-gray-100 text-gray-700 border-gray-300"
+              }`}
+            >
+              {venue.status}
             </div>
 
             <div className="flex space-x-3">

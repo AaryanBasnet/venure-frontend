@@ -10,10 +10,14 @@ const __dirname = path.dirname(__filename);
 
 test.describe("Venue Owner Tests", () => {
   test("Venue owner can access dashboard", async ({ ownerUser }) => {
-    await expect(ownerUser.locator('h3:has-text("Venue Management")')).toBeVisible();
+    await expect(
+      ownerUser.locator('h3:has-text("Venue Management")')
+    ).toBeVisible();
   });
 
-  test("Venue owner can create a venue with images via modal form", async ({ ownerUser }) => {
+  test("Venue owner can create a venue with images via modal form", async ({
+    ownerUser,
+  }) => {
     await ownerUser.goto("/owner/venues");
 
     // Open modal to add venue
@@ -23,14 +27,17 @@ test.describe("Venue Owner Tests", () => {
     await expect(modal).toBeVisible();
 
     // Fill form fields (using type to trigger Formik)
-    await ownerUser.type('input[name="venueName"]', "Test Venue5");
+    await ownerUser.type('input[name="venueName"]', "Test Venue56");
     await ownerUser.type('input[name="capacity"]', "100");
     await ownerUser.type('input[name="pricePerHour"]', "2000");
     await ownerUser.type('input[name="city"]', "Kathmandu");
     await ownerUser.type('input[name="state"]', "Bagmati");
     await ownerUser.type('input[name="country"]', "Nepal");
     await ownerUser.type('input[name="address"]', "Some Street, KTM");
-    await ownerUser.type('textarea[name="description"]', "A beautiful venue for events.");
+    await ownerUser.type(
+      'textarea[name="description"]',
+      "A beautiful venue for events."
+    );
 
     // Check amenities
     await ownerUser.check('input[type="checkbox"][value="WiFi"]');
@@ -38,7 +45,9 @@ test.describe("Venue Owner Tests", () => {
 
     // Upload image and wait for preview
     const fileInput = ownerUser.locator('input[type="file"]');
-    await fileInput.setInputFiles(path.resolve(__dirname, "fixtures", "venueInterior.jpg"));
+    await fileInput.setInputFiles(
+      path.resolve(__dirname, "fixtures", "venueInterior.jpg")
+    );
     await expect(ownerUser.locator('img[alt="Preview 1"]')).toBeVisible();
 
     // Submit the form
@@ -50,14 +59,21 @@ test.describe("Venue Owner Tests", () => {
     await expect(modal).toBeHidden();
 
     // Check that new venue appears in the list
-    await expect(ownerUser.getByRole("heading", { level: 3, name: "Test Venue5" })).toBeVisible();
+    await expect(
+      ownerUser.getByRole("heading", { level: 3, name: "Test Venue56" })
+    ).toBeVisible();
   });
 
-  test("Venue owner can update venue (with network debugging)", async ({ ownerUser }) => {
+  test("Venue owner can update venue (with network debugging)", async ({
+    ownerUser,
+  }) => {
     // Track API requests for debugging (optional)
     const apiRequests = [];
     ownerUser.on("request", (request) => {
-      if (request.url().includes("/api/") || request.url().includes("/venues")) {
+      if (
+        request.url().includes("/api/") ||
+        request.url().includes("/venues")
+      ) {
         apiRequests.push({
           method: request.method(),
           url: request.url(),
@@ -67,9 +83,13 @@ test.describe("Venue Owner Tests", () => {
     });
 
     await ownerUser.goto("/owner/venues");
-    await expect(ownerUser.getByRole("heading", { name: "My Venues" })).toBeVisible();
+    await expect(
+      ownerUser.getByRole("heading", { name: "My Venues" })
+    ).toBeVisible();
 
-    const editButton = ownerUser.getByRole("button", { name: /Edit venue/i }).first();
+    const editButton = ownerUser
+      .getByRole("button", { name: /Edit venue/i })
+      .first();
     await editButton.click();
 
     const modal = ownerUser.getByTestId("modal-backdrop");
@@ -107,14 +127,19 @@ test.describe("Venue Owner Tests", () => {
     const urlParts = response.url().split("/");
     const venueId = urlParts[urlParts.length - 1];
     console.log("- Venue ID in URL:", venueId);
-    console.log("- Is valid MongoDB ObjectId:", /^[0-9a-fA-F]{24}$/.test(venueId));
+    console.log(
+      "- Is valid MongoDB ObjectId:",
+      /^[0-9a-fA-F]{24}$/.test(venueId)
+    );
 
     if (response.status() === 403) {
       const responseBody = await response.text();
       console.log("403 Error response:", responseBody);
       const authHeader = response.request().headers()["authorization"];
       console.log("Auth header present:", !!authHeader);
-      throw new Error("Update failed with 403. Check venue ownership and auth.");
+      throw new Error(
+        "Update failed with 403. Check venue ownership and auth."
+      );
     }
 
     if (response.status() >= 400) {

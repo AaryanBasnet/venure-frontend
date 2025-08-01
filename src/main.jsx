@@ -9,7 +9,7 @@ import AuthContextProvider from "./auth/AuthProvider.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ToastContainer } from "react-toastify";
 
-const queryClient = new QueryClient(); // <-- instantiate here
+const queryClient = new QueryClient(); 
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

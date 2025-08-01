@@ -184,14 +184,7 @@ export default function OwnerDashboard() {
             icon={Building2}
             color="purple"
           />
-          <StatCard
-            title="Growth Rate"
-            value="18.5%"
-            subtitle="vs last month"
-            icon={TrendingUp}
-            trend={5.3}
-            color="orange"
-          />
+          
         </div>
 
         {/* Charts and Recent Activity */}

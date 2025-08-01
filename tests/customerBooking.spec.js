@@ -3,7 +3,6 @@ import { test, expect } from "./authFixtures.js";
 
 // Helper to fill Stripe iframe inputs
 async function fillCardElement(page) {
-  // Try different iframe selectors
   const possibleSelectors = [
     'iframe[title="Secure card payment input frame"]',
     'iframe[title="Secure payment input frame"]',
@@ -127,8 +126,8 @@ async function fillCardElement(page) {
 }
 
 test("Customer can book a venue and pay via Stripe", async ({ customerUser }) => {
-  await customerUser.goto("/checkout/68875f8906b00d8f50792065");
-  await customerUser.getByText("29", { exact: true }).click();
+  await customerUser.goto("/checkout/688be5feac280ea4c4d70197");
+  await customerUser.getByText("30", { exact: true }).click();
   await customerUser.getByText("2:00 PM - 6:00 PM", { exact: true }).click();
   await customerUser.getByRole("button", { name: "Next", exact: true }).click();
   await customerUser.getByLabel("Number of Guests").fill("100");
