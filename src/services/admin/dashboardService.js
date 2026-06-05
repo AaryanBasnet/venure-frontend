@@ -22,6 +22,5 @@ export const getTotalBookingsForAdminService = async () => {
 
 export const getTopVenuesByBookingService = async () => {
   const res = await getTopVenuesByBooking();
-  console.log("getTopVenuesByBookingService : ", res.data);
   return res.data.data;
 };

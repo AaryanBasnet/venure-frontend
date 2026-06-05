@@ -11,8 +11,6 @@ export const useDeleteUser = () => {
         queryKey: ["admin_users"],
       });
     },
-    onError: (error) => {
-      console.error("Failed to delete user:", error);
-    },
+    onError: () => {},
   });
 };

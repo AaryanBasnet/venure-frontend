@@ -10,7 +10,6 @@ export default function OwnerUserRoute() {
   if (!user) return <Navigate to="/login" replace />;
 
   if (user.role !== "VenueOwner") {
-    console.log("Redirecting from OwnerUserRoute, role:", user.role);
     return <Navigate to="/unauthorized" replace />;
   }
 

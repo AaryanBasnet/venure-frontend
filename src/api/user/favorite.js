@@ -10,6 +10,5 @@ export const getFavoriteVenueIds = async () => {
 };
 
 export const getFavoriteVenuesApi = async () => {
-  console.log("favourite venues", getFavoriteVenuesApi);
-  return await instance.get("/user/favorites/venues"); // adjust base URL if needed
+  return await instance.get("/user/favorites/venues");
 };

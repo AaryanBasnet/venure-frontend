@@ -14,7 +14,6 @@ import { useReviews } from "../../hooks/useReviews";
 import { toast } from "react-toastify";
 
 const VenueReviews = ({ venue, user, isAuthenticated }) => {
-  console.log(user);
   if (!venue || !venue._id) {
     return <div>Loading venue data...</div>; // or null, or a skeleton loader
   }
@@ -61,8 +60,7 @@ const VenueReviews = ({ venue, user, isAuthenticated }) => {
       });
       setNewReview({ rating: 5, comment: "", title: "" });
       setShowReviewForm(false);
-    } catch (err) {
-      console.error("Failed to submit review:", err);
+    } catch {
       toast.error("Failed to submit review, please try again.");
     }
   };

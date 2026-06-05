@@ -39,15 +39,11 @@ export const addVenueService = async ({ form, amenities, images, ownerId }) => {
 };
 
 export const getActiveVenuesService = async (ownerId) => {
-  if (!ownerId) {
-    console.warn("getApprovedVenueCountByOwnerService called without ownerId");
-    return 0; // Or null, or throw an error
-  }
+  if (!ownerId) return 0;
   try {
     const res = await getActiveVenues(ownerId);
     return res.data.count;
   } catch (err) {
-    console.error("Failed to fetch approved venue count:", err);
     throw err;
   }
 };

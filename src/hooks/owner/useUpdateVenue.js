@@ -12,8 +12,6 @@ export const useUpdateVenue = () => {
       queryClient.invalidateQueries(["venuesByOwner", ownerId]);
       queryClient.invalidateQueries(["venues"]);
     },
-    onError: (error) => {
-      console.error("Update venue mutation error:", error);
-    },
+    onError: () => {},
   });
 };

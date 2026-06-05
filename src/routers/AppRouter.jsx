@@ -7,13 +7,11 @@ import AdminLayout from "../layouts/AdminLayout";
 import OwnerLayout from "../layouts/OwnerLayout";
 
 // Route guards
-import GuestRoutes from "./GuestRoutes";
-import AdminUserRoute from "./AdminUserRoute";
-import OwnerUserRoute from "./OwnerUserRoute";
+import ProtectedRoute from "../components/auth/ProtectedRoute";
+import UserRoleRoute from "./UserRoleRoute"; // kept — has custom guest+customer logic
 
 // Utility
 import UnAuthorized from "../pages/UnAuthorized";
-import UserRoleRoute from "./UserRoleRoute";
 import PasswordResetFlow from "../components/auth/PasswordResetFlow";
 
 // Lazy loaded pages
@@ -113,15 +111,15 @@ export default function AppRouter() {
             </Route>
           </Route>
 
-          {/* Guest-only routes */}
-          <Route element={<GuestRoutes />}>
+          {/* Guest-only routes — authenticated users are bounced to their dashboard */}
+          <Route element={<ProtectedRoute guestOnly />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
           </Route>
           <Route path="/password-reset" element={<PasswordResetFlow />} />
 
           {/* Admin Protected Routes */}
-          <Route element={<AdminUserRoute />}>
+          <Route element={<ProtectedRoute requiredRole="Admin" />}>
             <Route element={<AdminLayout />}>
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/user" element={<AdminUsersPage />} />
@@ -136,7 +134,7 @@ export default function AppRouter() {
           </Route>
 
           {/* Owner Protected Routes */}
-          <Route element={<OwnerUserRoute />}>
+          <Route element={<ProtectedRoute requiredRole="VenueOwner" />}>
             <Route element={<OwnerLayout />}>
               <Route path="/owner/dashboard" element={<OwnerDashboard />} />
               <Route path="/owner/analytics" element={<OwnerAnalyticsPage />} />

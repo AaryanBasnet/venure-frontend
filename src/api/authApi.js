@@ -1,12 +1,13 @@
-import axios from "./api";
+import api from "./api";
 
-export const registerUserApi = (data) => axios.post("/auth/register", data);
-export const loginUserApi = (data) => axios.post("/auth/login", data);
+export const registerUserApi = (data) => api.post("/auth/register", data);
+export const loginUserApi = (data) => api.post("/auth/login", data);
+export const logoutUserApi = () => api.post("/auth/logout");
+export const getMeApi = () => api.get("/auth/me");
 
-// Send email to get reset code
-export const forgotPasswordApi = (data) => axios.post("/auth/forgot-password", data);
-
-// Verify the code user received via email
-export const verifyResetCodeApi = (data) => axios.post("/auth/verify-reset-code", data);
-
-export const resetPasswordApi = (data) => axios.post("/auth/reset-password", data);
+export const forgotPasswordApi = (data) =>
+  api.post("/auth/forgot-password", data);
+export const verifyResetCodeApi = (data) =>
+  api.post("/auth/verify-reset-code", data);
+export const resetPasswordApi = (data) =>
+  api.post("/auth/reset-password", data);

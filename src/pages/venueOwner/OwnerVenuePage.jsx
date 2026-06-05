@@ -22,21 +22,19 @@ const OwnerVenuePage = () => {
   const [isUpdating, setIsUpdating] = useState(false);
 
   const handleAddVenueSuccess = useCallback(async () => {
-    console.log("Add venue success: closing modal & refetching");
     setIsModalOpen(false);
     setEditVenue(null);
     await refetch();
   }, [refetch]);
+
   const handleUpdateVenueSuccess = useCallback(async () => {
     setIsUpdating(true);
     try {
-      console.log("Update venue success: closing modal first");
       setIsModalOpen(false);
       setEditVenue(null);
       await refetch();
-      console.log("Refetch complete");
-    } catch (e) {
-      console.error("Error on update success:", e);
+    } catch {
+      // refetch errors are non-fatal — modal already closed
     } finally {
       setIsUpdating(false);
     }
@@ -48,8 +46,7 @@ const OwnerVenuePage = () => {
       try {
         await deleteVenue(venueId);
         await refetch();
-      } catch (e) {
-        console.error("Failed to delete venue:", e);
+      } catch {
         alert("Failed to delete venue. Please try again.");
       } finally {
         setDeletingVenueId(null);

@@ -86,8 +86,7 @@ const VenueDetails = () => {
           venueId: venue._id, // optional if needed later
         },
       });
-    } catch (err) {
-      console.error("Failed to start chat", err);
+    } catch {
       alert("Unable to start chat");
     }
   };

@@ -24,9 +24,8 @@ export const useUpdateUserProfile = () => {
       // Invalidate and refetch user profile after update
       queryClient.invalidateQueries(["userProfile"]);
     },
-    onError: (error) => {
-      // You can handle error display here or in UI component
-      console.error("Failed to update profile:", error);
+    onError: () => {
+      // Error display handled by the calling component
     },
   });
 };

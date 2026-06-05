@@ -1,24 +1,43 @@
 import React from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 const AddVenueModal = ({ isOpen, onClose, children }) => {
-  if (!isOpen) return null;
-
   return (
-    <div
-      data-testid="modal-backdrop"
-      className="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center"
-    >
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative" data-testid="modal-content">
-        <button
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          data-testid="modal-backdrop"
+          className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
           onClick={onClose}
-          className="absolute top-2 right-2 text-gray-600 hover:text-red-500 text-lg"
-          aria-label="Close modal"
+          aria-modal="true"
+          role="dialog"
+          aria-labelledby="add-venue-title"
         >
-          ✕
-        </button>
-        {children}
-      </div>
-    </div>
+          <motion.div
+            data-testid="modal-content"
+            className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative"
+            initial={{ opacity: 0, scale: 0.95, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 12 }}
+            transition={{ type: "spring", stiffness: 320, damping: 28 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={onClose}
+              className="absolute top-2 right-2 text-gray-600 hover:text-red-500 text-lg transition-colors"
+              aria-label="Close modal"
+            >
+              ✕
+            </button>
+            {children}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

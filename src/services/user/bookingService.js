@@ -26,8 +26,6 @@ export const createBookingService = async (
         card: cardElement || elements.getElement(CardElement),
       },
     });
-    console.log("Stripe Payment Result:", result);
-
     if (result.error) {
       throw new Error(result.error.message);
     }
@@ -44,7 +42,6 @@ export const createBookingService = async (
 
     return await createBookingApi(finalBookingData);
   } catch (error) {
-    console.error("Booking Service Error:", error);
     throw error;
   }
 };

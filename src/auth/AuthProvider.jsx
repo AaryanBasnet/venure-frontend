@@ -1,69 +1,77 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useCallback } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import api from "../api/api";
+import { useAuthStore } from "../store/authStore";
+import { useFetchMe } from "../hooks/auth/useFetchMe";
+import { connectSocket, disconnectSocket } from "../lib/socket";
 
+/**
+ * AuthContext still exists so every existing route guard and layout that
+ * calls useContext(AuthContext) keeps working without changes in Phase 3.
+ * Internally the truth lives in Zustand — this context is a thin bridge.
+ */
 export const AuthContext = createContext();
 
 const AuthContextProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const { user, isAuthenticated, clearUser, isInitializing } = useAuthStore();
+  const queryClient = useQueryClient();
 
-  const login = (userData, token) => {
-    return new Promise((resolve) => {
-      setIsLoggingIn(true);
-      const normalizedUser = {
-        ...userData,
-        _id: userData._id || userData.id,
-        role: userData.role,
-      };
+  // Hydrate Zustand from the HTTP-Only cookie on every cold load / tab-open.
+  useFetchMe();
 
-      localStorage.setItem("user", JSON.stringify(normalizedUser));
-      localStorage.setItem("token", token);
-      setUser(normalizedUser);
+  // ── Session-expired handler ───────────────────────────────────────────────
+  // The axios interceptor fires this when BOTH the access token AND the
+  // refresh token are dead.  We only redirect when the store is fully
+  // initialized; if isInitializing is still true we got here during the
+  // very first /auth/me check which means there was simply never a session.
+  const handleSessionExpired = useCallback(() => {
+    const { isInitializing: stillInit } = useAuthStore.getState();
 
-      // Resolve after ensuring state is updated
-      setTimeout(() => {
-        setIsLoggingIn(false);
-        resolve();
-      }, 0);
-    });
-  };
+    clearUser();
+    queryClient.clear();
+    disconnectSocket();
 
-  const logout = () => {
-    setLoading(true);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    setUser(null);
-    setLoading(false);
-  };
+    if (!stillInit) {
+      toast.error("Your session has expired. Please log in again.");
+      window.location.replace("/login");
+    }
+  }, [clearUser, queryClient]);
 
   useEffect(() => {
-    setLoading(true);
-    const token = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
+    window.addEventListener("auth:session-expired", handleSessionExpired);
+    return () =>
+      window.removeEventListener("auth:session-expired", handleSessionExpired);
+  }, [handleSessionExpired]);
 
-    if (token && storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        const normalizedUser = {
-          ...parsedUser,
-          _id: parsedUser._id || parsedUser.id,
-          role: parsedUser.role,
-        };
-        setUser(normalizedUser);
-      } catch (error) {
-        console.error("Failed to parse user from localStorage", error);
-        logout();
-      }
+  // ── Socket lifecycle ──────────────────────────────────────────────────────
+  // Connect once we know the userId; disconnect on logout / unauthenticated.
+  useEffect(() => {
+    if (user?._id) {
+      connectSocket(user._id);
     } else {
-      logout();
+      disconnectSocket();
     }
+  }, [user?._id]);
 
-    setLoading(false);
-  }, []);
+  // ── Logout ────────────────────────────────────────────────────────────────
+  // Fire-and-forget the server call so the UI clears immediately.
+  // Cookie is cleared server-side asynchronously.
+  const logout = useCallback(() => {
+    api.post("/auth/logout").catch(() => {});
+    clearUser();
+    queryClient.clear();
+    disconnectSocket();
+  }, [clearUser, queryClient]);
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, logout, isAuthenticated: user !== null }}
+      value={{
+        user,
+        loading: isInitializing,
+        isAuthenticated,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>

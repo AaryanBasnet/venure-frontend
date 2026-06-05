@@ -11,7 +11,6 @@ export const getVenue = async (params) => {
 
 export const getApprovedVenuesCountService = async () => {
   const res = await getApprovedVenuesCount();
-  console.log(res);
   return res.data;
 };
 

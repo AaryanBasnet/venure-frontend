@@ -14,12 +14,10 @@ export const useCreateBooking = () => {
     },
     mutationKey: ["create_booking"],
 
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: () => {
       toast.success("Booking Successful");
     },
     onError: (err) => {
-      console.log(err);
       toast.error(err.message || "Booking failed");
     },
   });

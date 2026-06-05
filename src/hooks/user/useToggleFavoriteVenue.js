@@ -21,9 +21,8 @@ export const useToggleFavoriteVenue = () => {
         queryClient.invalidateQueries({ queryKey: ["favoriteVenues"] }); 
     },
 
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to update favorite");
-      console.error("Error toggling favorite:", error);
     }
   });
 };

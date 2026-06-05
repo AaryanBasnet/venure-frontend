@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { Bell, X, Check, CheckCheck, Clock, ArrowRight } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useNotifications } from "../hooks/useNotification";
 import { AuthContext } from "../auth/AuthProvider";
 
@@ -55,6 +56,9 @@ export default function NotificationDropdown() {
       <button
         onClick={() => setOpen((prev) => !prev)}
         className="relative p-2 rounded-full hover:bg-slate-100 transition-colors duration-200 group"
+        aria-label="Notifications"
+        aria-expanded={open}
+        aria-haspopup="true"
       >
         <Bell
           className={`w-6 h-6 text-slate-600 transition-all duration-200 ${
@@ -80,8 +84,17 @@ export default function NotificationDropdown() {
       </button>
 
       {/* Dropdown Panel */}
+      <AnimatePresence>
       {open && (
-        <div className="z-[9999] mt-3 sm:absolute sm:right-0 sm:top-full fixed sm:mt-3 top-20 inset-x-4 sm:inset-x-auto w-full sm:w-96 max-w-full sm:max-w-[24rem] bg-white rounded-2xl shadow-2xl border border-slate-200/50 backdrop-blur-lg overflow-hidden transform transition-all duration-300 ease-out">
+        <motion.div
+          className="z-[9999] mt-3 sm:absolute sm:right-0 sm:top-full fixed sm:mt-3 top-20 inset-x-4 sm:inset-x-auto w-full sm:w-96 max-w-full sm:max-w-[24rem] bg-white rounded-2xl shadow-2xl border border-slate-200/50 backdrop-blur-lg overflow-hidden"
+          initial={{ opacity: 0, y: -8, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -8, scale: 0.97 }}
+          transition={{ duration: 0.15, ease: "easeOut" }}
+          role="dialog"
+          aria-label="Notifications panel"
+        >
           {" "}
           {/* Header */}
           <div className="p-6 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-rose-50/30 ">
@@ -201,8 +214,9 @@ export default function NotificationDropdown() {
               </button>
             </div>
           )}
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -105,8 +105,8 @@ export default function VenueRegisterForm({ onSuccess, mode = "create", initialD
 
           onSuccess?.();
         }
-      } catch (error) {
-        console.error("Error submitting venue:", error);
+      } catch {
+        // error surfaced via toast in the mutation's onError handler
       } finally {
         setIsSubmitting(false);
       }

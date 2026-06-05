@@ -31,8 +31,7 @@ const AdminUsersPage = () => {
     setOpenActionMenu(null);
   };
 
-  const handleBlockUser = (user) => {
-    console.log("Block user:", user.name);
+  const handleBlockUser = () => {
     setOpenActionMenu(null);
   };
 

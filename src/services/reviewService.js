@@ -30,6 +30,5 @@ export const deleteReviewService = async (venueId, reviewId) => {
 
 export const getOwnerVenueReviewsService = async () => {
   const res = await getOwnerVenueReviews();
-  console.log("getOwnerVenueReviewsService", res.data)
-    return res.data.data;
-}
+  return res.data.data;
+};

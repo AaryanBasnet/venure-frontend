@@ -12,7 +12,6 @@ export const useForgotPassword = () => {
       toast.success(data?.message || "Reset link sent to your email");
     },
     onError: (err) => {
-      console.error(err);
       toast.error(
         err?.response?.data?.message || err?.message || "Failed to send reset link"
       );

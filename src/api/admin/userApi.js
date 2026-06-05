@@ -1,7 +1,6 @@
 import instance from "../api";
 
 export const getCustomersCount = () => {
-  console.log("Customer Count", getCustomersCount);
   return instance.get("/admin/user/getCustomerCount");
 };
 

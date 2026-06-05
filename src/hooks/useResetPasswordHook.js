@@ -15,7 +15,6 @@ export const useResetPassword = () => {
       setTimeout(() => navigate("/login"), 700);
     },
     onError: (err) => {
-      console.error(err);
       toast.error(err?.message || "Password reset failed");
     },
   });

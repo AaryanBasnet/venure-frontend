@@ -8,8 +8,6 @@ export const getVenueOwnerAuth = async (request) => {
   });
 
   const json = await res.json();
-  console.log("Login response body:", json);
-
   const { token, userData } = json;
 
   if (!token || !userData) {

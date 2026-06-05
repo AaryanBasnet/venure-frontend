@@ -11,7 +11,6 @@ export const useVerifyResetCode = () => {
       toast.success(data?.message || "Code verified successfully");
     },
     onError: (err) => {
-      console.error(err);
       toast.error(err?.message || "Invalid or expired reset code");
     },
   });
