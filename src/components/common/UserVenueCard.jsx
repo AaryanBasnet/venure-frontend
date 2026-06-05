@@ -8,16 +8,15 @@ import {
   ArrowRight,
   Heart,
 } from "lucide-react";
-
-const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5050";
+import { cloudinaryTransform, CARD_TRANSFORM } from "../../utils/cloudinary";
 
 export default function UserVenueCard({ venue, index, isFavorite, onToggleFavorite }) {
   const navigate = useNavigate();
 
-  const imageUrl =
-    venue.venueImages?.length > 0
-      ? `${BASE_URL}/${venue.venueImages[0].url}`
-      : "https://via.placeholder.com/400x250?text=Elegant+Venue";
+  const rawUrl = venue.venueImages?.[0]?.url || "";
+  const imageUrl = rawUrl
+    ? cloudinaryTransform(rawUrl, CARD_TRANSFORM)
+    : "https://placehold.co/600x400?text=Venue";
 
   return (
     <motion.div
@@ -33,11 +32,16 @@ export default function UserVenueCard({ venue, index, isFavorite, onToggleFavori
         <img
           src={imageUrl}
           alt={venue.venueName}
+          width={600}
+          height={400}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover rounded-t-3xl"
         />
 
         <button
           onClick={onToggleFavorite}
+          aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
           className="absolute top-4 right-4 bg-white/80 backdrop-blur-md p-2 rounded-full shadow hover:scale-110 transition"
         >
           <Heart

@@ -30,5 +30,18 @@ export default defineConfig({
       },
     },
   },
-  plugins: [react(),tailwindcss()],
+  plugins: [react(), tailwindcss()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom"],
+          router: ["react-router-dom"],
+          animations: ["framer-motion"],
+          query: ["@tanstack/react-query"],
+          icons: ["lucide-react", "react-icons"],
+        },
+      },
+    },
+  },
 });

@@ -17,7 +17,7 @@ export const useVenues = (filters = {}) => {
   const query = useQuery({
     queryKey: ["venues", filters],
     queryFn: async () => {
-      const res = await api.get("/user/venues/getApprovedVenues", {
+      const res = await api.get("/venues", {
         params: filters,
       });
       return res.data; // full envelope — caller can access .data and .pages

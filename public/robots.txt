@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Allow: /venues
+Allow: /venue/
+Allow: /about
+Allow: /contact
+
+Disallow: /admin/
+Disallow: /owner/
+Disallow: /favorites
+Disallow: /my-bookings
+Disallow: /profile
+Disallow: /checkout/
+Disallow: /chat

@@ -26,13 +26,18 @@ const AuthContextProvider = ({ children }) => {
   // initialized; if isInitializing is still true we got here during the
   // very first /auth/me check which means there was simply never a session.
   const handleSessionExpired = useCallback(() => {
-    const { isInitializing: stillInit } = useAuthStore.getState();
+    const { isInitializing: stillInit, isAuthenticated: wasAuthenticated } =
+      useAuthStore.getState();
 
     clearUser();
-    queryClient.clear();
     disconnectSocket();
 
-    if (!stillInit) {
+    // Only redirect when the user HAD an active session. If isInitializing is
+    // still true we're in the very first /auth/me check (no prior session).
+    // If wasAuthenticated is false the user is a guest; hitting a protected
+    // endpoint as a guest should not kick them to the login page.
+    if (!stillInit && wasAuthenticated) {
+      queryClient.clear();
       toast.error("Your session has expired. Please log in again.");
       window.location.replace("/login");
     }

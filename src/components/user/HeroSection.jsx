@@ -1,7 +1,5 @@
-import venueImg from "../../assets/venueInterior.jpg";
-import vineyardImg from "../../assets/vineyard.jpg";
+
 import cutleryImg from "../../assets/cutleryImg.png";
-import beautifulImg from "../../assets/beautifuImg.jpg";
 import one from "../../assets/one.jpg";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
@@ -66,6 +64,8 @@ export default function HeroSection() {
           <motion.img
             src={one}
             alt="Luxury Venue"
+            fetchpriority="high"
+            decoding="async"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[3000ms] ease-out"
             initial={{ scale: 1.1, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -229,6 +229,8 @@ export default function HeroSection() {
               <img
                 src={cutleryImg}
                 alt="Luxury Dining Experience"
+                loading="lazy"
+                decoding="async"
                 className="w-full md:w-[85%] h-48 object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 style={{
                   filter: "brightness(1.1) contrast(1.1) saturate(1.15)",

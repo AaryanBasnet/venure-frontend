@@ -2,18 +2,17 @@ import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Sparkles, Star } from "lucide-react";
 import { useFilterVenues } from "../../hooks/user/useFilterVenues";
+import { cloudinaryTransform, GALLERY_TRANSFORM } from "../../utils/cloudinary";
 
 export default function VenueGallery() {
   const filters = {};
   const { data, isLoading, isError, error } = useFilterVenues(filters);
   const venues = data?.data || [];
 
-  const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5050";
-
-  // Map backend venues to the shape used in UI rendering
+  // Map backend venues — apply Cloudinary transforms to cut image payload ~90%
   const mappedVenues = venues.map((v) => ({
     id: v._id,
-    image: v.venueImages?.[0]?.url || "/fallback-image.jpg",
+    image: cloudinaryTransform(v.venueImages?.[0]?.url || "", GALLERY_TRANSFORM) || "/fallback-image.jpg",
     title: v.venueName,
     location: v.location
       ? `${v.location.city}, ${v.location.state}`
@@ -144,10 +143,7 @@ export default function VenueGallery() {
         transition={{ duration: 1, delay: 0.2 }}
       >
         {mappedVenues.map((venue, idx) => {
-          // Compose image URL, handling backend relative URLs vs absolute URLs
-          const imgSrc = venue.image.startsWith("http")
-            ? venue.image
-            : `${BASE_URL}/${venue.image}`;
+          const imgSrc = venue.image;
 
           return (
             <motion.div
@@ -172,6 +168,10 @@ export default function VenueGallery() {
                 <img
                   src={imgSrc}
                   alt={venue.title}
+                  width={900}
+                  height={600}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
 
