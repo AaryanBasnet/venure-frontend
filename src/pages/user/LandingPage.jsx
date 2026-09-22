@@ -1,6 +1,6 @@
-import React from "react";
+import HeroSection from "../../features/landing/sections/HeroSection";
 
-import HeroSection from "../../components/user/HeroSection";
+// Legacy sections — replaced one by one with features/landing/sections/* from the Figma design
 import VenueGallery from "../../components/user/VenueGallery";
 import VenuesSection from "../../components/user/VenuesSection";
 import EventListSection from "../../components/user/EventListSection";
@@ -9,13 +9,12 @@ import NepalExperienceSection from "../../components/user/NepalExperienceSection
 
 function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#eeeeea] overflow-x-hidden bg-cream">
+    <div className="overflow-x-hidden bg-cream">
       <HeroSection />
       <VenuesSection />
       <EventListSection />
       <NepalExperienceSection />
       <VenueGallery />
-
       <TestimonialsSection />
     </div>
   );
