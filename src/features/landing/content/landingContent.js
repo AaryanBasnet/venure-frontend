@@ -56,3 +56,16 @@ export const stories = [
     imageSizes: "(min-width: 1024px) 269px, (min-width: 640px) 50vw, 100vw",
   },
 ];
+
+export const seasonsIntro = {
+  eyebrow: "Season Experiences",
+  title: "Plan Around",
+  accent: "the Season",
+};
+
+export const seasons = [
+  { name: "Summer", image: "seasonSummer" },
+  { name: "Winter", image: "seasonWinter" },
+  { name: "Spring", image: "seasonSpring" },
+  { name: "Autumn", image: "seasonAutumn" },
+];
