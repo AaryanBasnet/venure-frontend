@@ -1,15 +1,19 @@
 import ResponsiveImage from "../../../components/ui/ResponsiveImage";
 import { images } from "../../../assets/landing/images";
 
-/** Tall seasonal photo card (Figma component 91:524). */
+/**
+ * Tall seasonal photo card (Figma component 91:524). Figma has no hover
+ * variant for this component, so the image-zoom treatment matches its
+ * siblings (VenueTypeCard, StoryCard) instead of leaving it static.
+ */
 export default function SeasonCard({ season }) {
   return (
-    <li className="relative isolate aspect-[294/642] overflow-hidden rounded-card-sm bg-stone/20">
+    <li className="group relative isolate aspect-[294/642] overflow-hidden rounded-card-sm bg-stone/20">
       <ResponsiveImage
         image={images[season.image]}
         alt=""
         sizes="(min-width: 1024px) 294px, (min-width: 640px) 25vw, 46vw"
-        className="absolute inset-0 -z-20 size-full object-cover"
+        className="absolute inset-0 -z-20 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
       />
       <div
         aria-hidden="true"
