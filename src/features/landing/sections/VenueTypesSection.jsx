@@ -1,0 +1,37 @@
+import SectionHeading from "../../../components/ui/SectionHeading";
+import TextLink from "../../../components/ui/TextLink";
+import { images } from "../../../assets/landing/images";
+import { venueTypes, venueTypesIntro } from "../content/landingContent";
+import VenueTypeCard from "../components/VenueTypeCard";
+
+// Figma 46:17 — intro copy on the left, five expanding category cards on the right.
+// Venue counts are omitted until the API exposes venue categories.
+export default function VenueTypesSection() {
+  return (
+    <section id="venue-types" aria-labelledby="venue-types-title" className="bg-sand py-16 lg:py-[74px]">
+      <div className="container-site grid gap-10 lg:grid-cols-[340px_minmax(0,1fr)] lg:items-center lg:gap-16">
+        <div className="flex flex-col items-start">
+          <SectionHeading
+            id="venue-types-title"
+            eyebrow={venueTypesIntro.eyebrow}
+            title={venueTypesIntro.title}
+            accent={venueTypesIntro.accent}
+          />
+          <p className="mt-4 max-w-sm font-body text-body text-gold-800">{venueTypesIntro.description}</p>
+          <TextLink to="/venues" className="mt-6">
+            Explore all venues
+          </TextLink>
+        </div>
+
+        {/* Mobile/tablet: horizontal scroll-snap row. Desktop: flex row with hover expansion. */}
+        <ul
+          className="group/row -mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-2 sm:-mx-10 sm:scroll-px-10 sm:px-10 lg:mx-0 lg:overflow-visible lg:px-0 lg:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {venueTypes.map((type) => (
+            <VenueTypeCard key={type.slug} type={type} image={images[type.image]} badge={images[type.badge]} />
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}

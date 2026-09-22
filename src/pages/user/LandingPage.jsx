@@ -1,4 +1,5 @@
 import HeroSection from "../../features/landing/sections/HeroSection";
+import VenueTypesSection from "../../features/landing/sections/VenueTypesSection";
 
 // Legacy sections — replaced one by one with features/landing/sections/* from the Figma design
 import VenueGallery from "../../components/user/VenueGallery";
@@ -11,6 +12,7 @@ function LandingPage() {
   return (
     <div className="overflow-x-hidden bg-cream">
       <HeroSection />
+      <VenueTypesSection />
       <VenuesSection />
       <EventListSection />
       <NepalExperienceSection />
