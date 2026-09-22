@@ -12,4 +12,4 @@ export const createOrGetChat = (participantId, venueId) =>
 
 // Get messages for a specific chat
 export const fetchMessages = (chatId) =>
-  instance.get(`/messages/${chatId}`);
+  instance.get(`/chats/${chatId}/messages`);

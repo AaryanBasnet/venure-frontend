@@ -1,30 +1,38 @@
 import { io } from "socket.io-client";
+import api from "../api/api";
 
 const SOCKET_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5051";
 
 // Module-level singleton — one connection shared for the entire app lifetime.
-// autoConnect: false means AuthProvider controls when the connection opens,
-// preventing anonymous socket connections before the user is authenticated.
-// withCredentials: true sends the HTTP-Only auth cookie on the initial
-// Socket.io HTTP handshake so the server can identify the user immediately.
+// autoConnect: false means AuthProvider controls when the connection opens.
+//
+// The server authenticates every handshake. Because the API may live on another site
+// (where the HTTP-only cookie isn't sent), we fetch a short-lived socket token over the
+// authenticated REST API. Passing `auth` as a function re-runs it on every reconnect,
+// so a fresh token is used each time.
 const socket = io(SOCKET_URL, {
   autoConnect: false,
   withCredentials: true,
+  auth: (cb) => {
+    api
+      .get("/auth/socket-token")
+      .then((res) => cb({ token: res.data.data.token }))
+      .catch(() => cb({}));
+  },
 });
 
 /**
- * Opens the connection and subscribes the user to their private room.
- * Called by AuthProvider once the Zustand store has a confirmed user._id.
- * Safe to call multiple times — guards against duplicate connects.
+ * Opens the connection. The server places the user in their private room based on the
+ * verified token, so no user id is sent from the client.
  */
-export const connectSocket = (userId) => {
-  if (!socket.connected) {
+export const connectSocket = () => {
+  if (!socket.connected && !socket.active) {
     socket.connect();
-    socket.emit("join", userId);
   }
 };
 
-export const sendMessage = (message) => socket.emit("sendMessage", message);
+// Only chatId and text are used by the server; sender/receiver come from the session and chat
+export const sendMessage = ({ chatId, text }) => socket.emit("sendMessage", { chatId, text });
 
 export const subscribeToMessages = (callback) =>
   socket.on("receiveMessage", callback);
@@ -36,7 +44,7 @@ export const unsubscribeFromNotifications = () =>
   socket.off("newNotification");
 
 export const disconnectSocket = () => {
-  if (socket.connected) socket.disconnect();
+  if (socket.connected || socket.active) socket.disconnect();
 };
 
 export default socket;
