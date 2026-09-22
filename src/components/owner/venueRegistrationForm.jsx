@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import { AuthContext } from "../../auth/AuthProvider";
 import useAddVenue from "../../hooks/owner/useAddVenue";
 import { useUpdateVenue } from "../../hooks/owner/useUpdateVenue";
+import { venueTypes } from "../../features/landing/content/landingContent";
 
 const amenitiesOptions = ["WiFi", "Parking", "AC", "Music", "Catering", "Stage"];
 
@@ -48,6 +49,7 @@ export default function VenueRegisterForm({ onSuccess, mode = "create", initialD
     enableReinitialize: true,
     initialValues: {
       venueName: initialData?.venueName || "",
+      category: initialData?.category || "",
       capacity: initialData?.capacity || "",
       pricePerHour: initialData?.pricePerHour || "",
       description: initialData?.description || "",
@@ -58,6 +60,7 @@ export default function VenueRegisterForm({ onSuccess, mode = "create", initialD
     },
     validationSchema: Yup.object({
       venueName: Yup.string().required("Required"),
+      category: Yup.string().required("Required"),
       capacity: Yup.number().required("Required").min(1, "Minimum 1"),
       pricePerHour: Yup.number().required("Required").min(0),
       description: Yup.string().required("Required"),
@@ -141,6 +144,30 @@ export default function VenueRegisterForm({ onSuccess, mode = "create", initialD
         onSubmit={formik.handleSubmit}
         className="space-y-4 max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar"
       >
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">
+            Category <span className="text-red-500">*</span>
+          </label>
+          <select
+            name="category"
+            className="w-full px-2 py-1.5 text-sm border rounded-md focus:ring-purple-500 focus:outline-none"
+            {...formik.getFieldProps("category")}
+            disabled={isLoading}
+          >
+            <option value="" disabled>
+              Select a category
+            </option>
+            {venueTypes.map((type) => (
+              <option key={type.slug} value={type.slug}>
+                {type.name}
+              </option>
+            ))}
+          </select>
+          {formik.touched.category && formik.errors.category && (
+            <div className="text-red-500 text-xs mt-1">{formik.errors.category}</div>
+          )}
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
             { label: "Name", name: "venueName" },
