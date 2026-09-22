@@ -69,3 +69,14 @@ export const seasons = [
   { name: "Spring", image: "seasonSpring" },
   { name: "Autumn", image: "seasonAutumn" },
 ];
+
+export const featuredIntro = {
+  eyebrow: "Our Selection",
+  title: "Our Finest",
+  accent: "Heritage Spaces",
+  description:
+    "Hand-curated from across Nepal's most storied valleys — each space carries centuries of cultural memory and is dressed for your occasion.",
+};
+
+// Fallback photos for admin-curated featured venues until each one has real venueImages.
+export const featuredFallbackImages = ["featuredDarbarPavilion", "featuredKumariHall", "featuredHeritageLodge"];
