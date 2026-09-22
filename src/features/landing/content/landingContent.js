@@ -63,11 +63,38 @@ export const seasonsIntro = {
   accent: "the Season",
 };
 
+// `title`/`description` are the hover-reveal copy (Figma design-system page,
+// node 143:7681 "hover"). Figma only illustrates the pattern for Summer
+// ("Oasis") — Winter/Spring/Autumn copy is authored to match that voice.
 export const seasons = [
-  { name: "Summer", image: "seasonSummer" },
-  { name: "Winter", image: "seasonWinter" },
-  { name: "Spring", image: "seasonSpring" },
-  { name: "Autumn", image: "seasonAutumn" },
+  {
+    name: "Summer",
+    image: "seasonSummer",
+    title: "Oasis",
+    description:
+      "June to August — lush botanical backdrops, elegant indoor banquets, and intimate celebrations sheltered during Nepal's romantic monsoon season.",
+  },
+  {
+    name: "Winter",
+    image: "seasonWinter",
+    title: "Hearth",
+    description:
+      "December to February — crisp mountain air, candlelit interiors, and intimate gatherings warmed beside golden hearths and Himalayan views.",
+  },
+  {
+    name: "Spring",
+    image: "seasonSpring",
+    title: "Bloom",
+    description:
+      "March to May — blossoming gardens, golden-hour ceremonies, and Nepal's most celebrated season for weddings.",
+  },
+  {
+    name: "Autumn",
+    image: "seasonAutumn",
+    title: "Harvest",
+    description:
+      "September to November — clear Himalayan skies, festival lights, and celebrations rich with the spirit of Dashain and Tihar.",
+  },
 ];
 
 export const featuredIntro = {
