@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from "react-router-dom";
-import Footer from "./Footer";
+import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 
 // Pages that start with a full-bleed hero get the transparent overlay header
@@ -21,7 +21,7 @@ export default function MainLayout() {
       <main id="main-content" tabIndex={-1} className="flex-grow outline-none">
         <Outlet />
       </main>
-      <Footer />
+      <SiteFooter />
     </div>
   );
 }
