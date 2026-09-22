@@ -117,3 +117,11 @@ export const testimonials = [
     image: "testimonialRohanSunita",
   },
 ];
+
+export const partnerCta = {
+  eyebrow: "Partner with Venure",
+  title: "List Your Venue.",
+  accent: "Reach the Right Clientele.",
+  description:
+    "Venure connects Nepal's finest heritage spaces with clients who understand their worth. Join our curated collection.",
+};

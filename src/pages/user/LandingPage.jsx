@@ -4,10 +4,7 @@ import VenueStoriesSection from "../../features/landing/sections/VenueStoriesSec
 import SeasonsSection from "../../features/landing/sections/SeasonsSection";
 import FeaturedVenuesSection from "../../features/landing/sections/FeaturedVenuesSection";
 import TestimonialsSection from "../../features/landing/sections/TestimonialsSection";
-
-// Legacy sections — replaced one by one with features/landing/sections/* from the Figma design
-import VenueGallery from "../../components/user/VenueGallery";
-import EventListSection from "../../components/user/EventListSection";
+import PartnerCtaSection from "../../features/landing/sections/PartnerCtaSection";
 
 function LandingPage() {
   return (
@@ -17,9 +14,8 @@ function LandingPage() {
       <VenueStoriesSection />
       <SeasonsSection />
       <FeaturedVenuesSection />
-      <EventListSection />
-      <VenueGallery />
       <TestimonialsSection />
+      <PartnerCtaSection />
     </div>
   );
 }
