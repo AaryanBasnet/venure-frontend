@@ -37,7 +37,7 @@ export const stories = [
     description:
       "Step inside a living Newari courtyard — carved wood brackets, terracotta friezes, and courtyards that have hosted celebrations for five centuries.",
     image: "storyNewariCourtyard",
-    imageSizes: "(min-width: 1024px) 690px, 100vw",
+    imageSizes: "(min-width: 1280px) 900px, (min-width: 1024px) 70vw, 170vw",
   },
   {
     eyebrow: "Wedding",
