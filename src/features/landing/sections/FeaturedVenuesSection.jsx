@@ -30,17 +30,19 @@ export default function FeaturedVenuesSection() {
         </ArrowPillLink>
       </div>
 
-      <ul className="mt-10 flex flex-col gap-5 lg:mt-12 lg:flex-row lg:items-end">
-        {venues.slice(0, 3).map((venue, index) => (
-          <FeaturedVenueCard
-            key={venue._id}
-            venue={venue}
-            fallbackImage={featuredFallbackImages[index]}
-            imageSizes={index === 0 ? "(min-width: 1024px) 38vw, 100vw" : "(min-width: 1024px) 29vw, 100vw"}
-            className={`aspect-[4/3] ${CARD_STYLES[index].height} ${CARD_STYLES[index].flex}`}
-          />
-        ))}
-      </ul>
+      <div className="container-site">
+        <ul className="mt-10 flex flex-col gap-5 lg:mt-12 lg:flex-row lg:items-end">
+          {venues.slice(0, 3).map((venue, index) => (
+            <FeaturedVenueCard
+              key={venue._id}
+              venue={venue}
+              fallbackImage={featuredFallbackImages[index]}
+              imageSizes={index === 0 ? "(min-width: 1024px) 38vw, 100vw" : "(min-width: 1024px) 29vw, 100vw"}
+              className={`aspect-[4/3] ${CARD_STYLES[index].height} ${CARD_STYLES[index].flex}`}
+            />
+          ))}
+        </ul>
+      </div>
     </section>
   );
 }
