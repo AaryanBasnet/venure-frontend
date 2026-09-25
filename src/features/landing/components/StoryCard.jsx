@@ -33,12 +33,13 @@ export default function StoryCard({ story, variant = "compact", className = "" }
   }
 
   return (
-    <article className="grid grid-cols-1 overflow-hidden rounded-card-xl bg-sand sm:grid-cols-2">
+    <article className="grid grid-cols-1 overflow-hidden rounded-card-xl bg-sand sm:min-h-60 sm:grid-cols-2 lg:min-h-0 lg:flex-1">
       <ResponsiveImage
         image={images[image]}
         alt=""
         sizes={imageSizes}
-        className="aspect-[4/3] w-full object-cover sm:aspect-auto sm:h-full"
+        pictureClassName="relative block aspect-[4/3] sm:aspect-auto"
+        className="size-full object-cover sm:absolute sm:inset-0"
       />
       <div className="flex flex-col justify-center p-6 sm:p-7">
         <Eyebrow>{eyebrow}</Eyebrow>

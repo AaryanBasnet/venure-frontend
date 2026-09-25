@@ -24,7 +24,7 @@ export default function VenueStoriesSection() {
 
       <div className="container-site mt-10 grid grid-cols-1 gap-6 lg:mt-12 lg:grid-cols-[1.29fr_1fr] lg:gap-[49px]">
         <StoryCard story={feature} variant="feature" className="lg:aspect-[690/600]" />
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 lg:min-h-0">
           {compact.map((story) => (
             <StoryCard key={story.title} story={story} variant="compact" />
           ))}
