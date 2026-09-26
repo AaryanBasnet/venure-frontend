@@ -13,6 +13,7 @@ import {
   CheckCircle,
   ArrowRight,
 } from "lucide-react";
+import { toast } from "react-toastify";
 import useSubmitContact from "../../hooks/useSubmitContact";
 
 const ContactUs = () => {
@@ -36,7 +37,7 @@ const ContactUs = () => {
       [e.target.name]: e.target.value,
     });
   };
-  const { mutateAsync: submitContact, isPending } = useSubmitContact();
+  const { mutateAsync: submitContact } = useSubmitContact();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,7 +47,7 @@ const ContactUs = () => {
       toast.success("Message sent successfully!");
       setFormData({ name: "", email: "", phone: "", message: "" });
       setTimeout(() => setIsSubmitted(false), 3000);
-    } catch (err) {
+    } catch {
       toast.error("Failed to send message");
     }
   };
@@ -80,26 +81,6 @@ const ContactUs = () => {
       subtitle: "Emergency support anytime",
       color: "text-yellow-500",
     },
-  ];
-
-  const eventTypes = [
-    "Wedding Reception",
-    "Corporate Event",
-    "Birthday Party",
-    "Anniversary",
-    "Baby Shower",
-    "Graduation Party",
-    "Holiday Party",
-    "Other",
-  ];
-
-  const budgetRanges = [
-    "Under $5,000",
-    "$5,000 - $10,000",
-    "$10,000 - $25,000",
-    "$25,000 - $50,000",
-    "$50,000 - $100,000",
-    "Over $100,000",
   ];
 
   return (

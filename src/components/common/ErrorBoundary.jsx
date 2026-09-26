@@ -14,8 +14,7 @@ export default class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    if (process.env.NODE_ENV !== "production") {
-      // eslint-disable-next-line no-console
+    if (import.meta.env.DEV) {
       console.error("[ErrorBoundary]", error, errorInfo.componentStack);
     }
   }
@@ -42,7 +41,7 @@ export default class ErrorBoundary extends React.Component {
             </h1>
             <p className="text-slate-500 text-sm mb-6 leading-relaxed">
               An unexpected error occurred. Refreshing the section might fix it.
-              {process.env.NODE_ENV !== "production" && this.state.error && (
+              {import.meta.env.DEV && this.state.error && (
                 <span className="block mt-3 font-mono text-xs bg-slate-100 rounded-lg p-3 text-left text-rose-700 whitespace-pre-wrap break-words">
                   {this.state.error.message}
                 </span>

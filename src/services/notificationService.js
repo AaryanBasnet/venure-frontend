@@ -9,7 +9,7 @@ export const fetchNotificationService = async () => {
 };
 
 export const markNotificationReadService = async (id) => {
-  return await markNotificationRead();
+  return await markNotificationRead(id);
 };
 
 export const markAllNotificationReadService = async () => {
