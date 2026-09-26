@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../auth/AuthProvider";
 import { FiLogOut, FiBarChart2, FiMessageSquare, FiStar } from "react-icons/fi";

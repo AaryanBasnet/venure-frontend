@@ -107,7 +107,7 @@ const AboutUs = () => {
       setCurrentStat((prev) => (prev + 1) % stats.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [stats.length]);
 
   return (
     <div className="min-h-screen bg-slate-50 overflow-hidden">

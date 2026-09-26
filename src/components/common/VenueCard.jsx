@@ -28,13 +28,11 @@ const VenueCard = ({ venue, onEdit, onDelete, isDeleting }) => {
   const {
     venueName,
     averageRating,
-    status,
     description,
     location,
     capacity,
     pricePerHour,
     amenities,
-    bookings,
     venueImages,
   } = venue;
 

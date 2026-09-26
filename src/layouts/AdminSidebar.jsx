@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../auth/AuthProvider";
 import { Crown, Phone } from "lucide-react";
@@ -109,7 +109,7 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen, isMobile }) => {
       {/* Navigation with beautiful spacing */}
       <div className="flex-1 overflow-y-auto py-4 px-3">
         <div className="space-y-1">
-          {navigationItems.map((item, index) => (
+          {navigationItems.map((item) => (
             <div
               key={item.path}
               onMouseEnter={() => (!sidebarOpen && !isMobile) && setHoveredItem(item.path)}

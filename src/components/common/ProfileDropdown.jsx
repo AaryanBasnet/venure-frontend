@@ -10,7 +10,7 @@ const dropdownVariants = {
   transition: { duration: 0.3 },
 };
 
-const ProfileDropdown = ({ user, logout, avatarUrl }) => {
+const ProfileDropdown = ({ logout, avatarUrl }) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();

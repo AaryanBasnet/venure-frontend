@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import {
   FaUsers,
   FaChartLine,
@@ -84,7 +84,6 @@ const TopVenueItem = React.memo(({ venue, index }) => (
 ));
 
 const AdminDashboard = () => {
-  const [timeFilter, setTimeFilter] = useState("7d");
 
   const {
     data: topVenues = [],

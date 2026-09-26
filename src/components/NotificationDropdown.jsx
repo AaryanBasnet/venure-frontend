@@ -9,7 +9,7 @@ export default function NotificationDropdown() {
   const [animateCount, setAnimateCount] = useState(false);
   const dropdownRef = useRef(null);
   const { user } = useContext(AuthContext);
-  const { notifications, unreadCount, markRead, markAllRead } =
+  const { notifications, unreadCount, markAllRead } =
     useNotifications(user?._id);
 
   // Close dropdown when clicking outside

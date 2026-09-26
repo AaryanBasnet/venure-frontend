@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 export default function MyBookings() {
-  const { user, isAuthenticated } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const {
     data: bookings = [],
     isLoading,

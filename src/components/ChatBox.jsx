@@ -12,7 +12,6 @@ import {
 export default function ChatBox({
   messages = [],
   onSend,
-  activeChat,
   currentUserId,
   isTyping = false,
 }) {
@@ -96,12 +95,6 @@ export default function ChatBox({
               const isOwner = isOwnerMessage(msg);
               const showAvatar =
                 i === 0 || isOwnerMessage(messages[i - 1]) !== isOwner;
-              const showTime =
-                i === messages.length - 1 ||
-                (messages[i + 1] &&
-                  new Date(messages[i + 1].timestamp) -
-                    new Date(msg.timestamp) >
-                    300000); // >5min
 
               return (
                 <div

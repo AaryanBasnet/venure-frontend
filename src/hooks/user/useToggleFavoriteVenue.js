@@ -8,7 +8,7 @@ export const useToggleFavoriteVenue = () => {
   return useMutation({
     mutationFn: (venueId) => toggleFavoriteVenueService(venueId),
 
-    onSuccess: (data, venueId) => {
+    onSuccess: (data) => {
       // Show toast based on API response message
       toast.success(
         data.message === "Removed from favorites"

@@ -33,7 +33,6 @@ export default function OwnerPaymentPage() {
     useGetMonthlyEarningsForOwner();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedFilter, setSelectedFilter] = useState("all");
 
   const totalBookings = bookings.length;
   const totalEarnings =

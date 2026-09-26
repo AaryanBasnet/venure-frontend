@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { FiPlus, FiAlertTriangle } from "react-icons/fi";
 import SearchInput from "../../components/common/SearchInput";
 import { useAdminUser } from "../../hooks/admin/useAdminUser";
@@ -50,7 +50,6 @@ const AdminUsersPage = () => {
     if (page < totalPages) setPage(page + 1);
   };
 
-    const avatarBaseUrl = import.meta.env.VITE_API_BASE_URL.replace("/api", "");
 
 
   if (isLoading)
