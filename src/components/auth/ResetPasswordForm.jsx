@@ -115,7 +115,7 @@ export default function ResetPasswordForm({ email, code, onSuccess, onClose }) {
         onSuccess: () => {
           onSuccess();
         },
-        onError: (error) => {
+        onError: () => {
           setErrors({ general: "Failed to reset password. Please try again." });
         },
       }

@@ -23,7 +23,7 @@ export default function AdminContactPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
-  const [selectedContact, setSelectedContact] = useState(null);
+  const [, setSelectedContact] = useState(null);
 
   const filtered = contacts.filter((contact) => {
     const matchesSearch =
@@ -45,10 +45,6 @@ export default function AdminContactPage() {
     if (sortBy === "name") return a.name.localeCompare(b.name);
     return 0;
   });
-
-  const getStatusCount = (status) => {
-    return contacts.filter((c) => c.status === status).length;
-  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);

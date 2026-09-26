@@ -96,7 +96,7 @@ export default function VerifyResetCodeForm({
         onSuccess: () => {
           onSuccess(fullCode);
         },
-        onError: (error) => {
+        onError: () => {
           setError("Invalid code. Please try again.");
         },
       }

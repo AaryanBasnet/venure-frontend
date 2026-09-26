@@ -43,7 +43,7 @@ const VenueDetails = () => {
 
   // Pass venue._id to useChat once venue is loaded
   const venueId = venue?._id || null;
-  const { startChatWith, activeChat } = useChat(user, venueId);
+  const { startChatWith } = useChat(user, venueId);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const totalImages = venue?.venueImages?.length || 0;

@@ -1,22 +1,21 @@
-import React from "react";
-
-import HeroSection from "../../components/user/HeroSection";
-import VenueGallery from "../../components/user/VenueGallery";
-import VenuesSection from "../../components/user/VenuesSection";
-import EventListSection from "../../components/user/EventListSection";
-import TestimonialsSection from "../../components/user/TestimonialSection";
-import NepalExperienceSection from "../../components/user/NepalExperienceSection";
+import HeroSection from "../../features/landing/sections/HeroSection";
+import VenueTypesSection from "../../features/landing/sections/VenueTypesSection";
+import VenueStoriesSection from "../../features/landing/sections/VenueStoriesSection";
+import SeasonsSection from "../../features/landing/sections/SeasonsSection";
+import FeaturedVenuesSection from "../../features/landing/sections/FeaturedVenuesSection";
+import TestimonialsSection from "../../features/landing/sections/TestimonialsSection";
+import PartnerCtaSection from "../../features/landing/sections/PartnerCtaSection";
 
 function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#eeeeea] overflow-x-hidden bg-cream">
+    <div className="overflow-x-hidden bg-cream">
       <HeroSection />
-      <VenuesSection />
-      <EventListSection />
-      <NepalExperienceSection />
-      <VenueGallery />
-
+      <VenueTypesSection />
+      <VenueStoriesSection />
+      <SeasonsSection />
+      <FeaturedVenuesSection />
       <TestimonialsSection />
+      <PartnerCtaSection />
     </div>
   );
 }

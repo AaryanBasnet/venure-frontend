@@ -22,7 +22,6 @@ export default function OwnerDashboard() {
   const {
     data: bookings = [],
     isLoading: isLoadingBookings,
-    isError: isErrorBookings,
   } = useOwnerBookings();
   const { data, isLoading, error } = useGetMonthlyEarningsForOwner();
 
@@ -31,14 +30,11 @@ export default function OwnerDashboard() {
   const {
     data: activeVenueCountData,
     isLoading: isLoadingActiveVenueCount,
-    isError,
-    error: activeVenueCountError,
   } = useActiveVenueCount(ownerId);
 
   const {
     data: monthlyEarningsData,
     isLoading: isLoadingEarnings,
-    error: earningsError,
   } = useGetMonthlyEarningsForOwner();
   const currentMonthIndex = new Date().getMonth();
   const currentMonthEarnings =

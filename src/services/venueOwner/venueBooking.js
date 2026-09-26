@@ -11,21 +11,11 @@ export const fetchBookingsForOwnerService = async () => {
 };
 
 export const cancelBookingService = async (bookingId) => {
-  try {
-    const response = await cancelBooking(bookingId);
-    return response;
-  } catch (error) {
-    throw error;
-  }
+  return await cancelBooking(bookingId);
 };
 
 export const approveBookingService = async (bookingId) => {
-  try {
-    const response = await approveBooking(bookingId);
-    return response;
-  } catch (error) {
-    throw error;
-  }
+  return await approveBooking(bookingId);
 };
 
 export const getMonthlyEarningsForOwnerService = async () => {

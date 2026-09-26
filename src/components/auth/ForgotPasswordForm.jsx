@@ -9,7 +9,6 @@ export default function ForgotPasswordForm({
 }) {
   const [email, setEmail] = useState(defaultEmail);
   const [emailError, setEmailError] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const { mutate: forgotPassword, isLoading } = useForgotPassword();
 
   useEffect(() => {
@@ -46,7 +45,6 @@ export default function ForgotPasswordForm({
     }
 
     setEmailError("");
-    setIsSubmitted(true);
 
     forgotPassword(
       { email },

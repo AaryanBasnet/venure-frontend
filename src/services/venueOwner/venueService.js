@@ -40,12 +40,8 @@ export const addVenueService = async ({ form, amenities, images, ownerId }) => {
 
 export const getActiveVenuesService = async (ownerId) => {
   if (!ownerId) return 0;
-  try {
-    const res = await getActiveVenues(ownerId);
-    return res.data.count;
-  } catch (err) {
-    throw err;
-  }
+  const res = await getActiveVenues(ownerId);
+  return res.data.count;
 };
 // GET Venues by Owner
 export const fetchVenuesByOwnerService = async (ownerId) => {

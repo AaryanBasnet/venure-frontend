@@ -1,0 +1,91 @@
+/*
+ * Venure design tokens (Tailwind v4).
+ * Source: Figma file iphJNIRUMruhQho2ZsdzBh — see docs/design-system.md.
+ * Use these via utilities (bg-cream, text-gold-800, font-display, text-eyebrow…),
+ * never raw hex values in components.
+ */
+@theme {
+  /* ── Color ───────────────────────────────────────────── */
+  --color-ink: #1a1208;
+  --color-stone: #b8b6b2;
+  --color-gold: #b8963c;
+  --color-gold-600: #a68736;
+  --color-gold-700: #937830; /* accent headings on light bg (3:1 large text) */
+  --color-gold-800: #7d6424; /* small gold text on light bg (4.5:1) */
+  --color-gold-200: #e9dec3;
+  --color-gold-100: #f4efe2;
+  --color-gold-50: #f8f5ec;
+  --color-cream: #fbf6ee;
+  --color-sand: #f5ede0;
+  --color-line: #e2d5bf;
+
+  /* ── Typography ──────────────────────────────────────── */
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --text-display: clamp(2.5rem, 1.6rem + 3.6vw, 3.75rem); /* 40 → 60 */
+  --text-display--line-height: 1.07;
+  --text-h2: clamp(1.875rem, 1.4rem + 1.9vw, 2.625rem); /* 30 → 42 */
+  --text-h2--line-height: 1.09;
+  --text-h3: 1.6875rem; /* 27 */
+  --text-h3--line-height: 1.04;
+  --text-tagline: clamp(1.125rem, 0.9rem + 0.9vw, 1.5rem); /* 18 → 24 */
+  --text-tagline--line-height: 1.5;
+  --text-h4: 1.3125rem; /* 21 */
+  --text-h4--line-height: 1.15;
+  --text-h5: 1.25rem; /* 20 */
+  --text-h5--line-height: 1.2;
+
+  --text-body-lg: 1rem; /* 16 */
+  --text-body-lg--line-height: 1.66;
+  --text-body: 0.9375rem; /* 15 */
+  --text-body--line-height: 1.8;
+  --text-small: 0.875rem; /* 14 */
+  --text-small--line-height: 1.37;
+  --text-caption: 0.75rem; /* 12 */
+  --text-caption--line-height: 1.44;
+
+  /* Uppercase tracked labels. Figma uses 8–10px; rendered at ≥11px for legibility. */
+  --text-label: 0.75rem; /* 12 — nav */
+  --text-label--line-height: 1.36;
+  --text-label--letter-spacing: 0.145em;
+  --text-label--font-weight: 500;
+  --text-eyebrow: 0.6875rem; /* 11 */
+  --text-eyebrow--line-height: 1.4;
+  --text-eyebrow--letter-spacing: 0.27em;
+  --text-eyebrow--font-weight: 500;
+  --text-button: 0.6875rem; /* 11 */
+  --text-button--line-height: 1.4;
+  --text-button--letter-spacing: 0.2em;
+  --text-button--font-weight: 500;
+
+  /* ── Shape ───────────────────────────────────────────── */
+  --radius-card-sm: 10px;
+  --radius-card-md: 16px;
+  --radius-card-lg: 24px;
+  --radius-card-xl: 32px;
+
+  /* ── Layout ──────────────────────────────────────────── */
+  --spacing-header: 78px;
+  --container-site: 1280px;
+}
+
+/* Fraunces is used with SOFT 0 / WONK 1 throughout the design */
+@utility font-display {
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 0, "WONK" 1;
+}
+
+/* Centered 1280px container with the design's side padding (80 → 40 → 20) */
+@utility container-site {
+  width: 100%;
+  max-width: calc(var(--container-site) + 2 * 5rem);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  @media (width >= 48rem) {
+    padding-inline: 2.5rem;
+  }
+  @media (width >= 80rem) {
+    padding-inline: 5rem;
+  }
+}

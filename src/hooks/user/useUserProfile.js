@@ -20,7 +20,7 @@ export const useUpdateUserProfile = () => {
 
   return useMutation({
     mutationFn: updateUserProfileService,
-    onSuccess: (data) => {
+    onSuccess: () => {
       // Invalidate and refetch user profile after update
       queryClient.invalidateQueries(["userProfile"]);
     },

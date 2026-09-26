@@ -51,7 +51,7 @@ export default function VenueList() {
   const venues = data?.data || [];
   const totalPages = data?.pages || 1;
 
-  const { data: favoriteVenueIds = [], isLoading: favLoading } =
+  const { data: favoriteVenueIds = [] } =
     useGetFavoriteVenueIds();
   const { mutate: toggleFavorite } = useToggleFavoriteVenue();
 

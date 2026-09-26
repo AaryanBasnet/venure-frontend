@@ -104,6 +104,12 @@ api.interceptors.response.use(
       processQueue(null);
       return api(original); // replay the original request with the new cookie
     } catch (refreshError) {
+      // 409: another tab rotated the session a moment ago and the browser already
+      // holds the new cookies, so the original request can simply be replayed.
+      if (refreshError.response?.status === 409) {
+        processQueue(null);
+        return api(original);
+      }
       processQueue(refreshError);
       // Tell the rest of the app the session is dead — AuthProvider listens for this.
       window.dispatchEvent(new CustomEvent("auth:session-expired"));

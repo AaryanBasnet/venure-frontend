@@ -13,10 +13,7 @@ import {
 import { useReviews } from "../../hooks/useReviews";
 import { toast } from "react-toastify";
 
-const VenueReviews = ({ venue, user, isAuthenticated }) => {
-  if (!venue || !venue._id) {
-    return <div>Loading venue data...</div>; // or null, or a skeleton loader
-  }
+const VenueReviews = ({ venue, isAuthenticated }) => {
   const [newReview, setNewReview] = useState({
     rating: 5,
     comment: "",
@@ -25,15 +22,14 @@ const VenueReviews = ({ venue, user, isAuthenticated }) => {
   const [showReviewForm, setShowReviewForm] = useState(false);
 
   // Use your custom hook to fetch reviews and mutations
-  const {
-    reviews,
-    isLoading,
-    error,
-    addReview,
-    deleteReview,
-    isAdding,
-    isDeleting,
-  } = useReviews(venue._id);
+  const { reviews, isLoading, error, addReview, isAdding } = useReviews(
+    venue?._id
+  );
+
+  // After the hooks so they run on every render, in the same order
+  if (!venue?._id) {
+    return <div>Loading venue data...</div>;
+  }
 
   const handleRatingClick = (rating) => {
     setNewReview({ ...newReview, rating });

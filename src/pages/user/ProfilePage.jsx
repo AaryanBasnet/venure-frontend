@@ -64,7 +64,7 @@ const ProfilePage = () => {
     try {
       await updateMutation.mutateAsync(formData);
       setIsModalOpen(false);
-    } catch (error) {
+    } catch {
       toast.error("Profile not updated")
     }
   };

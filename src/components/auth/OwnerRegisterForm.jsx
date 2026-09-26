@@ -1,6 +1,7 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { strongPasswordSchema } from "../../utils/passwordRules";
 import useRegisterUserTan from "../../hooks/useRegisterUserTan";
 
 export default function OwnerRegisterForm() {
@@ -22,9 +23,7 @@ export default function OwnerRegisterForm() {
       phone: Yup.string()
         .matches(/^\d{9,15}$/, "Phone number must be 9-15 digits")
         .required("Phone is required"),
-      password: Yup.string()
-        .min(6, "Password must be at least 6 characters")
-        .required("Password is required"),
+      password: strongPasswordSchema,
     }),
     onSubmit: (values) => {
       mutate(values);
